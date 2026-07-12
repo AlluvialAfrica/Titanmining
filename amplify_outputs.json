@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "user_pool_id": "eu-north-1_placeholder",
+    "user_pool_client_id": "placeholder",
+    "aws_region": "eu-north-1",
+    "mfa_methods": [],
+    "standard_required_attributes": [],
+    "username_attributes": ["email"],
+    "user_verification_types": ["email"],
+    "groups": ["SiteControllers", "DepartmentLeads", "Operators", "SupportStaff", "Security"]
+  },
+  "storage": {
+    "bucket_name": "placeholder-bucket",
+    "aws_region": "eu-north-1"
+  }
+}
