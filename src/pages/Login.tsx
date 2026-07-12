@@ -4,6 +4,7 @@ import { DEMO_USERS } from '../contexts/AuthContext';
 import RegisterTenant from './RegisterTenant';
 import TermsOfService from './TermsOfService';
 import Disclaimer from './Disclaimer';
+import Pricing from './Pricing';
 
 export default function Login() {
   const { login, forcePasswordChange, changePassword, otpPending, verifyOtp } = useAuth();
@@ -15,7 +16,8 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [isRegistering, setIsRegistering] = useState(false);
+  const [view, setView] = useState<'login' | 'register' | 'pricing'>('login');
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
   const [activeModal, setActiveModal] = useState<'terms' | 'disclaimer' | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -71,9 +73,25 @@ export default function Login() {
     return <Disclaimer onClose={() => setActiveModal(null)} />;
   }
 
-  // Render Registration wizard
-  if (isRegistering) {
-    return <RegisterTenant onBackToLogin={() => setIsRegistering(false)} />;
+  // Render Pricing page view
+  if (view === 'pricing') {
+    return (
+      <Pricing
+        onRegisterClick={() => setView('register')}
+        onBackClick={() => setView('login')}
+      />
+    );
+  }
+
+  // Render Registration wizard view
+  if (view === 'register') {
+    return (
+      <RegisterTenant
+        onBackToLogin={() => setView('login')}
+        selectedPlan={selectedPlan}
+        setSelectedPlan={setSelectedPlan}
+      />
+    );
   }
 
   if (forcePasswordChange) {
@@ -208,13 +226,22 @@ export default function Login() {
                 {loading ? 'Signing in...' : 'Sign In'}
               </button>
               
-              <button
-                type="button"
-                onClick={() => setIsRegistering(true)}
-                className="uppercase tracking-widest font-semibold border-b border-transparent hover:border-black transition-all"
-              >
-                Register Organization
-              </button>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setView('pricing')}
+                  className="uppercase tracking-widest font-semibold border-b border-transparent hover:border-black transition-all"
+                >
+                  View Plans
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView('register')}
+                  className="uppercase tracking-widest font-semibold border-b border-transparent hover:border-black transition-all"
+                >
+                  Register Organization
+                </button>
+              </div>
             </div>
           </form>
 

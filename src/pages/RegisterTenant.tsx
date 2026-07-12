@@ -6,6 +6,8 @@ const stripePromise = loadStripe('pk_test_51TsR4n3zWruJmWzzj73gR5hNBhLM2fvCGVdB2
 
 interface RegisterTenantProps {
   onBackToLogin: () => void;
+  selectedPlan: 'monthly' | 'annual';
+  setSelectedPlan: (plan: 'monthly' | 'annual') => void;
 }
 
 function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 'monthly' | 'annual'; email: string; orgName: string; onPaymentSuccess: () => void }) {
@@ -23,12 +25,10 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
     setLoading(true);
     setError('');
 
-    // Simulate payment submission (since this is sk_test/pk_test keys)
     try {
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) throw new Error('Card element not loaded');
 
-      // Create Payment Method
       const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
@@ -92,7 +92,7 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
   );
 }
 
-export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
+export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelectedPlan }: RegisterTenantProps) {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [formData, setFormData] = useState({
     orgName: '',
@@ -106,7 +106,6 @@ export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
   const [verificationCode, setVerificationCode] = useState('');
   const [userInputCode, setUserInputCode] = useState('');
   const [error, setError] = useState('');
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,12 +116,10 @@ export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
       return;
     }
 
-    // Generate verification code
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setVerificationCode(code);
     setStep(2);
 
-    // Alert simulation helper
     setTimeout(() => {
       alert(`[Alluvial Email Verification Code] Your signup code is: ${code}`);
     }, 500);
@@ -138,7 +135,6 @@ export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
   };
 
   const handlePaymentSuccess = () => {
-    // Add user to the temporary database of demo users
     const newUser = {
       id: `user_${Date.now()}`,
       firstName: formData.ownerFirstName,
@@ -151,7 +147,6 @@ export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
       status: 'ACTIVE' as const,
     };
 
-    // Save to local localStorage user registry so they can log in immediately
     const existingUsers = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
     existingUsers.push(newUser);
     localStorage.setItem('registeredTenants', JSON.stringify(existingUsers));
@@ -165,12 +160,42 @@ export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
       <div className="md:w-1/2 bg-zinc-50 border-r border-black p-12 flex flex-col justify-between">
         <div>
           <img src="/atlas.png" alt="Atlas Logo" className="h-12 mb-8 object-contain" />
-          <h1 className="editorial-title text-4xl font-light tracking-tight mt-12 mb-6">
+          <h1 className="editorial-title text-4xl font-light tracking-tight mt-6 mb-6">
             Register your <br />Mining Tenant
           </h1>
-          <p className="font-serif italic text-zinc-600 text-base leading-relaxed max-w-md">
-            "Create your organizational portal, invite staff, manage daily reconciliations, and lock in the $500 monthly tier."
+          <p className="font-serif italic text-zinc-600 text-sm leading-relaxed max-w-md">
+            "Create your organizational portal, invite staff, manage daily reconciliations, and lock in your subscription tier."
           </p>
+
+          {/* Pricing Selection Option (Left Pane) */}
+          <div className="mt-8 border-t border-black pt-8">
+            <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-4">Select Subscription Plan</p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setSelectedPlan('monthly')}
+                className={`p-4 border text-left transition-all ${
+                  selectedPlan === 'monthly'
+                    ? 'border-black bg-white font-bold'
+                    : 'border-zinc-200 hover:border-black text-zinc-500 bg-transparent'
+                }`}
+              >
+                <p className="text-xs uppercase tracking-wider">Pay Monthly</p>
+                <p className="font-serif italic text-xl mt-1 text-black">$500 <span className="text-[10px] text-zinc-400 font-mono font-normal">/ mo</span></p>
+              </button>
+              <button
+                onClick={() => setSelectedPlan('annual')}
+                className={`p-4 border text-left transition-all relative ${
+                  selectedPlan === 'annual'
+                    ? 'border-black bg-white font-bold'
+                    : 'border-zinc-200 hover:border-black text-zinc-500 bg-transparent'
+                }`}
+              >
+                <span className="absolute top-2 right-2 text-[9px] bg-black text-white px-1.5 py-0.5 font-mono uppercase tracking-wider">Save 20%</span>
+                <p className="text-xs uppercase tracking-wider">Pay Annually</p>
+                <p className="font-serif italic text-xl mt-1 text-black">$4,800 <span className="text-[10px] text-zinc-400 font-mono font-normal">/ yr</span></p>
+              </button>
+            </div>
+          </div>
         </div>
 
         <button
@@ -307,32 +332,6 @@ export default function RegisterTenant({ onBackToLogin }: RegisterTenantProps) {
               <div className="mb-8">
                 <h2 className="editorial-title text-2xl font-light">Subscription Checkout</h2>
                 <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Step 3: Stripe payment</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <button
-                  onClick={() => setSelectedPlan('monthly')}
-                  className={`p-3 border text-left transition-all ${
-                    selectedPlan === 'monthly'
-                      ? 'border-black bg-zinc-50 font-bold'
-                      : 'border-zinc-200 hover:border-black text-zinc-500'
-                  }`}
-                >
-                  <p className="text-xs uppercase tracking-wider">Pay Monthly</p>
-                  <p className="font-serif italic text-lg mt-1">$500/mo</p>
-                </button>
-                <button
-                  onClick={() => setSelectedPlan('annual')}
-                  className={`p-3 border text-left transition-all ${
-                    selectedPlan === 'annual'
-                      ? 'border-black bg-zinc-50 font-bold'
-                      : 'border-zinc-200 hover:border-black text-zinc-500'
-                  }`}
-                >
-                  <p className="text-xs uppercase tracking-wider">Pay Annually</p>
-                  <p className="font-serif italic text-lg mt-1">$4,800/yr</p>
-                  <p className="text-[9px] uppercase tracking-wide text-zinc-500 mt-1">Save 20%</p>
-                </button>
               </div>
 
               <Elements stripe={stripePromise}>
