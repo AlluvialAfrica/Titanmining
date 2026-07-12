@@ -6,6 +6,7 @@ import LanguageToggle from '../components/LanguageToggle';
 import OfflineBanner from '../components/OfflineBanner';
 import FuelReconciliation from './reports/FuelReconciliation';
 import SiteDailySummary from './reports/SiteDailySummary';
+import GenericReportForm from './reports/GenericReportForm';
 import UserManagement from './UserManagement';
 import InstitutionalProfile from './InstitutionalProfile';
 import { useReport } from '../hooks/useReport';
@@ -30,11 +31,7 @@ export default function Dashboard() {
       case 'TEMPLATE_04':
         return <FuelReconciliation />;
       default:
-        return (
-          <div className="border border-black p-8 text-center text-zinc-500 font-serif italic">
-            Form for {templateId} is scaffolding ready. Check back soon.
-          </div>
-        );
+        return <GenericReportForm templateId={templateId} />;
     }
   };
 
