@@ -1,0 +1,138 @@
+export enum Role {
+  SITE_CONTROLLER = "SITE_CONTROLLER",
+  MINING_GEOLOGY_LEAD = "MINING_GEOLOGY_LEAD",
+  PROCESSING_RECOVERY_LEAD = "PROCESSING_RECOVERY_LEAD",
+  FUEL_ADMIN_LOGISTICS = "FUEL_ADMIN_LOGISTICS",
+  ENGINE_MECHANIC = "ENGINE_MECHANIC",
+  ELECTRICAL_MECHANIC = "ELECTRICAL_MECHANIC",
+  GREASING_WASHING_HELPER = "GREASING_WASHING_HELPER",
+  GATE_SECURITY = "GATE_SECURITY",
+  EXCAVATOR_OPERATOR = "EXCAVATOR_OPERATOR",
+  DRUM_PUMP_SUPERVISOR = "DRUM_PUMP_SUPERVISOR",
+  DRUM_PUMP_ASSISTANT = "DRUM_PUMP_ASSISTANT",
+  CENTRIFUGE_OPERATOR = "CENTRIFUGE_OPERATOR",
+  SHAKING_TABLE_OPERATOR = "SHAKING_TABLE_OPERATOR",
+  SITE_PETTY_CASH_MANAGER = "SITE_PETTY_CASH_MANAGER",
+}
+
+export const ROLE_PERMISSIONS: Record<Role, {
+  canCreate: string[];      // Report types this role can create
+  canRead: string[];        // Report types this role can view
+  canVerify: string[];      // Report types this role can verify
+  canManageUsers: boolean;
+  canEditProfile: boolean;
+  canExport: boolean;
+}> = {
+  [Role.SITE_CONTROLLER]: {
+    canCreate: ["TEMPLATE_01"],
+    canRead: ["ALL"],
+    canVerify: ["TEMPLATE_09", "TEMPLATE_13"],
+    canManageUsers: true,
+    canEditProfile: true,
+    canExport: true,
+  },
+  [Role.MINING_GEOLOGY_LEAD]: {
+    canCreate: ["TEMPLATE_05"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_05"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.PROCESSING_RECOVERY_LEAD]: {
+    canCreate: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
+    canRead: ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
+    canVerify: ["TEMPLATE_07", "TEMPLATE_08"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.FUEL_ADMIN_LOGISTICS]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12"],
+    canRead: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.ENGINE_MECHANIC]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.ELECTRICAL_MECHANIC]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.GREASING_WASHING_HELPER]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.GATE_SECURITY]: {
+    canCreate: ["TEMPLATE_11"],
+    canRead: ["TEMPLATE_11"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.EXCAVATOR_OPERATOR]: {
+    canCreate: ["TEMPLATE_03"],
+    canRead: ["TEMPLATE_03"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.DRUM_PUMP_SUPERVISOR]: {
+    canCreate: ["TEMPLATE_06"],
+    canRead: ["TEMPLATE_06"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.DRUM_PUMP_ASSISTANT]: {
+    canCreate: ["TEMPLATE_06"],
+    canRead: ["TEMPLATE_06"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.CENTRIFUGE_OPERATOR]: {
+    canCreate: ["TEMPLATE_07"],
+    canRead: ["TEMPLATE_07"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.SHAKING_TABLE_OPERATOR]: {
+    canCreate: ["TEMPLATE_08"],
+    canRead: ["TEMPLATE_08"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+  [Role.SITE_PETTY_CASH_MANAGER]: {
+    canCreate: ["TEMPLATE_14"],
+    canRead: ["TEMPLATE_12", "TEMPLATE_14"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+  },
+};

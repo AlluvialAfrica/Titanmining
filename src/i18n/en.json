@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "Alluvial Site Manager",
+    "tagline": "Daily Reporting Made Simple"
+  },
+  "roles": {
+    "SITE_CONTROLLER": "Site Controller",
+    "MINING_GEOLOGY_LEAD": "Mining & Geology Lead",
+    "PROCESSING_RECOVERY_LEAD": "Processing & Recovery Lead",
+    "FUEL_ADMIN_LOGISTICS": "Fuel, Admin & Logistics Controller",
+    "ENGINE_MECHANIC": "Engine Mechanic",
+    "ELECTRICAL_MECHANIC": "Electrical Mechanic",
+    "GREASING_WASHING_HELPER": "Greasing, Washing & Mechanic Helper",
+    "GATE_SECURITY": "Gate Security",
+    "EXCAVATOR_OPERATOR": "Excavator Operator",
+    "DRUM_PUMP_SUPERVISOR": "Drum & Sand Pump Supervisor",
+    "DRUM_PUMP_ASSISTANT": "Drum & Pump Assistant",
+    "CENTRIFUGE_OPERATOR": "Centrifuge Operator",
+    "SHAKING_TABLE_OPERATOR": "Shaking Table Operator",
+    "SITE_PETTY_CASH_MANAGER": "Site Petty Cash Manager"
+  },
+  "reports": {
+    "TEMPLATE_01": "Site Daily Summary",
+    "TEMPLATE_02": "Staff Attendance & Shift Roster",
+    "TEMPLATE_03": "Excavator / Machine Daily Log",
+    "TEMPLATE_04": "Fuel Issue & Reconciliation",
+    "TEMPLATE_05": "Mining & Geology Daily Sheet",
+    "TEMPLATE_06": "Drum & Sand Pump Shift Log",
+    "TEMPLATE_07": "Centrifuge Operation & Cleanup Log",
+    "TEMPLATE_08": "Shaking Table Operation Log",
+    "TEMPLATE_09": "Gold Recovery & Handover Register",
+    "TEMPLATE_10": "Maintenance, Greasing & Washing Log",
+    "TEMPLATE_11": "Gate, Search & Items Movement Register",
+    "TEMPLATE_12": "Stores, Purchases & Expense Sheet",
+    "TEMPLATE_13": "Shift Handover Certificate",
+    "TEMPLATE_14": "Petty Cash Daily Report"
+  },
+  "common": {
+    "submit": "Submit",
+    "saveDraft": "Save Draft",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "required": "This field is required",
+    "invalidPhone": "Phone must be in format +254xxxxxxxxx",
+    "varianceAlert": "Variance detected - explanation required",
+    "sodViolation": "Segregation of Duties violation detected"
+  }
+}

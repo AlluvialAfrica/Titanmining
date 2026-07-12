@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "Gestionnaire de Site Alluvionnaire",
+    "tagline": "Rapportage Quotidien Simplifié"
+  },
+  "roles": {
+    "SITE_CONTROLLER": "Contrôleur de Site",
+    "MINING_GEOLOGY_LEAD": "Chef Mines & Géologie",
+    "PROCESSING_RECOVERY_LEAD": "Chef Traitement & Récupération",
+    "FUEL_ADMIN_LOGISTICS": "Contrôleur Carburant, Admin & Logistique",
+    "ENGINE_MECHANIC": "Mécanicien Moteur",
+    "ELECTRICAL_MECHANIC": "Mécanicien Électrique",
+    "GREASING_WASHING_HELPER": "Aide Graissage, Lavage & Mécanique",
+    "GATE_SECURITY": "Sécurité Porte",
+    "EXCAVATOR_OPERATOR": "Opérateur d'Excavatrice",
+    "DRUM_PUMP_SUPERVISOR": "Superviseur Tambour & Pompe",
+    "DRUM_PUMP_ASSISTANT": "Assistant Tambour & Pompe",
+    "CENTRIFUGE_OPERATOR": "Opérateur de Centrifugeuse",
+    "SHAKING_TABLE_OPERATOR": "Opérateur de Table à Secousses",
+    "SITE_PETTY_CASH_MANAGER": "Gestionnaire de Petite Caisse"
+  },
+  "reports": {
+    "TEMPLATE_01": "Résumé Quotidien du Site",
+    "TEMPLATE_02": "Présence du Personnel & Planning",
+    "TEMPLATE_03": "Journal Quotidien Excavatrice / Machine",
+    "TEMPLATE_04": "Émission & Réconciliation Carburant",
+    "TEMPLATE_05": "Feuille Quotidienne Mines & Géologie",
+    "TEMPLATE_06": "Journal de Poste Tambour & Pompe",
+    "TEMPLATE_07": "Journal Centrifugeuse & Nettoyage",
+    "TEMPLATE_08": "Journal Table à Secousses",
+    "TEMPLATE_09": "Registre Récupération Or & Transfert",
+    "TEMPLATE_10": "Journal Entretien, Graissage & Lavage",
+    "TEMPLATE_11": "Registre Porte, Fouille & Mouvement Articles",
+    "TEMPLATE_12": "Feuille Magasins, Achats & Dépenses",
+    "TEMPLATE_13": "Certificat de Passation de Service",
+    "TEMPLATE_14": "Rapport Quotidien Petite Caisse"
+  },
+  "common": {
+    "submit": "Soumettre",
+    "saveDraft": "Enregistrer le Brouillon",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "required": "Ce champ est obligatoire",
+    "invalidPhone": "Le téléphone doit être au format +254xxxxxxxxx",
+    "varianceAlert": "Écart détecté - explication requise",
+    "sodViolation": "Violation de la Séparation des Fonctions détectée"
+  }
+}
