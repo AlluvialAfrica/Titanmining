@@ -124,8 +124,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (mobileNumber: string, emailOrUsername: string, password: string) => {
     setLoading(true);
     try {
+      const customUsers = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
       // Find matching demo user by phone number
-      const match = DEMO_USERS.find(
+      const match = [...DEMO_USERS, ...customUsers].find(
         u => u.mobileNumber === mobileNumber || u.email === emailOrUsername
       );
 

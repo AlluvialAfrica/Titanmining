@@ -10,6 +10,8 @@ import GenericReportForm from './reports/GenericReportForm';
 import UserManagement from './UserManagement';
 import InstitutionalProfile from './InstitutionalProfile';
 import { useReport } from '../hooks/useReport';
+import TermsOfService from './TermsOfService';
+import Disclaimer from './Disclaimer';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -17,6 +19,15 @@ export default function Dashboard() {
   const { getReportHistory } = useReport();
   const [activeTab, setActiveTab] = useState<'form' | 'history' | 'users' | 'settings'>('form');
   const [selectedControllerForm, setSelectedControllerForm] = useState<string>('TEMPLATE_01');
+  const [activeModal, setActiveModal] = useState<'terms' | 'disclaimer' | null>(null);
+
+  if (activeModal === 'terms') {
+    return <TermsOfService onClose={() => setActiveModal(null)} />;
+  }
+
+  if (activeModal === 'disclaimer') {
+    return <Disclaimer onClose={() => setActiveModal(null)} />;
+  }
 
   if (!user) return null;
 
@@ -218,8 +229,16 @@ export default function Dashboard() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-100 py-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white">
-        © 2026 Alluvial Africa. Powered by ChatWorks.
+      <footer className="border-t border-zinc-100 py-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">
+        <span>© 2026 Alluvial Africa. Powered by ChatWorks.</span>
+        <span>•</span>
+        <button onClick={() => setActiveModal('terms')} className="hover:text-black transition-colors font-semibold">
+          Terms of Service
+        </button>
+        <span>•</span>
+        <button onClick={() => setActiveModal('disclaimer')} className="hover:text-black transition-colors font-semibold">
+          Disclaimer
+        </button>
       </footer>
     </div>
   );

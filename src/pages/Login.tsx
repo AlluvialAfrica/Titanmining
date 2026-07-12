@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { DEMO_USERS } from '../contexts/AuthContext';
+import RegisterTenant from './RegisterTenant';
+import TermsOfService from './TermsOfService';
+import Disclaimer from './Disclaimer';
 
 export default function Login() {
   const { login, forcePasswordChange, changePassword, otpPending, verifyOtp } = useAuth();
@@ -11,6 +14,9 @@ export default function Login() {
   const [otpCode, setOtpCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [activeModal, setActiveModal] = useState<'terms' | 'disclaimer' | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +61,20 @@ export default function Login() {
     setMobileNumber(user.mobileNumber);
     setPassword('TempPass123!');
   };
+
+  // Render Modals
+  if (activeModal === 'terms') {
+    return <TermsOfService onClose={() => setActiveModal(null)} />;
+  }
+
+  if (activeModal === 'disclaimer') {
+    return <Disclaimer onClose={() => setActiveModal(null)} />;
+  }
+
+  // Render Registration wizard
+  if (isRegistering) {
+    return <RegisterTenant onBackToLogin={() => setIsRegistering(false)} />;
+  }
 
   if (forcePasswordChange) {
     return (
@@ -146,8 +166,11 @@ export default function Login() {
       </div>
 
       {/* Right Login Form Block */}
-      <div className="md:w-1/2 flex flex-col justify-center p-12">
-        <div className="max-w-md w-full mx-auto">
+      <div className="md:w-1/2 flex flex-col justify-between p-12">
+        {/* Empty header block to align form vertically center */}
+        <div />
+
+        <div className="max-w-md w-full mx-auto my-auto">
           <div className="mb-8">
             <h2 className="editorial-title text-2xl font-light">Portal Access</h2>
             <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Sign in using mobile number</p>
@@ -180,9 +203,19 @@ export default function Login() {
               />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full minimal-btn">
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
+            <div className="flex justify-between items-center text-xs">
+              <button type="submit" disabled={loading} className="minimal-btn">
+                {loading ? 'Signing in...' : 'Sign In'}
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setIsRegistering(true)}
+                className="uppercase tracking-widest font-semibold border-b border-transparent hover:border-black transition-all"
+              >
+                Register Organization
+              </button>
+            </div>
           </form>
 
           {/* Quick Demo Login selector */}
@@ -202,6 +235,17 @@ export default function Login() {
             </div>
           </div>
         </div>
+
+        {/* Footer with links */}
+        <footer className="border-t border-zinc-100 pt-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">
+          <button onClick={() => setActiveModal('terms')} className="hover:text-black transition-colors font-semibold">
+            Terms of Service
+          </button>
+          <span>•</span>
+          <button onClick={() => setActiveModal('disclaimer')} className="hover:text-black transition-colors font-semibold">
+            Disclaimer
+          </button>
+        </footer>
       </div>
     </div>
   );
