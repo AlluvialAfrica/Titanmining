@@ -9,36 +9,6 @@ export const auth = defineAuth({
     email: true,
     phone: true,
   },
-  userAttributes: {
-    role: {
-      dataType: 'String',
-      mutable: true,
-    },
-    orgId: {
-      dataType: 'String',
-      mutable: false,
-    },
-    siteId: {
-      dataType: 'String',
-      mutable: true,
-    },
-    shift: {
-      dataType: 'String',
-      mutable: true,
-    },
-    machine: {
-      dataType: 'String',
-      mutable: true,
-    },
-    language: {
-      dataType: 'String',
-      mutable: true,
-    },
-    status: {
-      dataType: 'String',
-      mutable: true,
-    },
-  },
   groups: [
     'SiteControllers',
     'DepartmentLeads',
