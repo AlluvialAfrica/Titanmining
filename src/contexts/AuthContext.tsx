@@ -103,6 +103,17 @@ const DEMO_USERS: User[] = [
     siteId: 'site_migori_01',
     status: 'ACTIVE',
   },
+  {
+    id: 'user_admin',
+    firstName: 'System',
+    lastName: 'Admin',
+    role: Role.SYSTEM_ADMIN,
+    mobileNumber: '+254700000000',
+    email: 'admin@alluvial.africa',
+    orgId: 'org_alluvial_system',
+    siteId: 'site_global_01',
+    status: 'ACTIVE',
+  },
 ];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

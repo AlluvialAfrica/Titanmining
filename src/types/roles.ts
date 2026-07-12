@@ -13,6 +13,7 @@ export enum Role {
   CENTRIFUGE_OPERATOR = "CENTRIFUGE_OPERATOR",
   SHAKING_TABLE_OPERATOR = "SHAKING_TABLE_OPERATOR",
   SITE_PETTY_CASH_MANAGER = "SITE_PETTY_CASH_MANAGER",
+  SYSTEM_ADMIN = "SYSTEM_ADMIN",
 }
 
 export const ROLE_PERMISSIONS: Record<Role, {
@@ -134,5 +135,13 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+  },
+  [Role.SYSTEM_ADMIN]: {
+    canCreate: [],
+    canRead: ["ALL"],
+    canVerify: [],
+    canManageUsers: true,
+    canEditProfile: true,
+    canExport: true,
   },
 };
