@@ -333,9 +333,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
 
   return (
     <div className="max-w-3xl py-4">
-      <h2 className="editorial-title text-xl font-light mb-6 text-black border-b border-black pb-2">
-        {spec.title}
-      </h2>
+
 
       {varianceMessage && (
         <VarianceAlert type="warning" message={varianceMessage} />

@@ -137,9 +137,7 @@ export default function FuelReconciliation() {
 
   return (
     <div className="max-w-3xl py-4">
-      <h2 className="editorial-title text-xl font-light mb-6 text-black border-b border-black pb-2">
-        Template 04: Fuel Issue & Daily Reconciliation
-      </h2>
+
 
       {showVarianceAlert && (
         <VarianceAlert 

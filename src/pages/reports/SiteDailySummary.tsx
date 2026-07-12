@@ -67,9 +67,7 @@ export default function SiteDailySummary() {
 
   return (
     <div className="max-w-3xl py-4">
-      <h2 className="editorial-title text-xl font-light mb-6 text-black border-b border-black pb-2">
-        Template 01: Site Daily Summary
-      </h2>
+
       
       <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-6">
         Consolidated daily site status & production totals (Auto-aggregated)

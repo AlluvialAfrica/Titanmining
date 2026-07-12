@@ -157,7 +157,6 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="mb-8">
-                  <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-1">Active Template</p>
                   <h1 className="editorial-title text-2xl font-light">
                     {creatableReports[0] ? t(`reports.${creatableReports[0]}`) : 'No forms active'}
                   </h1>
