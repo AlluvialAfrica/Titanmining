@@ -30,8 +30,8 @@ async function run() {
   const region = outputs.storage?.aws_region || 'eu-north-1';
 
   if (!bucketName) {
-    console.error('No S3 bucket name found in amplify_outputs.json!');
-    process.exit(1);
+    console.warn('No S3 bucket name found in amplify_outputs.json. Skipping logo upload to S3.');
+    return;
   }
 
   console.log(`Target S3 Bucket: ${bucketName}`);
