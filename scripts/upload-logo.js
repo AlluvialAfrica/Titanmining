@@ -29,8 +29,8 @@ async function run() {
   const bucketName = outputs.storage?.bucket_name;
   const region = outputs.storage?.aws_region || 'eu-north-1';
 
-  if (!bucketName) {
-    console.warn('No S3 bucket name found in amplify_outputs.json. Skipping logo upload to S3.');
+  if (!bucketName || bucketName.includes('placeholder')) {
+    console.warn('No S3 bucket name configured (or placeholder detected). Skipping logo upload to S3.');
     return;
   }
 
