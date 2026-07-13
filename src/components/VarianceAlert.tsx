@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface VarianceAlertProps {
   type: 'warning' | 'error' | 'info';
@@ -6,6 +7,7 @@ interface VarianceAlertProps {
 }
 
 export default function VarianceAlert({ type, message }: VarianceAlertProps) {
+  const { t } = useLanguage();
   const borderStyle = type === 'error' ? 'border-2 border-black' : 'border border-black';
   const bgStyle = type === 'error' ? 'bg-zinc-100' : 'bg-white';
 
@@ -14,7 +16,7 @@ export default function VarianceAlert({ type, message }: VarianceAlertProps) {
       <span className="text-lg font-bold">⚠️</span>
       <div className="flex-1">
         <h4 className="text-xs uppercase tracking-wider font-semibold text-black mb-1">
-          {type} detected
+          {type} {t('variance.detected')}
         </h4>
         <p className="text-sm text-black font-serif italic">
           {message}

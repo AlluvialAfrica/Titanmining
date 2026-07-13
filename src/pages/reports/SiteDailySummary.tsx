@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
+import { useLanguage } from '../../contexts/LanguageContext';
 import DigitalSignature from '../../components/DigitalSignature';
 import { SiteDailySummaryData } from '../../types/reports';
 
 export default function SiteDailySummary() {
   const { user } = useAuth();
   const { saveDraft, submitReport, loadDraft } = useReport();
+  const { t } = useLanguage();
   const { control, watch, setValue, handleSubmit } = useForm<SiteDailySummaryData>({
     defaultValues: loadDraft('TEMPLATE_01') || {
       materialMinedM3: 450,
@@ -50,7 +52,7 @@ export default function SiteDailySummary() {
 
   const onSubmit = async (data: SiteDailySummaryData) => {
     if (!signature) {
-      alert('Digital signature is required to verify and sign off the site daily summary.');
+      alert(t('siteSummary.signatureRequired'));
       return;
     }
 
@@ -59,9 +61,9 @@ export default function SiteDailySummary() {
         ...data,
         signature,
       });
-      alert('Site Daily Summary verified and signed off successfully.');
+      alert(t('siteSummary.submitSuccess'));
     } catch (err: any) {
-      alert(err.message || 'Verification failed.');
+      alert(err.message || t('siteSummary.verificationFailed'));
     }
   };
 
@@ -70,17 +72,17 @@ export default function SiteDailySummary() {
 
       
       <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-6">
-        Consolidated daily site status & production totals (Auto-aggregated)
+        {t('siteSummary.subtitle')}
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         
         {/* Production totals */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">Production Details</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.productionDetails')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <label className="minimal-label">Total Material Mined (m³)</label>
+              <label className="minimal-label">{t('siteSummary.materialMined')}</label>
               <Controller
                 name="materialMinedM3"
                 control={control}
@@ -91,7 +93,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Total Material Processed (m³)</label>
+              <label className="minimal-label">{t('siteSummary.materialProcessed')}</label>
               <Controller
                 name="materialProcessedM3"
                 control={control}
@@ -102,7 +104,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Active Pit Area Worked</label>
+              <label className="minimal-label">{t('siteSummary.pitAreaWorked')}</label>
               <Controller
                 name="pitAreaWorked"
                 control={control}
@@ -117,10 +119,10 @@ export default function SiteDailySummary() {
 
         {/* Gold recovery */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">Gold Recovery Summary</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.goldRecovery')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <label className="minimal-label">Centrifuge Recovery (g)</label>
+              <label className="minimal-label">{t('siteSummary.centrifugeRecovery')}</label>
               <Controller
                 name="centrifugeRecoveryG"
                 control={control}
@@ -131,7 +133,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Shaking Table (g)</label>
+              <label className="minimal-label">{t('siteSummary.shakingTableRecovery')}</label>
               <Controller
                 name="shakingTableRecoveryG"
                 control={control}
@@ -142,7 +144,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Sluice Cleanup (g)</label>
+              <label className="minimal-label">{t('siteSummary.sluiceCleanup')}</label>
               <Controller
                 name="sluiceCleanupG"
                 control={control}
@@ -153,7 +155,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label font-bold text-black">Total Gold Weight (g)</label>
+              <label className="minimal-label font-bold text-black">{t('siteSummary.totalGold')}</label>
               <Controller
                 name="totalGoldRecoveryG"
                 control={control}
@@ -167,11 +169,11 @@ export default function SiteDailySummary() {
 
         {/* Fuel reconciliation summary */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">Fuel Inventory (L)</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.fuelInventory')}</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <label className="minimal-label">Opening Physical Stock</label>
+              <label className="minimal-label">{t('siteSummary.openingStock')}</label>
               <Controller
                 name="fuelOpeningStockL"
                 control={control}
@@ -182,7 +184,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Received Stock</label>
+              <label className="minimal-label">{t('siteSummary.receivedStock')}</label>
               <Controller
                 name="fuelReceivedL"
                 control={control}
@@ -193,7 +195,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Issued Stock</label>
+              <label className="minimal-label">{t('siteSummary.issuedStock')}</label>
               <Controller
                 name="fuelIssuedL"
                 control={control}
@@ -207,7 +209,7 @@ export default function SiteDailySummary() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
-              <label className="minimal-label">Closing Physical Stock</label>
+              <label className="minimal-label">{t('siteSummary.closingStock')}</label>
               <Controller
                 name="fuelClosingStockL"
                 control={control}
@@ -218,7 +220,7 @@ export default function SiteDailySummary() {
               />
             </div>
             <div>
-              <label className="minimal-label">Physical Variance (L)</label>
+              <label className="minimal-label">{t('siteSummary.variance')}</label>
               <Controller
                 name="fuelVarianceL"
                 control={control}
@@ -232,26 +234,25 @@ export default function SiteDailySummary() {
 
         {/* Remarks */}
         <div>
-          <label className="minimal-label">Site Remarks / Exceptions</label>
+          <label className="minimal-label">{t('siteSummary.remarks')}</label>
           <Controller
             name="remarks"
             control={control}
             render={({ field }) => (
-              <textarea {...field} rows={3} className="minimal-input w-full font-serif italic" placeholder="Add comments here..." />
+              <textarea {...field} rows={3} className="minimal-input w-full font-serif italic" placeholder={t('siteSummary.remarksPlaceholder')} />
             )}
           />
         </div>
 
         {/* Digital Signature */}
         <div className="border-t border-black pt-6">
-          <label className="minimal-label mb-2">Controller Sign-Off Verification Signature</label>
+          <label className="minimal-label mb-2">{t('siteSummary.controllerSignOff')}</label>
           <DigitalSignature onSign={setSignature} />
         </div>
 
         {/* Submit */}
         <div className="flex gap-4 pt-6">
-          <button type="submit" className="minimal-btn">
-            Verify & Approve Daily Site Summary
+          <button type="submit" className="minimal-btn">{t('siteSummary.verifyApprove')}
           </button>
         </div>
       </form>

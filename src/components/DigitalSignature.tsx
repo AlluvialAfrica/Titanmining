@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface DigitalSignatureProps {
   onSign: (signatureBase64: string) => void;
 }
 
 export default function DigitalSignature({ onSign }: DigitalSignatureProps) {
+  const { t } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
@@ -118,7 +120,7 @@ export default function DigitalSignature({ onSign }: DigitalSignatureProps) {
         />
         {isEmpty && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-[10px] text-zinc-400 uppercase tracking-widest font-mono">
-            Draw Signature Here
+            {t('reports_form.drawSignature')}
           </div>
         )}
       </div>
@@ -128,7 +130,7 @@ export default function DigitalSignature({ onSign }: DigitalSignatureProps) {
           onClick={clear}
           className="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-black font-semibold border-b border-transparent hover:border-black transition-all"
         >
-          Clear Signature
+          {t('reports_form.clearSignature')}
         </button>
       </div>
     </div>

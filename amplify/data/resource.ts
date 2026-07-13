@@ -131,6 +131,51 @@ const schema = a.schema({
     allow.owner().to(['create', 'read']),
     allow.groups(['SiteControllers']).to(['read', 'update']),
   ]),
+
+  KPIEntry: a.model({
+    orgId: a.string().required(),
+    siteId: a.string().required(),
+    userId: a.string().required(),
+    role: a.string().required(),
+    entryDate: a.date().required(),
+    shift: a.string(),
+    kpiData: a.json().required(),
+    status: a.string().default('SUBMITTED'),
+    submittedAt: a.datetime(),
+    source: a.string().default('WEB'),
+  }).authorization((allow) => [
+    allow.owner().to(['create', 'read', 'update']),
+    allow.groups(['SiteControllers', 'Management']).to(['read']),
+  ]),
+
+  KPITarget: a.model({
+    orgId: a.string().required(),
+    siteId: a.string().required(),
+    role: a.string().required(),
+    kpiKey: a.string().required(),
+    targetValue: a.float().required(),
+    effectiveFrom: a.date(),
+    effectiveTo: a.date(),
+    createdBy: a.string().required(),
+  }).authorization((allow) => [
+    allow.groups(['SiteControllers', 'Management']).to(['create', 'read', 'update', 'delete']),
+    allow.owner().to(['read']),
+  ]),
+
+  HelpArticle: a.model({
+    articleId: a.string().required(),
+    category: a.string().required(),
+    titleEN: a.string().required(),
+    titleFR: a.string().required(),
+    bodyEN: a.string().required(),
+    bodyFR: a.string().required(),
+    relatedRoles: a.string().array(),
+    relatedPages: a.string().array(),
+    sortOrder: a.integer(),
+  }).authorization((allow) => [
+    allow.groups(['SiteControllers', 'Management']).to(['create', 'read', 'update', 'delete']),
+    allow.authenticated().to(['read']),
+  ]),
 });
 
 export type Schema = ClientSchema<typeof schema>;

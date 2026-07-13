@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface OrgProfileData {
   name: string;
@@ -12,6 +13,7 @@ interface OrgProfileData {
 }
 
 export default function InstitutionalProfile() {
+  const { t } = useLanguage();
   const { control, handleSubmit } = useForm<OrgProfileData>({
     defaultValues: {
       name: 'Alluvial Africa Mining Corp',
@@ -25,19 +27,19 @@ export default function InstitutionalProfile() {
   });
 
   const onSubmit = (data: OrgProfileData) => {
-    alert('Institutional Profile updated successfully.');
+    alert(t('profile.updated'));
     console.log('Updated Profile:', data);
   };
 
   return (
     <div className="py-4 max-w-xl">
       <h1 className="editorial-title text-2xl font-light mb-8 border-b border-black pb-4">
-        Institutional Profile
+        {t('profile.title')}
       </h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <label className="minimal-label">Organization Name</label>
+          <label className="minimal-label">{t('profile.orgName')}</label>
           <Controller
             name="name"
             control={control}
@@ -48,7 +50,7 @@ export default function InstitutionalProfile() {
         </div>
 
         <div>
-          <label className="minimal-label">Headquarters Address</label>
+          <label className="minimal-label">{t('profile.hqAddress')}</label>
           <Controller
             name="address"
             control={control}
@@ -60,7 +62,7 @@ export default function InstitutionalProfile() {
 
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="minimal-label">Reporting Currency</label>
+            <label className="minimal-label">{t('profile.currency')}</label>
             <Controller
               name="currency"
               control={control}
@@ -74,7 +76,7 @@ export default function InstitutionalProfile() {
             />
           </div>
           <div>
-            <label className="minimal-label">System TimeZone</label>
+            <label className="minimal-label">{t('profile.timezone')}</label>
             <Controller
               name="timeZone"
               control={control}
@@ -91,7 +93,7 @@ export default function InstitutionalProfile() {
 
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="minimal-label">Business Day Closing Time</label>
+            <label className="minimal-label">{t('profile.businessClose')}</label>
             <Controller
               name="businessDayClose"
               control={control}
@@ -101,7 +103,7 @@ export default function InstitutionalProfile() {
             />
           </div>
           <div>
-            <label className="minimal-label">ChatWorks WhatsApp Link Number</label>
+            <label className="minimal-label">{t('profile.whatsappNumber')}</label>
             <Controller
               name="whatsappNumber"
               control={control}
@@ -113,7 +115,7 @@ export default function InstitutionalProfile() {
         </div>
 
         <div>
-          <label className="minimal-label">Managed Site Locations (Comma separated)</label>
+          <label className="minimal-label">{t('profile.siteLocations')}</label>
           <Controller
             name="sites"
             control={control}
@@ -125,7 +127,7 @@ export default function InstitutionalProfile() {
 
         <div className="pt-4">
           <button type="submit" className="minimal-btn">
-            Save Organization Settings
+            {t('profile.saveSettings')}
           </button>
         </div>
       </form>

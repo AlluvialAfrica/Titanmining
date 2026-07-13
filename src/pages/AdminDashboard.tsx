@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface TenantInfo {
   id: string;
@@ -11,6 +12,8 @@ interface TenantInfo {
 }
 
 export default function AdminDashboard() {
+  const { t } = useLanguage();
+
   const [tenants, setTenants] = useState<TenantInfo[]>([
     { id: 't1', name: 'Alluvial Africa Corp', owner: 'Amoroso Gombe', email: 'agombe@a1strategy.com', plan: 'Internal', status: 'ACTIVE', joinedDate: '2026-01-10' },
     { id: 't2', name: 'Migori Gold Diggers', owner: 'John Kiprop', email: 'kiprop@migorigold.com', plan: 'Monthly', status: 'ACTIVE', joinedDate: '2026-05-14' },
@@ -41,66 +44,66 @@ export default function AdminDashboard() {
   return (
     <div className="py-4 space-y-12">
       <div>
-        <h1 className="editorial-title text-3xl font-light mb-2 text-black">Enterprise Administration</h1>
+        <h1 className="editorial-title text-3xl font-light mb-2 text-black">{t('admin.title')}</h1>
         <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold border-b border-black pb-4">
-          Alluvial Africa Network Status & Financial Performance Dashboard
+          {t('admin.subtitle')}
         </p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="border border-black p-6 bg-white">
-          <p className="minimal-label">Monthly Recurring Revenue (MRR)</p>
+          <p className="minimal-label">{t('admin.mrr')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
             ${metrics.mrr.toLocaleString()}
           </p>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">49 active monthly tenants</p>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">{`49 ${t('admin.monthlyTenants')}`}</p>
         </div>
 
         <div className="border border-black p-6 bg-white">
-          <p className="minimal-label">Annual Recurring Revenue (ARR)</p>
+          <p className="minimal-label">{t('admin.arr')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
             ${metrics.arr.toLocaleString()}
           </p>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">12 active annual tenants</p>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">{`12 ${t('admin.annualTenants')}`}</p>
         </div>
 
         <div className="border border-black p-6 bg-white">
-          <p className="minimal-label">Active Tenant Portals</p>
+          <p className="minimal-label">{t('admin.activeTenants')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
             {metrics.activeTenants}
           </p>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">+8 new portals this month</p>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">{`+8 ${t('admin.newPortals')}`}</p>
         </div>
 
         <div className="border border-black p-6 bg-white">
-          <p className="minimal-label">Reports Submitted (Today)</p>
+          <p className="minimal-label">{t('admin.reportsToday')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
             {metrics.reportsFiled}
           </p>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Across 14 roles templates</p>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">{t('admin.acrossTemplates')}</p>
         </div>
 
         <div className="border border-black p-6 bg-white">
-          <p className="minimal-label">API Latency Average</p>
+          <p className="minimal-label">{t('admin.apiLatency')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
             {metrics.apiLatency}ms
           </p>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">P95 latency: 120ms</p>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">{t('admin.p95Latency')}</p>
         </div>
 
         <div className="border border-black p-6 bg-white">
-          <p className="minimal-label">API Request Success Rate</p>
+          <p className="minimal-label">{t('admin.apiSuccess')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
             {metrics.apiSuccess}%
           </p>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">0 serverless timeout faults</p>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">{t('admin.zeroFaults')}</p>
         </div>
       </div>
 
       {/* SVG Growth Chart */}
       <div className="border border-black p-8 bg-[#fafafa]">
-        <h3 className="font-serif italic text-lg mb-6 text-black border-b border-zinc-200 pb-2">Revenue Growth Trend (Last 6 Months)</h3>
+        <h3 className="font-serif italic text-lg mb-6 text-black border-b border-zinc-200 pb-2">{t('admin.revenueGrowth')}</h3>
         <div className="w-full h-40 relative flex items-end justify-between px-6 pt-4 border-b border-black">
           {/* Simple Clean Grid lines */}
           <div className="absolute top-1/4 left-0 w-full border-t border-dashed border-zinc-200 pointer-events-none" />
@@ -143,45 +146,45 @@ export default function AdminDashboard() {
 
       {/* Tenants Directory List */}
       <div>
-        <h3 className="font-serif italic text-lg mb-4 text-black">Registered Tenants</h3>
+        <h3 className="font-serif italic text-lg mb-4 text-black">{t('admin.registeredTenants')}</h3>
         <table className="editorial-table">
           <thead>
             <tr>
-              <th>Organization</th>
-              <th>Owner</th>
-              <th>Billing Plan</th>
-              <th>Date Joined</th>
-              <th>Status</th>
-              <th className="text-right">Actions</th>
+              <th>{t('admin.organization')}</th>
+              <th>{t('admin.owner')}</th>
+              <th>{t('admin.billingPlan')}</th>
+              <th>{t('admin.dateJoined')}</th>
+              <th>{t('admin.status')}</th>
+              <th className="text-right">{t('admin.actions')}</th>
             </tr>
           </thead>
           <tbody>
-            {tenants.map(t => (
-              <tr key={t.id}>
-                <td className="font-serif italic font-semibold">{t.name}</td>
-                <td>{t.owner} <br /><span className="text-xs text-zinc-400 font-mono">{t.email}</span></td>
-                <td>{t.plan}</td>
-                <td>{t.joinedDate}</td>
+            {tenants.map(tenant => (
+              <tr key={tenant.id}>
+                <td className="font-serif italic font-semibold">{tenant.name}</td>
+                <td>{tenant.owner} <br /><span className="text-xs text-zinc-400 font-mono">{tenant.email}</span></td>
+                <td>{tenant.plan}</td>
+                <td>{tenant.joinedDate}</td>
                 <td>
                   <span className={`text-[10px] font-semibold px-2 py-0.5 border uppercase tracking-wider ${
-                    t.status === 'ACTIVE'
+                    tenant.status === 'ACTIVE'
                       ? 'border-black bg-zinc-50'
                       : 'border-red-600 text-red-600 bg-red-50'
                   }`}>
-                    {t.status}
+                    {tenant.status}
                   </span>
                 </td>
                 <td className="text-right">
-                  {t.plan !== 'Internal' && (
+                  {tenant.plan !== 'Internal' && (
                     <button
-                      onClick={() => toggleTenantStatus(t.id)}
+                      onClick={() => toggleTenantStatus(tenant.id)}
                       className={`text-xs uppercase tracking-widest font-semibold pb-0.5 border-b transition-all ${
-                        t.status === 'ACTIVE'
+                        tenant.status === 'ACTIVE'
                           ? 'border-transparent text-red-600 hover:border-red-600'
                           : 'border-transparent text-black hover:border-black'
                       }`}
                     >
-                      {t.status === 'ACTIVE' ? 'Suspend Portal' : 'Activate Portal'}
+                      {tenant.status === 'ACTIVE' ? t('admin.suspendPortal') : t('admin.activatePortal')}
                     </button>
                   )}
                 </td>
@@ -193,10 +196,10 @@ export default function AdminDashboard() {
 
       {/* Serverless Performance Stats */}
       <div className="border-t border-black pt-8">
-        <h3 className="font-serif italic text-lg mb-4 text-black">System Performance Monitor</h3>
+        <h3 className="font-serif italic text-lg mb-4 text-black">{t('admin.systemPerformance')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs font-mono">
           <div className="space-y-2 border border-zinc-200 p-4 bg-white">
-            <h4 className="font-bold text-black uppercase text-[10px] tracking-wider mb-2">Cron Job Executions</h4>
+            <h4 className="font-bold text-black uppercase text-[10px] tracking-wider mb-2">{t('admin.cronExecutions')}</h4>
             <div className="flex justify-between border-b border-zinc-100 py-1">
               <span>daily-reminder:</span>
               <span className="text-green-600">SUCCESS (17:00 EAT)</span>
@@ -208,7 +211,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="space-y-2 border border-zinc-200 p-4 bg-white">
-            <h4 className="font-bold text-black uppercase text-[10px] tracking-wider mb-2">BSP Twilio Webhook Health</h4>
+            <h4 className="font-bold text-black uppercase text-[10px] tracking-wider mb-2">{t('admin.twilioHealth')}</h4>
             <div className="flex justify-between border-b border-zinc-100 py-1">
               <span>Twilio Webhook URL:</span>
               <span>200 OK</span>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const stripePromise = loadStripe('pk_test_51TsR4n3zWruJmWzzj73gR5hNBhLM2fvCGVdB2Blh2pcqX3S324wktIAithotfoQCqgh5G0rlELoQ4twX88aFyvZG00iV5AtHog');
 
@@ -15,6 +16,7 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { t } = useLanguage();
 
   const amount = plan === 'monthly' ? 500 : 4800;
 
@@ -45,7 +47,7 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
       await new Promise(resolve => setTimeout(resolve, 2000));
       onPaymentSuccess();
     } catch (err: any) {
-      setError(err.message || 'Payment processing failed.');
+      setError(err.message || t('register.paymentFailed'));
     } finally {
       setLoading(false);
     }
@@ -54,14 +56,14 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="bg-zinc-50 p-4 border border-black mb-6">
-        <p className="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-1">Selected Plan</p>
+        <p className="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-1">{t('register.selectedPlan')}</p>
         <p className="font-serif italic text-lg text-black">
-          {plan === 'monthly' ? 'Monthly Plan — $500.00 / month' : 'Annual Plan — $4,800.00 / year (20% off)'}
+          {plan === 'monthly' ? t('register.monthlyPlanDesc') : t('register.annualPlanDesc')}
         </p>
       </div>
 
       <div>
-        <label className="minimal-label">Credit or Debit Card</label>
+        <label className="minimal-label">{t('register.cardLabel')}</label>
         <div className="border border-black p-4 bg-white">
           <CardElement
             options={{
@@ -86,7 +88,7 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
         disabled={loading || !stripe}
         className="w-full minimal-btn"
       >
-        {loading ? 'Processing Payment...' : `Subscribe for $${amount.toLocaleString()}`}
+        {loading ? t('register.processingPayment') : `${t('register.subscribeTo')} $${amount.toLocaleString()}`}
       </button>
     </form>
   );
@@ -106,13 +108,14 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
   const [verificationCode, setVerificationCode] = useState('');
   const [userInputCode, setUserInputCode] = useState('');
   const [error, setError] = useState('');
+  const { t } = useLanguage();
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     if (!formData.mobileNumber.startsWith('+254')) {
-      setError('Mobile number must start with +254.');
+      setError(t('register.mobileStartError'));
       return;
     }
 
@@ -130,7 +133,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
     if (userInputCode === verificationCode || userInputCode === '1234') {
       setStep(3);
     } else {
-      setError('Incorrect confirmation code.');
+      setError(t('register.incorrectCode'));
     }
   };
 
@@ -161,15 +164,15 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
         <div>
           <img src="/atlas.png" alt="Atlas Logo" className="h-12 mb-8 object-contain" />
           <h1 className="editorial-title text-4xl font-light tracking-tight mt-6 mb-6">
-            Register your <br />Mining Tenant
+            {t('register.title')} <br />{t('register.titleBr')}
           </h1>
           <p className="font-serif italic text-zinc-600 text-sm leading-relaxed max-w-md">
-            "Create your organizational portal, invite staff, manage daily reconciliations, and lock in your subscription tier."
+            "{t('register.subtitle')}"
           </p>
 
           {/* Pricing Selection Option (Left Pane) */}
           <div className="mt-8 border-t border-black pt-8">
-            <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-4">Select Subscription Plan</p>
+            <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-4">{t('register.selectPlan')}</p>
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => setSelectedPlan('monthly')}
@@ -179,7 +182,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                     : 'border-zinc-200 hover:border-black text-zinc-500 bg-transparent'
                 }`}
               >
-                <p className="text-xs uppercase tracking-wider">Pay Monthly</p>
+                <p className="text-xs uppercase tracking-wider">{t('register.payMonthly')}</p>
                 <p className="font-serif italic text-xl mt-1 text-black">$500 <span className="text-[10px] text-zinc-400 font-mono font-normal">/ mo</span></p>
               </button>
               <button
@@ -190,8 +193,8 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                     : 'border-zinc-200 hover:border-black text-zinc-500 bg-transparent'
                 }`}
               >
-                <span className="absolute top-2 right-2 text-[9px] bg-black text-white px-1.5 py-0.5 font-mono uppercase tracking-wider">Save 20%</span>
-                <p className="text-xs uppercase tracking-wider">Pay Annually</p>
+                <span className="absolute top-2 right-2 text-[9px] bg-black text-white px-1.5 py-0.5 font-mono uppercase tracking-wider">{t('pricing.save20')}</span>
+                <p className="text-xs uppercase tracking-wider">{t('register.payAnnually')}</p>
                 <p className="font-serif italic text-xl mt-1 text-black">$4,800 <span className="text-[10px] text-zinc-400 font-mono font-normal">/ yr</span></p>
               </button>
             </div>
@@ -202,7 +205,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
           onClick={onBackToLogin}
           className="text-left text-xs uppercase tracking-widest text-zinc-500 hover:text-black font-semibold mt-12"
         >
-          ← Back to login
+          ← {t('register.backToLogin')}
         </button>
       </div>
 
@@ -214,27 +217,27 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
           {step === 1 && (
             <div>
               <div className="mb-8">
-                <h2 className="editorial-title text-2xl font-light">Join Alluvial Network</h2>
-                <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Step 1: Account setup</p>
+                <h2 className="editorial-title text-2xl font-light">{t('register.joinNetwork')}</h2>
+                <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">{t('register.step1')}</p>
               </div>
 
               {error && <div className="p-3 border border-black text-xs text-red-600 bg-red-50 mb-6">{error}</div>}
 
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
                 <div>
-                  <label className="minimal-label">Organization Name</label>
+                  <label className="minimal-label">{t('register.orgName')}</label>
                   <input
                     type="text"
                     required
                     value={formData.orgName}
                     onChange={e => setFormData({ ...formData, orgName: e.target.value })}
                     className="minimal-input"
-                    placeholder="e.g. Migori Golden Sands"
+                    placeholder={t('register.orgPlaceholder')}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="minimal-label">First Name</label>
+                    <label className="minimal-label">{t('register.firstName')}</label>
                     <input
                       type="text"
                       required
@@ -244,7 +247,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                     />
                   </div>
                   <div>
-                    <label className="minimal-label">Last Name</label>
+                    <label className="minimal-label">{t('register.lastName')}</label>
                     <input
                       type="text"
                       required
@@ -255,29 +258,29 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                   </div>
                 </div>
                 <div>
-                  <label className="minimal-label">Email Address</label>
+                  <label className="minimal-label">{t('register.emailAddress')}</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     className="minimal-input"
-                    placeholder="owner@company.com"
+                    placeholder={t('register.emailPlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="minimal-label">Owner Mobile Number (Format: +254xxxxxxxxx)</label>
+                  <label className="minimal-label">{t('register.ownerMobile')}</label>
                   <input
                     type="tel"
                     required
                     value={formData.mobileNumber}
                     onChange={e => setFormData({ ...formData, mobileNumber: e.target.value })}
                     className="minimal-input"
-                    placeholder="+254712345678"
+                    placeholder={t('register.mobilePlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="minimal-label">Password</label>
+                  <label className="minimal-label">{t('register.password')}</label>
                   <input
                     type="password"
                     required
@@ -288,8 +291,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                   />
                 </div>
 
-                <button type="submit" className="w-full minimal-btn pt-4">
-                  Continue to Verification
+                <button type="submit" className="w-full minimal-btn pt-4">{t('register.continueVerification')}
                 </button>
               </form>
             </div>
@@ -299,15 +301,15 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
           {step === 2 && (
             <div>
               <div className="mb-8">
-                <h2 className="editorial-title text-2xl font-light">Confirm Email</h2>
-                <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Step 2: Enter code</p>
+                <h2 className="editorial-title text-2xl font-light">{t('register.confirmEmail')}</h2>
+                <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">{t('register.step2')}</p>
               </div>
 
               {error && <div className="p-3 border border-black text-xs text-red-600 bg-red-50 mb-6">{error}</div>}
 
               <form onSubmit={handleVerifyCodeSubmit} className="space-y-6">
                 <div>
-                  <label className="minimal-label">6-Digit Confirmation Code</label>
+                  <label className="minimal-label">{t('register.confirmationCode')}</label>
                   <input
                     type="text"
                     required
@@ -319,8 +321,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                   />
                 </div>
 
-                <button type="submit" className="w-full minimal-btn">
-                  Verify Code
+                <button type="submit" className="w-full minimal-btn">{t('register.verifyCode')}
                 </button>
               </form>
             </div>
@@ -330,8 +331,8 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
           {step === 3 && (
             <div>
               <div className="mb-8">
-                <h2 className="editorial-title text-2xl font-light">Subscription Checkout</h2>
-                <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Step 3: Stripe payment</p>
+                <h2 className="editorial-title text-2xl font-light">{t('register.subscriptionCheckout')}</h2>
+                <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">{t('register.step3')}</p>
               </div>
 
               <Elements stripe={stripePromise}>
@@ -349,23 +350,22 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
           {step === 4 && (
             <div className="text-center space-y-6">
               <span className="text-5xl">🎉</span>
-              <h2 className="editorial-title text-3xl font-light">Portal Created!</h2>
+              <h2 className="editorial-title text-3xl font-light">{t('register.portalCreated')}</h2>
               <p className="font-serif italic text-zinc-600 text-sm leading-relaxed">
-                Thank you! Your tenant portal for <strong>{formData.orgName}</strong> is now initialized. You have been registered as the Site Controller.
+                {t('register.thanksMessage', { orgName: formData.orgName })}
               </p>
               
               <div className="bg-zinc-50 p-4 border border-zinc-200 font-mono text-xs text-left">
-                <p className="font-semibold text-black uppercase text-[10px] tracking-wider mb-2">Your Login Details</p>
-                <p>Username: {formData.email}</p>
-                <p>Mobile: {formData.mobileNumber}</p>
-                <p>Role: SITE_CONTROLLER</p>
+                <p className="font-semibold text-black uppercase text-[10px] tracking-wider mb-2">{t('register.loginDetails')}</p>
+                <p>{t('register.username')}: {formData.email}</p>
+                <p>{t('register.mobile')}: {formData.mobileNumber}</p>
+                <p>{t('register.roleLabel')}: SITE_CONTROLLER</p>
               </div>
 
               <button
                 onClick={onBackToLogin}
                 className="w-full minimal-btn"
-              >
-                Log In Now
+              >{t('register.loginNow')}
               </button>
             </div>
           )}

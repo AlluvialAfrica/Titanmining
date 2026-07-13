@@ -1,4 +1,5 @@
 export enum Role {
+  // Original 15 roles
   SITE_CONTROLLER = "SITE_CONTROLLER",
   MINING_GEOLOGY_LEAD = "MINING_GEOLOGY_LEAD",
   PROCESSING_RECOVERY_LEAD = "PROCESSING_RECOVERY_LEAD",
@@ -14,16 +15,60 @@ export enum Role {
   SHAKING_TABLE_OPERATOR = "SHAKING_TABLE_OPERATOR",
   SITE_PETTY_CASH_MANAGER = "SITE_PETTY_CASH_MANAGER",
   SYSTEM_ADMIN = "SYSTEM_ADMIN",
+
+  // Management
+  MINE_MANAGER = "MINE_MANAGER",
+  OPERATIONS_MANAGER = "OPERATIONS_MANAGER",
+  FINANCE_MANAGER = "FINANCE_MANAGER",
+  HR_MANAGER = "HR_MANAGER",
+  SAFETY_COMPLIANCE_MANAGER = "SAFETY_COMPLIANCE_MANAGER",
+
+  // Operations
+  MINE_FOREMAN = "MINE_FOREMAN",
+  PLANT_MANAGER = "PLANT_MANAGER",
+  DREDGE_OPERATOR = "DREDGE_OPERATOR",
+  PROCESS_PLANT_OPERATOR = "PROCESS_PLANT_OPERATOR",
+  PUMP_OPERATOR = "PUMP_OPERATOR",
+  DRILLER_SAMPLING_CREW = "DRILLER_SAMPLING_CREW",
+
+  // Admin/Commercial
+  ACCOUNTANT = "ACCOUNTANT",
+  PROCUREMENT_OFFICER = "PROCUREMENT_OFFICER",
+  ASSAY_LAB_TECHNICIAN = "ASSAY_LAB_TECHNICIAN",
+  COMMUNITY_RELATIONS_OFFICER = "COMMUNITY_RELATIONS_OFFICER",
+  ADMIN_CLERK = "ADMIN_CLERK",
+
+  // Security/Support
+  SECURITY_MANAGER = "SECURITY_MANAGER",
+  SECURITY_GUARD = "SECURITY_GUARD",
+  MEDICAL_OFFICER = "MEDICAL_OFFICER",
+  CAMP_MANAGER = "CAMP_MANAGER",
+  LOGISTICS_TRANSPORT_COORDINATOR = "LOGISTICS_TRANSPORT_COORDINATOR",
+
+  // Maintenance
+  WORKSHOP_MANAGER = "WORKSHOP_MANAGER",
+  HEAVY_EQUIPMENT_MECHANIC = "HEAVY_EQUIPMENT_MECHANIC",
+  AUTO_ELECTRICIAN = "AUTO_ELECTRICIAN",
+  WELDER_FABRICATOR = "WELDER_FABRICATOR",
+  LIGHT_VEHICLE_MECHANIC = "LIGHT_VEHICLE_MECHANIC",
+
+  // General
+  GENERAL_WORKER = "GENERAL_WORKER",
 }
 
-export const ROLE_PERMISSIONS: Record<Role, {
-  canCreate: string[];      // Report types this role can create
-  canRead: string[];        // Report types this role can view
-  canVerify: string[];      // Report types this role can verify
+export interface RolePermissions {
+  canCreate: string[];
+  canRead: string[];
+  canVerify: string[];
   canManageUsers: boolean;
   canEditProfile: boolean;
   canExport: boolean;
-}> = {
+  canViewKPI: boolean;
+  canInputKPI: boolean;
+  canViewTeamKPI: boolean;
+}
+
+export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
   [Role.SITE_CONTROLLER]: {
     canCreate: ["TEMPLATE_01"],
     canRead: ["ALL"],
@@ -31,6 +76,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: true,
     canEditProfile: true,
     canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
   },
   [Role.MINING_GEOLOGY_LEAD]: {
     canCreate: ["TEMPLATE_05"],
@@ -39,6 +87,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.PROCESSING_RECOVERY_LEAD]: {
     canCreate: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
@@ -47,6 +98,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.FUEL_ADMIN_LOGISTICS]: {
     canCreate: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12"],
@@ -55,6 +109,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.ENGINE_MECHANIC]: {
     canCreate: ["TEMPLATE_10"],
@@ -63,6 +120,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.ELECTRICAL_MECHANIC]: {
     canCreate: ["TEMPLATE_10"],
@@ -71,6 +131,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.GREASING_WASHING_HELPER]: {
     canCreate: ["TEMPLATE_10"],
@@ -79,6 +142,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.GATE_SECURITY]: {
     canCreate: ["TEMPLATE_11"],
@@ -87,6 +153,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.EXCAVATOR_OPERATOR]: {
     canCreate: ["TEMPLATE_03"],
@@ -95,6 +164,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.DRUM_PUMP_SUPERVISOR]: {
     canCreate: ["TEMPLATE_06"],
@@ -103,6 +175,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.DRUM_PUMP_ASSISTANT]: {
     canCreate: ["TEMPLATE_06"],
@@ -111,6 +186,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.CENTRIFUGE_OPERATOR]: {
     canCreate: ["TEMPLATE_07"],
@@ -119,6 +197,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.SHAKING_TABLE_OPERATOR]: {
     canCreate: ["TEMPLATE_08"],
@@ -127,6 +208,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.SITE_PETTY_CASH_MANAGER]: {
     canCreate: ["TEMPLATE_14"],
@@ -135,6 +219,9 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
   [Role.SYSTEM_ADMIN]: {
     canCreate: [],
@@ -143,5 +230,317 @@ export const ROLE_PERMISSIONS: Record<Role, {
     canManageUsers: true,
     canEditProfile: true,
     canExport: true,
+    canViewKPI: true,
+    canInputKPI: false,
+    canViewTeamKPI: true,
+  },
+
+  // Management roles
+  [Role.MINE_MANAGER]: {
+    canCreate: ["TEMPLATE_01"],
+    canRead: ["ALL"],
+    canVerify: ["TEMPLATE_01", "TEMPLATE_09", "TEMPLATE_13"],
+    canManageUsers: true,
+    canEditProfile: true,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.OPERATIONS_MANAGER]: {
+    canCreate: ["TEMPLATE_01", "TEMPLATE_13"],
+    canRead: ["ALL"],
+    canVerify: ["TEMPLATE_01", "TEMPLATE_09", "TEMPLATE_13"],
+    canManageUsers: true,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.FINANCE_MANAGER]: {
+    canCreate: ["TEMPLATE_12", "TEMPLATE_14"],
+    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"],
+    canVerify: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.HR_MANAGER]: {
+    canCreate: ["TEMPLATE_02"],
+    canRead: ["TEMPLATE_02"],
+    canVerify: ["TEMPLATE_02"],
+    canManageUsers: true,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.SAFETY_COMPLIANCE_MANAGER]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_13"],
+    canRead: ["ALL"],
+    canVerify: ["TEMPLATE_13"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+
+  // Operations roles
+  [Role.MINE_FOREMAN]: {
+    canCreate: ["TEMPLATE_03", "TEMPLATE_05", "TEMPLATE_13"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_05", "TEMPLATE_13"],
+    canVerify: ["TEMPLATE_03"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.PLANT_MANAGER]: {
+    canCreate: ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09", "TEMPLATE_13"],
+    canRead: ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09", "TEMPLATE_13"],
+    canVerify: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.DREDGE_OPERATOR]: {
+    canCreate: ["TEMPLATE_03"],
+    canRead: ["TEMPLATE_03"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.PROCESS_PLANT_OPERATOR]: {
+    canCreate: ["TEMPLATE_07", "TEMPLATE_08"],
+    canRead: ["TEMPLATE_07", "TEMPLATE_08"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.PUMP_OPERATOR]: {
+    canCreate: ["TEMPLATE_06"],
+    canRead: ["TEMPLATE_06"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.DRILLER_SAMPLING_CREW]: {
+    canCreate: ["TEMPLATE_05"],
+    canRead: ["TEMPLATE_05"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  // Admin/Commercial roles
+  [Role.ACCOUNTANT]: {
+    canCreate: ["TEMPLATE_12", "TEMPLATE_14"],
+    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.PROCUREMENT_OFFICER]: {
+    canCreate: ["TEMPLATE_12"],
+    canRead: ["TEMPLATE_12"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.ASSAY_LAB_TECHNICIAN]: {
+    canCreate: ["TEMPLATE_09"],
+    canRead: ["TEMPLATE_09"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.COMMUNITY_RELATIONS_OFFICER]: {
+    canCreate: ["TEMPLATE_02"],
+    canRead: ["TEMPLATE_02"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.ADMIN_CLERK]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_12"],
+    canRead: ["TEMPLATE_02", "TEMPLATE_12"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  // Security/Support roles
+  [Role.SECURITY_MANAGER]: {
+    canCreate: ["TEMPLATE_11", "TEMPLATE_13"],
+    canRead: ["TEMPLATE_11", "TEMPLATE_13"],
+    canVerify: ["TEMPLATE_11"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.SECURITY_GUARD]: {
+    canCreate: ["TEMPLATE_11"],
+    canRead: ["TEMPLATE_11"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.MEDICAL_OFFICER]: {
+    canCreate: ["TEMPLATE_02"],
+    canRead: ["TEMPLATE_02"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.CAMP_MANAGER]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_12"],
+    canRead: ["TEMPLATE_02", "TEMPLATE_12"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.LOGISTICS_TRANSPORT_COORDINATOR]: {
+    canCreate: ["TEMPLATE_04", "TEMPLATE_12"],
+    canRead: ["TEMPLATE_04", "TEMPLATE_12"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  // Maintenance roles
+  [Role.WORKSHOP_MANAGER]: {
+    canCreate: ["TEMPLATE_10", "TEMPLATE_13"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10", "TEMPLATE_13"],
+    canVerify: ["TEMPLATE_10"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.HEAVY_EQUIPMENT_MECHANIC]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.AUTO_ELECTRICIAN]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.WELDER_FABRICATOR]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+  [Role.LIGHT_VEHICLE_MECHANIC]: {
+    canCreate: ["TEMPLATE_10"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  // General
+  [Role.GENERAL_WORKER]: {
+    canCreate: [],
+    canRead: [],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
   },
 };

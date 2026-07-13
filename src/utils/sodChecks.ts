@@ -41,6 +41,24 @@ export const SOD_RULES = [
       ["TEMPLATE_04", "TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"].includes(reportType),
     violation: "Gate Security cannot access operational forms",
   },
+  {
+    id: "SOD_05",
+    name: "Security Guard isolation",
+    description: "Security Guard cannot access processing forms",
+    check: (reportType: string, userRole: Role) =>
+      userRole === Role.SECURITY_GUARD &&
+      ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"].includes(reportType),
+    violation: "Security Guard cannot access processing forms",
+  },
+  {
+    id: "SOD_06",
+    name: "General Worker financial isolation",
+    description: "General Worker cannot access any financial forms",
+    check: (reportType: string, userRole: Role) =>
+      userRole === Role.GENERAL_WORKER &&
+      ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"].includes(reportType),
+    violation: "General Worker cannot access financial forms",
+  },
 ];
 
 export function checkSoD(reportType: string, reportData: any, userRole: Role, userId: string): SodViolation | null {
@@ -50,6 +68,24 @@ export function checkSoD(reportType: string, reportData: any, userRole: Role, us
       ruleId: "SOD_04",
       name: "Gate Security isolation",
       violation: "Gate Security cannot access operational forms",
+    };
+  }
+
+  // Security Guard Isolation - cannot access processing forms
+  if (userRole === Role.SECURITY_GUARD && ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"].includes(reportType)) {
+    return {
+      ruleId: "SOD_05",
+      name: "Security Guard isolation",
+      violation: "Security Guard cannot access processing forms",
+    };
+  }
+
+  // General Worker Financial Isolation - cannot access financial forms
+  if (userRole === Role.GENERAL_WORKER && ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"].includes(reportType)) {
+    return {
+      ruleId: "SOD_06",
+      name: "General Worker financial isolation",
+      violation: "General Worker cannot access financial forms",
     };
   }
 

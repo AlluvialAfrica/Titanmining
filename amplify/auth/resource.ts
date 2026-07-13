@@ -15,5 +15,9 @@ export const auth = defineAuth({
     'Operators',
     'SupportStaff',
     'Security',
+    'Management',
+    'Maintenance',
+    'Finance',
+    'HRAdmin',
   ],
 });

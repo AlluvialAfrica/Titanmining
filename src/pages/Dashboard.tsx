@@ -4,21 +4,29 @@ import { Role, ROLE_PERMISSIONS } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageToggle from '../components/LanguageToggle';
 import OfflineBanner from '../components/OfflineBanner';
+import HelpButton from '../components/HelpButton';
 import FuelReconciliation from './reports/FuelReconciliation';
 import SiteDailySummary from './reports/SiteDailySummary';
 import GenericReportForm from './reports/GenericReportForm';
 import UserManagement from './UserManagement';
 import InstitutionalProfile from './InstitutionalProfile';
+import KPIInputForm from './kpi/KPIInputForm';
+import KPIDashboard from './kpi/KPIDashboard';
+import TeamKPIDashboard from './kpi/TeamKPIDashboard';
+import RoleProfile from './profile/RoleProfile';
+import HelpViewer from './help/HelpViewer';
 import { useReport } from '../hooks/useReport';
 import TermsOfService from './TermsOfService';
 import Disclaimer from './Disclaimer';
 import AdminDashboard from './AdminDashboard';
 
+type TabType = 'form' | 'history' | 'users' | 'settings' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help';
+
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
   const { getReportHistory } = useReport();
-  const [activeTab, setActiveTab] = useState<'form' | 'history' | 'users' | 'settings'>('form');
+  const [activeTab, setActiveTab] = useState<TabType>('form');
   const [selectedControllerForm, setSelectedControllerForm] = useState<string>('TEMPLATE_01');
   const [activeModal, setActiveModal] = useState<'terms' | 'disclaimer' | null>(null);
 
@@ -35,7 +43,6 @@ export default function Dashboard() {
   const permissions = ROLE_PERMISSIONS[user.role];
   const history = getReportHistory();
 
-  // Render the appropriate form component based on selected template ID
   const renderForm = (templateId: string) => {
     switch (templateId) {
       case 'TEMPLATE_01':
@@ -47,141 +54,108 @@ export default function Dashboard() {
     }
   };
 
-  // Check what report types the current user can create
   const creatableReports = permissions.canCreate;
+
+  const navButton = (tab: TabType, label: string, show: boolean = true) => {
+    if (!show) return null;
+    return (
+      <button
+        onClick={() => setActiveTab(tab)}
+        className={`text-left py-2 border-b text-sm transition-all ${
+          activeTab === tab
+            ? 'border-black text-black font-semibold pl-2'
+            : 'border-transparent text-zinc-500 hover:text-black hover:pl-2'
+        }`}
+      >
+        {label}
+      </button>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col">
       <OfflineBanner />
-      
-      {/* Editorial Navigation Header */}
+
       <header className="border-b border-black py-6 px-12 flex justify-between items-center bg-white sticky top-0 z-40">
         <div className="flex items-center gap-6">
           <img src="/atlas.png" alt="Atlas Logo" className="h-8 object-contain" />
-          <span className="text-xs uppercase tracking-widest font-mono text-zinc-400">Alluvial Site Manager</span>
+          <span className="text-xs uppercase tracking-widest font-mono text-zinc-400">{t('app.name')}</span>
         </div>
-        
+
         <div className="flex items-center gap-8">
           <LanguageToggle />
           <div className="text-right">
             <p className="text-xs font-semibold">{user.firstName} {user.lastName}</p>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{user.role.replace(/_/g, ' ')}</p>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{t(`roles.${user.role}`)}</p>
           </div>
           <button
             onClick={logout}
             className="text-xs uppercase tracking-widest text-zinc-500 hover:text-black font-semibold"
           >
-            Log Out
+            {t('nav.logOut')}
           </button>
         </div>
       </header>
 
-      {/* Main Content Layout */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-12 py-12">
         {user.role === Role.SYSTEM_ADMIN ? (
           <AdminDashboard />
         ) : (
           <div className="flex flex-col md:flex-row gap-12">
-            {/* Left Side Navigation menu */}
             <aside className="md:w-64 flex flex-col gap-2">
-              <h2 className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-4">Workspace</h2>
-              
-              <button
-                onClick={() => setActiveTab('form')}
-                className={`text-left py-2 border-b text-sm transition-all ${
-                  activeTab === 'form'
-                    ? 'border-black text-black font-semibold pl-2'
-                    : 'border-transparent text-zinc-500 hover:text-black hover:pl-2'
-                }`}
-              >
-                Daily Reporting Forms
-              </button>
-              
-              <button
-                onClick={() => setActiveTab('history')}
-                className={`text-left py-2 border-b text-sm transition-all ${
-                  activeTab === 'history'
-                    ? 'border-black text-black font-semibold pl-2'
-                    : 'border-transparent text-zinc-500 hover:text-black hover:pl-2'
-                }`}
-              >
-                Report History ({history.length})
-              </button>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xs uppercase tracking-widest text-zinc-400 font-semibold">{t('nav.workspace')}</h2>
+                <HelpButton contextPage={activeTab} onOpenHelp={() => setActiveTab('help')} />
+              </div>
 
-              {permissions.canManageUsers && (
-                <button
-                  onClick={() => setActiveTab('users')}
-                  className={`text-left py-2 border-b text-sm transition-all ${
-                    activeTab === 'users'
-                      ? 'border-black text-black font-semibold pl-2'
-                      : 'border-transparent text-zinc-500 hover:text-black hover:pl-2'
-                  }`}
-                >
-                  User Management
-                </button>
-              )}
+              {navButton('form', t('nav.dailyReporting'))}
+              {navButton('history', `${t('nav.reportHistory')} (${history.length})`)}
+              {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
+              {navButton('kpiDashboard', t('nav.kpiDashboard'), permissions.canViewKPI)}
+              {navButton('teamDashboard', t('nav.teamDashboard'), permissions.canViewTeamKPI)}
+              {navButton('profile', t('nav.roleProfile'))}
+              {navButton('users', t('nav.userManagement'), permissions.canManageUsers)}
+              {navButton('settings', t('nav.siteSettings'), permissions.canEditProfile)}
+              {navButton('help', t('nav.help'))}
 
-              {permissions.canEditProfile && (
-                <button
-                  onClick={() => setActiveTab('settings')}
-                  className={`text-left py-2 border-b text-sm transition-all ${
-                    activeTab === 'settings'
-                      ? 'border-black text-black font-semibold pl-2'
-                      : 'border-transparent text-zinc-500 hover:text-black hover:pl-2'
-                  }`}
-                >
-                  Site Settings
-                </button>
-              )}
-
-              {/* Org Isolation Context indicator */}
               <div className="mt-auto pt-12 border-t border-zinc-100">
-                <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">Org context</p>
+                <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">{t('nav.orgContext')}</p>
                 <p className="text-xs font-semibold mt-1">{user.orgId}</p>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Site ID: {user.siteId}</p>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{t('nav.siteId')}: {user.siteId}</p>
               </div>
             </aside>
 
-            {/* Right Side Content Container */}
             <section className="flex-1 border-l border-zinc-100 pl-12 min-h-[60vh]">
               {activeTab === 'form' && (
                 <div>
-                  {/* Site Controller Form selector */}
-                  {user.role === Role.SITE_CONTROLLER ? (
+                  {user.role === Role.SITE_CONTROLLER || user.role === Role.MINE_MANAGER || user.role === Role.OPERATIONS_MANAGER ? (
                     <div className="mb-8">
-                      <label className="minimal-label">Select Reporting Module to View/Verify</label>
+                      <label className="minimal-label">{t('reports_form.selectModule')}</label>
                       <select
                         value={selectedControllerForm}
                         onChange={e => setSelectedControllerForm(e.target.value)}
                         className="minimal-select text-lg font-serif italic max-w-md"
                       >
-                        <option value="TEMPLATE_01">Template 01: Site Daily Summary</option>
-                        <option value="TEMPLATE_02">Template 02: Staff Attendance & Shift Roster</option>
-                        <option value="TEMPLATE_03">Template 03: Excavator / Machine Daily Log</option>
-                        <option value="TEMPLATE_04">Template 04: Fuel Issue & Reconciliation</option>
-                        <option value="TEMPLATE_05">Template 05: Mining & Geology Daily Sheet</option>
-                        <option value="TEMPLATE_06">Template 06: Drum & Sand Pump Shift Log</option>
-                        <option value="TEMPLATE_07">Template 07: Centrifuge Operation & Cleanup Log</option>
-                        <option value="TEMPLATE_08">Template 08: Shaking Table Operation Log</option>
-                        <option value="TEMPLATE_09">Template 09: Gold Recovery & Handover Register</option>
-                        <option value="TEMPLATE_10">Template 10: Maintenance, Greasing & Washing Log</option>
-                        <option value="TEMPLATE_11">Template 11: Gate, Search & Items Movement Register</option>
-                        <option value="TEMPLATE_12">Template 12: Stores, Purchases & Expense Sheet</option>
-                        <option value="TEMPLATE_13">Template 13: Shift Handover Certificate</option>
-                        <option value="TEMPLATE_14">Template 14: Petty Cash Daily Report</option>
+                        {Array.from({ length: 14 }, (_, i) => {
+                          const tid = `TEMPLATE_${String(i + 1).padStart(2, '0')}`;
+                          return (
+                            <option key={tid} value={tid}>
+                              {`Template ${String(i + 1).padStart(2, '0')}: ${t(`reports.${tid}`)}`}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                   ) : (
                     <div className="mb-8">
                       <h1 className="editorial-title text-2xl font-light">
-                        {creatableReports[0] ? t(`reports.${creatableReports[0]}`) : 'No forms active'}
+                        {creatableReports[0] ? t(`reports.${creatableReports[0]}`) : t('reports_form.noFormsActive')}
                       </h1>
                     </div>
                   )}
 
-                  {/* Render the form */}
                   <div className="mt-8">
-                    {user.role === Role.SITE_CONTROLLER 
+                    {user.role === Role.SITE_CONTROLLER || user.role === Role.MINE_MANAGER || user.role === Role.OPERATIONS_MANAGER
                       ? renderForm(selectedControllerForm)
                       : renderForm(creatableReports[0])}
                   </div>
@@ -190,21 +164,21 @@ export default function Dashboard() {
 
               {activeTab === 'history' && (
                 <div>
-                  <h1 className="editorial-title text-2xl font-light mb-8">Report History</h1>
-                  
+                  <h1 className="editorial-title text-2xl font-light mb-8">{t('history.title')}</h1>
+
                   {history.length === 0 ? (
                     <div className="border border-black p-8 text-center text-zinc-500 font-serif italic">
-                      No reports submitted yet in this session.
+                      {t('history.noReports')}
                     </div>
                   ) : (
                     <table className="editorial-table">
                       <thead>
                         <tr>
-                          <th>Date</th>
-                          <th>Type</th>
-                          <th>Submitted By</th>
-                          <th>Status</th>
-                          <th>Source</th>
+                          <th>{t('history.date')}</th>
+                          <th>{t('history.type')}</th>
+                          <th>{t('history.submittedBy')}</th>
+                          <th>{t('history.status')}</th>
+                          <th>{t('history.source')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -227,24 +201,27 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {activeTab === 'kpiInput' && permissions.canInputKPI && <KPIInputForm />}
+              {activeTab === 'kpiDashboard' && permissions.canViewKPI && <KPIDashboard />}
+              {activeTab === 'teamDashboard' && permissions.canViewTeamKPI && <TeamKPIDashboard />}
+              {activeTab === 'profile' && <RoleProfile />}
               {activeTab === 'users' && permissions.canManageUsers && <UserManagement />}
-              
               {activeTab === 'settings' && permissions.canEditProfile && <InstitutionalProfile />}
+              {activeTab === 'help' && <HelpViewer contextFilter={activeTab} />}
             </section>
           </div>
         )}
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-zinc-100 py-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">
-        <span>© 2026 Alluvial Africa. Powered by ChatWorks.</span>
-        <span>•</span>
+        <span>{t('footer.copyright')}</span>
+        <span>&bull;</span>
         <button onClick={() => setActiveModal('terms')} className="hover:text-black transition-colors font-semibold">
-          Terms of Service
+          {t('footer.termsOfService')}
         </button>
-        <span>•</span>
+        <span>&bull;</span>
         <button onClick={() => setActiveModal('disclaimer')} className="hover:text-black transition-colors font-semibold">
-          Disclaimer
+          {t('footer.disclaimer')}
         </button>
       </footer>
     </div>

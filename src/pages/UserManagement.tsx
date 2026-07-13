@@ -60,14 +60,14 @@ export default function UserManagement() {
   return (
     <div className="py-4">
       <div className="flex justify-between items-center mb-8 border-b border-black pb-4">
-        <h1 className="editorial-title text-2xl font-light">User Directory</h1>
+        <h1 className="editorial-title text-2xl font-light">{t('users.directory')}</h1>
         
         {!showAddForm && (
           <button
             onClick={() => setShowAddForm(true)}
             className="minimal-btn"
           >
-            Add New Staff
+            {t('users.addStaff')}
           </button>
         )}
       </div>
@@ -75,15 +75,15 @@ export default function UserManagement() {
       {welcomePreview && (
         <div className="border border-black p-6 bg-zinc-50 mb-8 max-w-xl">
           <h3 className="font-serif italic text-lg mb-4 text-black flex justify-between items-center">
-            <span>WhatsApp Welcome Message Sent!</span>
+            <span>{t('users.welcomeSent')}</span>
             <button
               onClick={() => setWelcomePreview(null)}
               className="text-xs font-mono uppercase text-zinc-400 hover:text-black"
             >
-              [Dismiss]
+              [{t('users.dismiss')}]
             </button>
           </h3>
-          <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono mb-2">Sent to: {welcomePreview.mobileNumber}</p>
+          <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono mb-2">{t('users.sentTo')}: {welcomePreview.mobileNumber}</p>
           <div className="border border-zinc-200 bg-white p-4 font-mono text-xs whitespace-pre-wrap leading-relaxed text-black">
 {`Welcome to Alluvial Site Manager, ${welcomePreview.firstName}.
 
@@ -100,27 +100,27 @@ Please change your password on first login.`}
 
       {showAddForm && (
         <div className="border border-black p-8 max-w-xl bg-white mb-8">
-          <h3 className="font-serif italic text-lg mb-6 text-black border-b border-zinc-150 pb-2">Create Cognito User Account</h3>
+          <h3 className="font-serif italic text-lg mb-6 text-black border-b border-zinc-150 pb-2">{t('users.createAccount')}</h3>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="minimal-label">First Name</label>
+                <label className="minimal-label">{t('users.firstName')}</label>
                 <Controller
                   name="firstName"
                   control={control}
-                  rules={{ required: 'First name is required' }}
+                  rules={{ required: t('users.firstNameRequired') }}
                   render={({ field }) => (
                     <input type="text" {...field} className="minimal-input" />
                   )}
                 />
               </div>
               <div>
-                <label className="minimal-label">Last Name</label>
+                <label className="minimal-label">{t('users.lastName')}</label>
                 <Controller
                   name="lastName"
                   control={control}
-                  rules={{ required: 'Last name is required' }}
+                  rules={{ required: t('users.lastNameRequired') }}
                   render={({ field }) => (
                     <input type="text" {...field} className="minimal-input" />
                   )}
@@ -129,13 +129,13 @@ Please change your password on first login.`}
             </div>
 
             <div>
-              <label className="minimal-label">Mobile Number (Format: +254xxxxxxxxx)</label>
+              <label className="minimal-label">{t('users.mobileFormat')}</label>
               <Controller
                 name="mobileNumber"
                 control={control}
                 rules={{ 
-                  required: 'Mobile number is required', 
-                  pattern: { value: phoneRegex, message: 'Invalid format. Must be +254 followed by 9 digits.' } 
+                  required: t('users.mobileRequired'), 
+                  pattern: { value: phoneRegex, message: t('users.mobileInvalid') } 
                 }}
                 render={({ field }) => (
                   <input type="tel" {...field} className="minimal-input" placeholder="+254722828481" />
@@ -145,7 +145,7 @@ Please change your password on first login.`}
             </div>
 
             <div>
-              <label className="minimal-label">Email Address (Optional)</label>
+              <label className="minimal-label">{t('users.email')}</label>
               <Controller
                 name="email"
                 control={control}
@@ -156,7 +156,7 @@ Please change your password on first login.`}
             </div>
 
             <div>
-              <label className="minimal-label">ID Number / Passport (Optional)</label>
+              <label className="minimal-label">{t('users.idNumber')}</label>
               <Controller
                 name="idNumber"
                 control={control}
@@ -167,14 +167,14 @@ Please change your password on first login.`}
             </div>
 
             <div>
-              <label className="minimal-label">Role Assignment</label>
+              <label className="minimal-label">{t('users.roleAssignment')}</label>
               <Controller
                 name="role"
                 control={control}
-                rules={{ required: 'Role is required' }}
+                rules={{ required: t('users.roleRequired') }}
                 render={({ field }) => (
                   <select {...field} className="minimal-select">
-                    <option value="">Choose Role...</option>
+                    <option value="">{t('users.chooseRole')}</option>
                     {Object.values(Role).map(r => (
                       <option key={r} value={r}>{t(`roles.${r}`)}</option>
                     ))}
@@ -185,25 +185,25 @@ Please change your password on first login.`}
 
             {/* Next of Kin */}
             <div className="border-t border-zinc-100 pt-6">
-              <h4 className="font-serif italic text-sm mb-4 text-black">Next of Kin Details</h4>
+              <h4 className="font-serif italic text-sm mb-4 text-black">{t('users.nokDetails')}</h4>
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="minimal-label">First Name</label>
+                  <label className="minimal-label">{t('users.firstName')}</label>
                   <Controller
                     name="nokFirstName"
                     control={control}
-                    rules={{ required: 'Next of kin first name is required' }}
+                    rules={{ required: t('users.nokFirstNameRequired') }}
                     render={({ field }) => (
                       <input type="text" {...field} className="minimal-input" />
                     )}
                   />
                 </div>
                 <div>
-                  <label className="minimal-label">Last Name</label>
+                  <label className="minimal-label">{t('users.lastName')}</label>
                   <Controller
                     name="nokLastName"
                     control={control}
-                    rules={{ required: 'Next of kin last name is required' }}
+                    rules={{ required: t('users.nokLastNameRequired') }}
                     render={({ field }) => (
                       <input type="text" {...field} className="minimal-input" />
                     )}
@@ -211,11 +211,11 @@ Please change your password on first login.`}
                 </div>
               </div>
               <div className="mt-4">
-                <label className="minimal-label">Mobile Number</label>
+                <label className="minimal-label">{t('users.mobileNumber')}</label>
                 <Controller
                   name="nokMobileNumber"
                   control={control}
-                  rules={{ required: 'Next of kin phone number is required' }}
+                  rules={{ required: t('users.nokPhoneRequired') }}
                   render={({ field }) => (
                     <input type="tel" {...field} className="minimal-input" placeholder="+254722828481" />
                   )}
@@ -225,14 +225,14 @@ Please change your password on first login.`}
 
             <div className="flex gap-4 pt-4">
               <button type="submit" className="minimal-btn">
-                Create Account
+                {t('users.createBtn')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowAddForm(false)}
                 className="minimal-btn-secondary"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>
@@ -243,10 +243,10 @@ Please change your password on first login.`}
       <table className="editorial-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Contact</th>
-            <th>Status</th>
+            <th>{t('users.name')}</th>
+            <th>{t('users.role')}</th>
+            <th>{t('users.contact')}</th>
+            <th>{t('users.status')}</th>
           </tr>
         </thead>
         <tbody>

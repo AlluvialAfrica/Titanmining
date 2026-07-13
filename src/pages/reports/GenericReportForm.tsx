@@ -299,14 +299,14 @@ export default function GenericReportForm({ templateId }: { templateId: string }
   if (!spec) {
     return (
       <div className="border border-black p-8 text-center text-zinc-500 font-serif italic">
-        Spec for {templateId} is not defined.
+        {t('reports_form.specNotDefined', { templateId })}
       </div>
     );
   }
 
   const onSubmit = async (data: any) => {
     if (!signature) {
-      alert('Digital signature is required to verify and sign off the report.');
+      alert(t('reports_form.signatureRequired'));
       return;
     }
 
@@ -324,10 +324,10 @@ export default function GenericReportForm({ templateId }: { templateId: string }
         ...data,
         signature,
       });
-      alert(`${spec.title} submitted successfully.`);
+      alert(`${spec.title} ${t('reports_form.submittedSuccess')}`);
       setSignature('');
     } catch (err: any) {
-      alert(err.message || 'Submission failed.');
+      alert(err.message || t('reports_form.submissionFailed'));
     }
   };
 
@@ -353,7 +353,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
                 if (f.type === 'select') {
                   return (
                     <select {...field} className="minimal-select">
-                      <option value="">Select...</option>
+                      <option value="">{t('reports_form.select')}</option>
                       {f.options?.map(o => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
@@ -362,7 +362,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
                 }
                 
                 if (f.type === 'textarea') {
-                  return <textarea {...field} rows={3} className="minimal-input w-full" placeholder="Enter details..." />;
+                  return <textarea {...field} rows={3} className="minimal-input w-full" placeholder={t('reports_form.enterDetails')} />;
                 }
                 
                 if (f.type === 'checkbox') {
@@ -382,7 +382,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
                     {...field}
                     className="minimal-input"
                     disabled={f.disabled}
-                    placeholder="Enter value..."
+                    placeholder={t('reports_form.enterValue')}
                   />
                 );
               }}
@@ -449,24 +449,22 @@ export default function GenericReportForm({ templateId }: { templateId: string }
 
         {/* Digital Signature */}
         <div className="border-t border-black pt-6">
-          <label className="minimal-label mb-2">Digital Signature</label>
+          <label className="minimal-label mb-2">{t('reports_form.digitalSignature')}</label>
           <DigitalSignature onSign={setSignature} />
         </div>
 
         {/* Actions */}
         <div className="flex gap-4 pt-6">
-          <button type="submit" className="minimal-btn">
-            Submit Report
+          <button type="submit" className="minimal-btn">{t('reports_form.submitReport')}
           </button>
           <button
             type="button"
             onClick={() => {
               saveDraft(templateId, formValues);
-              alert('Draft saved locally.');
+              alert(t('reports_form.draftSaved'));
             }}
             className="minimal-btn-secondary"
-          >
-            Save Draft
+          >{t('reports_form.saveDraft')}
           </button>
         </div>
       </form>

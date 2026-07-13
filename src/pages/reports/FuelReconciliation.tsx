@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
+import { useLanguage } from '../../contexts/LanguageContext';
 import DigitalSignature from '../../components/DigitalSignature';
 import VarianceAlert from '../../components/VarianceAlert';
 
@@ -35,6 +36,7 @@ const MACHINE_SPECS: Record<string, { brand: string; expectedLPerHr: number }> =
 export default function FuelReconciliation() {
   const { user } = useAuth();
   const { saveDraft, submitReport, loadDraft } = useReport();
+  const { t } = useLanguage();
   const { control, watch, setValue, handleSubmit, formState: { errors } } = useForm<FuelFormData>({
     defaultValues: loadDraft('TEMPLATE_04') || {},
   });
@@ -105,17 +107,17 @@ export default function FuelReconciliation() {
 
   const onSubmit = async (data: FuelFormData) => {
     if (!signature) {
-      alert('Digital signature is required to sign off the daily reconciliation report.');
+      alert(t('fuelRecon.signatureRequired'));
       return;
     }
 
     if (data.issuedBy === data.receivedBy) {
-      alert('Segregation of Duties Violation: Fuel issuer and receiver must be different individuals.');
+      alert(t('fuelRecon.sodViolation'));
       return;
     }
 
     if (Math.abs(data.variance) > 0 && !data.varianceReason) {
-      alert('Explanation is required when a fuel stock variance is detected.');
+      alert(t('fuelRecon.varianceRequired'));
       return;
     }
 
@@ -124,10 +126,10 @@ export default function FuelReconciliation() {
         ...data,
         signature,
       });
-      alert('Fuel Reconciliation Report submitted successfully.');
+      alert(t('fuelRecon.submitSuccess'));
       clearSignature();
     } catch (err: any) {
-      alert(err.message || 'Submission failed.');
+      alert(err.message || t('reports_form.submissionFailed'));
     }
   };
 
@@ -142,7 +144,7 @@ export default function FuelReconciliation() {
       {showVarianceAlert && (
         <VarianceAlert 
           type="warning" 
-          message="High fuel consumption variance detected. Verify meter readings and stock records. Explanation is mandatory." 
+          message={t('fuelRecon.varianceWarning')} 
         />
       )}
 
@@ -150,14 +152,14 @@ export default function FuelReconciliation() {
         
         {/* Machine selection */}
         <div>
-          <label className="minimal-label">Machine</label>
+          <label className="minimal-label">{t('fuelRecon.machine')}</label>
           <Controller
             name="machineId"
             control={control}
-            rules={{ required: 'Machine selection is required' }}
+            rules={{ required: t('fuelRecon.machineRequired') }}
             render={({ field }) => (
               <select {...field} className="minimal-select">
-                <option value="">Select Machine...</option>
+                <option value="">{t('fuelRecon.selectMachine')}</option>
                 <option value="CAT_1">CAT 1 (Caterpillar - Expected 25L/Hr)</option>
                 <option value="CAT_2">CAT 2 (Caterpillar - Expected 25L/Hr)</option>
                 <option value="SANY_1">SANY 1 (Sany - Expected 22L/Hr)</option>
@@ -171,22 +173,22 @@ export default function FuelReconciliation() {
         {/* Meters */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <label className="minimal-label">Opening Meter (Hrs)</label>
+            <label className="minimal-label">{t('fuelRecon.openingMeter')}</label>
             <Controller
               name="openingMeter"
               control={control}
-              rules={{ required: 'Opening meter reading is required', min: 0 }}
+              rules={{ required: t('fuelRecon.openingRequired'), min: 0 }}
               render={({ field }) => (
                 <input type="number" step="0.1" {...field} className="minimal-input" placeholder="0.0" />
               )}
             />
           </div>
           <div>
-            <label className="minimal-label">Closing Meter (Hrs)</label>
+            <label className="minimal-label">{t('fuelRecon.closingMeter')}</label>
             <Controller
               name="closingMeter"
               control={control}
-              rules={{ required: 'Closing meter reading is required', min: 0 }}
+              rules={{ required: t('fuelRecon.closingRequired'), min: 0 }}
               render={({ field }) => (
                 <input type="number" step="0.1" {...field} className="minimal-input" placeholder="0.0" />
               )}
@@ -197,7 +199,7 @@ export default function FuelReconciliation() {
         {/* Calculations */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-zinc-50 p-4 border border-zinc-200">
           <div>
-            <label className="minimal-label">Hours Worked (Auto)</label>
+            <label className="minimal-label">{t('fuelRecon.hoursWorked')}</label>
             <Controller
               name="hoursWorked"
               control={control}
@@ -207,7 +209,7 @@ export default function FuelReconciliation() {
             />
           </div>
           <div>
-            <label className="minimal-label">Expected L/Hr (Auto)</label>
+            <label className="minimal-label">{t('fuelRecon.expectedLPerHr')}</label>
             <Controller
               name="expectedLPerHr"
               control={control}
@@ -217,7 +219,7 @@ export default function FuelReconciliation() {
             />
           </div>
           <div>
-            <label className="minimal-label">Actual L/Hr (Auto)</label>
+            <label className="minimal-label">{t('fuelRecon.actualLPerHr')}</label>
             <Controller
               name="actualLPerHr"
               control={control}
@@ -230,11 +232,11 @@ export default function FuelReconciliation() {
 
         {/* Fuel details */}
         <div>
-          <label className="minimal-label">Fuel Issued (Litres)</label>
+          <label className="minimal-label">{t('fuelRecon.fuelIssued')}</label>
           <Controller
             name="fuelIssued"
             control={control}
-            rules={{ required: 'Fuel volume issued is required', min: 0 }}
+            rules={{ required: t('fuelRecon.fuelRequired'), min: 0 }}
             render={({ field }) => (
               <input type="number" step="1" {...field} className="minimal-input" placeholder="0" />
             )}
@@ -244,14 +246,14 @@ export default function FuelReconciliation() {
         {/* Dual Sign-off Users */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-zinc-100 pt-6">
           <div>
-            <label className="minimal-label">Issued By (Logistics Controller)</label>
+            <label className="minimal-label">{t('fuelRecon.issuedBy')}</label>
             <Controller
               name="issuedBy"
               control={control}
-              rules={{ required: 'Issuer name is required' }}
+              rules={{ required: t('fuelRecon.issuerRequired') }}
               render={({ field }) => (
                 <select {...field} className="minimal-select">
-                  <option value="">Select Issuer...</option>
+                  <option value="">{t('fuelRecon.selectIssuer')}</option>
                   <option value="user_fuel">Sarah Wambui (Logistics Lead)</option>
                   <option value="user_controller">Amoroso Gombe (Controller)</option>
                 </select>
@@ -259,14 +261,14 @@ export default function FuelReconciliation() {
             />
           </div>
           <div>
-            <label className="minimal-label">Received By (Machine Operator)</label>
+            <label className="minimal-label">{t('fuelRecon.receivedBy')}</label>
             <Controller
               name="receivedBy"
               control={control}
-              rules={{ required: 'Receiver name is required' }}
+              rules={{ required: t('fuelRecon.receiverRequired') }}
               render={({ field }) => (
                 <select {...field} className="minimal-select">
-                  <option value="">Select Receiver...</option>
+                  <option value="">{t('fuelRecon.selectReceiver')}</option>
                   <option value="user_excavator">Peter Kamau (Operator)</option>
                   <option value="user_geology">Moses Kiprono (Mining Lead)</option>
                   <option value="user_processing">David Ochieng (Processing Lead)</option>
@@ -278,11 +280,11 @@ export default function FuelReconciliation() {
 
         {/* Stock levels */}
         <div className="border-t border-black pt-6">
-          <h3 className="font-serif italic text-lg mb-4 text-black">Stock Reconciliation</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black">{t('fuelRecon.stockReconciliation')}</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <label className="minimal-label">Opening Physical Stock (L)</label>
+              <label className="minimal-label">{t('fuelRecon.openingPhysical')}</label>
               <Controller
                 name="openingStock"
                 control={control}
@@ -293,7 +295,7 @@ export default function FuelReconciliation() {
               />
             </div>
             <div>
-              <label className="minimal-label">Fuel Received Today (L)</label>
+              <label className="minimal-label">{t('fuelRecon.fuelReceived')}</label>
               <Controller
                 name="received"
                 control={control}
@@ -307,7 +309,7 @@ export default function FuelReconciliation() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
             <div>
-              <label className="minimal-label">Total Available Stock (Auto)</label>
+              <label className="minimal-label">{t('fuelRecon.totalAvailable')}</label>
               <Controller
                 name="totalAvailable"
                 control={control}
@@ -317,7 +319,7 @@ export default function FuelReconciliation() {
               />
             </div>
             <div>
-              <label className="minimal-label">Total Issued Today (L)</label>
+              <label className="minimal-label">{t('fuelRecon.totalIssuedToday')}</label>
               <Controller
                 name="totalIssued"
                 control={control}
@@ -328,7 +330,7 @@ export default function FuelReconciliation() {
               />
             </div>
             <div>
-              <label className="minimal-label">Closing Physical Stock (L)</label>
+              <label className="minimal-label">{t('fuelRecon.closingPhysical')}</label>
               <Controller
                 name="closingStock"
                 control={control}
@@ -342,7 +344,7 @@ export default function FuelReconciliation() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
             <div>
-              <label className="minimal-label">Physical Variance (L)</label>
+              <label className="minimal-label">{t('fuelRecon.physicalVariance')}</label>
               <Controller
                 name="variance"
                 control={control}
@@ -352,12 +354,12 @@ export default function FuelReconciliation() {
               />
             </div>
             <div>
-              <label className="minimal-label">Variance Explanation</label>
+              <label className="minimal-label">{t('fuelRecon.varianceExplanation')}</label>
               <Controller
                 name="varianceReason"
                 control={control}
                 render={({ field }) => (
-                  <input type="text" {...field} className="minimal-input" placeholder="Required if variance exists..." />
+                  <input type="text" {...field} className="minimal-input" placeholder={t('fuelRecon.variancePlaceholder')} />
                 )}
               />
             </div>
@@ -366,24 +368,22 @@ export default function FuelReconciliation() {
 
         {/* Digital Signature */}
         <div className="border-t border-black pt-6">
-          <label className="minimal-label mb-2">Submitter Digital Signature</label>
+          <label className="minimal-label mb-2">{t('fuelRecon.submitterSignature')}</label>
           <DigitalSignature onSign={setSignature} />
         </div>
 
         {/* Actions */}
         <div className="flex gap-4 pt-6">
-          <button type="submit" className="minimal-btn">
-            Submit Reconciliation
+          <button type="submit" className="minimal-btn">{t('fuelRecon.submitReconciliation')}
           </button>
           <button
             type="button"
             onClick={() => {
               saveDraft('TEMPLATE_04', watch());
-              alert('Draft saved successfully.');
+              alert(t('fuelRecon.draftSaved'));
             }}
             className="minimal-btn-secondary"
-          >
-            Save Draft
+          >{t('reports_form.saveDraft')}
           </button>
         </div>
       </form>
