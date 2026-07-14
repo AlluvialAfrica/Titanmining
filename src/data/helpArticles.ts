@@ -476,6 +476,742 @@ Soumettez toujours vos formulaires avant la fin de votre quart pour assurer la c
     sortOrder: 10,
   },
   {
+    id: "rg-011",
+    category: "role_guide",
+    titleEN: `Mining Geology Lead Role Guide`,
+    titleFR: `Guide du role Responsable geologie miniere`,
+    bodyEN: `The Mining Geology Lead is responsible for geological surveying, ore body mapping, and mine planning on site. This role reports to the Mine Manager and provides critical data on ore grades and geological conditions that guide extraction decisions.
+
+Your primary form is Template 05 (Mining and Geology Daily Sheet) where you record daily geological observations, sample results, and pit advance measurements. You can also read Template 03 (Excavator / Machine Daily Log) to correlate machine activity with geological targets.
+
+Your KPI dashboard tracks geology metrics including samples collected, average ore grade in grams per tonne, pit advance in metres, and geological maps produced. These indicators help assess exploration progress and ore body delineation accuracy.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. For broader site data access, coordinate with the Mine Manager or Site Controller.`,
+    bodyFR: `Le responsable geologie miniere est charge des releves geologiques, de la cartographie des gisements et de la planification miniere sur le site. Ce role releve du directeur de mine et fournit des donnees essentielles sur les teneurs en minerai et les conditions geologiques.
+
+Votre formulaire principal est le modele 05 (Feuille quotidienne de geologie miniere) ou vous enregistrez les observations geologiques quotidiennes, les resultats d'echantillons et les mesures d'avancement des fosses. Vous pouvez egalement consulter le modele 03 (Journal quotidien d'excavatrice / machine).
+
+Votre tableau de bord KPI suit les metriques geologiques, y compris les echantillons collectes, la teneur moyenne en minerai en grammes par tonne, l'avancement des fosses en metres et les cartes geologiques produites.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["MINING_GEOLOGY_LEAD"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 11,
+  },
+  {
+    id: "rg-012",
+    category: "role_guide",
+    titleEN: `Processing Recovery Lead Role Guide`,
+    titleFR: `Guide du role Responsable traitement et recuperation`,
+    bodyEN: `The Processing Recovery Lead oversees mineral processing and gold recovery operations at the plant. This role reports to the Plant Manager and coordinates the work of centrifuge operators, shaking table operators, and other processing staff.
+
+You work with Templates 06 through 09 covering the full processing pipeline. You create entries for Template 07 (Centrifuge Operations Log), Template 08 (Shaking Table Operations Log), and Template 09 (Gold Recovery and Assay Report). You also read Template 06 (Drum and Sand Pump Daily Log) to monitor feed supply and verify submissions for Templates 07 and 08.
+
+Your KPI dashboard tracks processing metrics including concentrate recovered in grams, recovery rate percentage, feed rate in cubic metres per hour, and number of cleanups conducted. These metrics are critical for evaluating plant efficiency and gold yield.
+
+You can view and input your own KPIs and verify reports for Templates 07 and 08. You do not have user management or data export privileges. Work closely with the Plant Manager to optimize recovery rates and processing throughput.`,
+    bodyFR: `Le responsable traitement et recuperation supervise les operations de traitement des mineraux et de recuperation de l'or a l'usine. Ce role releve du responsable usine et coordonne le travail des operateurs de centrifugeuse, des operateurs de table a secousses et du personnel de traitement.
+
+Vous travaillez avec les modeles 06 a 09 couvrant l'ensemble du pipeline de traitement. Vous creez des entrees pour le modele 07 (Journal des operations de centrifugeuse), le modele 08 (Journal des operations de table a secousses) et le modele 09 (Rapport de recuperation d'or et d'essai). Vous lisez egalement le modele 06 et verifiez les soumissions des modeles 07 et 08.
+
+Votre tableau de bord KPI suit les metriques de traitement, y compris le concentre recupere en grammes, le taux de recuperation en pourcentage, le debit d'alimentation en metres cubes par heure et le nombre de nettoyages effectues.
+
+Vous pouvez consulter et saisir vos propres KPI et verifier les rapports des modeles 07 et 08. Vous ne disposez pas de privileges de gestion des utilisateurs ou d'exportation de donnees.`,
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 12,
+  },
+  {
+    id: "rg-013",
+    category: "role_guide",
+    titleEN: `Fuel Admin Logistics Role Guide`,
+    titleFR: `Guide du role Administrateur carburant et logistique`,
+    bodyEN: `The Fuel Admin Logistics role manages fuel distribution, consumption tracking, and related logistics records on site. This role ensures accurate accounting of all fuel issued to equipment and vehicles, and supports supply chain documentation.
+
+You work with three templates daily. Template 02 (Staff Attendance and Shift Roster) records personnel movements related to fuel operations. Template 04 (Fuel Consumption and Distribution Report) is your primary operational form for logging fuel issued, received, and consumed. Template 12 (Stores, Purchases and Expense Sheet) tracks fuel-related purchases and stock levels.
+
+Your KPI dashboard tracks fuel metrics including total fuel issued in litres, fuel variance in litres, stock reconciliations completed, and shift reports filed. Keeping fuel variance at zero is a critical target that ensures no unaccounted losses.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Finance Manager for purchase approvals and with the Operations Manager for fuel allocation priorities.`,
+    bodyFR: `Le role d'administrateur carburant et logistique gere la distribution de carburant, le suivi de la consommation et les documents logistiques associes sur le site. Ce role assure une comptabilisation precise de tout le carburant distribue aux equipements et vehicules.
+
+Vous travaillez avec trois modeles quotidiennement. Le modele 02 (Presence du personnel et tableau des quarts) enregistre les mouvements de personnel lies aux operations de carburant. Le modele 04 (Rapport de consommation et distribution de carburant) est votre formulaire operationnel principal. Le modele 12 (Feuille de magasin, achats et depenses) suit les achats et niveaux de stock de carburant.
+
+Votre tableau de bord KPI suit les metriques de carburant, y compris le carburant total distribue en litres, l'ecart de carburant en litres, les reconciliations de stock effectuees et les rapports de quart deposes.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 13,
+  },
+  {
+    id: "rg-014",
+    category: "role_guide",
+    titleEN: `Engine Mechanic Role Guide`,
+    titleFR: `Guide du role Mecanicien moteur`,
+    bodyEN: `The Engine Mechanic performs engine repairs, preventive maintenance, and breakdown response for mining equipment on site. This role reports to the Workshop Manager and is essential for maintaining equipment uptime across all operational departments.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you record all repair activities, parts used, and maintenance tasks completed. You can also read Template 03 (Excavator / Machine Daily Log) to review equipment operating conditions and identify recurring issues.
+
+Your KPI dashboard tracks maintenance metrics including repairs completed, parts used, machine uptime percentage, preventive maintenance tasks done, and breakdown response time in minutes. A target uptime of 90 percent and response time under 30 minutes are key performance benchmarks.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Report all major breakdowns to the Workshop Manager and coordinate parts requests with the Procurement Officer.`,
+    bodyFR: `Le mecanicien moteur effectue les reparations de moteur, l'entretien preventif et les interventions en cas de panne pour les equipements miniers sur le site. Ce role releve du responsable atelier et est essentiel pour maintenir la disponibilite des equipements.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez toutes les activites de reparation, les pieces utilisees et les taches d'entretien terminees. Vous pouvez egalement lire le modele 03 (Journal quotidien d'excavatrice / machine) pour examiner les conditions de fonctionnement des equipements.
+
+Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparations effectuees, les pieces utilisees, le pourcentage de disponibilite des machines, les taches d'entretien preventif realisees et le temps de reponse aux pannes en minutes.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["ENGINE_MECHANIC"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 14,
+  },
+  {
+    id: "rg-015",
+    category: "role_guide",
+    titleEN: `Electrical Mechanic Role Guide`,
+    titleFR: `Guide du role Mecanicien electricien`,
+    bodyEN: `The Electrical Mechanic handles all electrical systems maintenance, motor servicing, and cable repairs for site equipment. This role reports to the Workshop Manager and ensures that electrical components across the mine and processing plant remain operational.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you log electrical repair activities, motor servicing tasks, and cable replacement work. You can also read Template 03 (Excavator / Machine Daily Log) to review equipment electrical performance and fault histories.
+
+Your KPI dashboard tracks maintenance metrics including electrical repairs completed, motors serviced, cable repairs performed, and overall machine uptime percentage. Maintaining a 90 percent uptime target ensures minimal disruption to production.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Engine Mechanic and Workshop Manager on equipment requiring combined mechanical and electrical attention.`,
+    bodyFR: `Le mecanicien electricien gere l'entretien de tous les systemes electriques, la revision des moteurs et les reparations de cables des equipements du site. Ce role releve du responsable atelier et veille a ce que les composants electriques de la mine et de l'usine de traitement restent operationnels.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez les activites de reparation electrique, les taches de revision des moteurs et les travaux de remplacement de cables. Vous pouvez egalement lire le modele 03 (Journal quotidien d'excavatrice / machine).
+
+Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparations electriques effectuees, les moteurs revises, les reparations de cables realisees et le pourcentage global de disponibilite des machines.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["ELECTRICAL_MECHANIC"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 15,
+  },
+  {
+    id: "rg-016",
+    category: "role_guide",
+    titleEN: `Greasing Washing Helper Role Guide`,
+    titleFR: `Guide du role Aide graissage et lavage`,
+    bodyEN: `The Greasing Washing Helper provides essential support to the maintenance team by performing routine greasing, washing, and cleaning tasks on site equipment. This role reports to the Workshop Manager and ensures machines are properly lubricated and clean for safe, efficient operation.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you record the number of machines greased, wash tasks completed, and other helper assignments carried out during your shift.
+
+Your KPI dashboard tracks maintenance support metrics including machines greased, washes completed, and total helper tasks performed. Consistent completion of greasing schedules is critical for preventing premature equipment wear and breakdowns.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Follow the greasing schedule set by the Workshop Manager and report any unusual equipment conditions immediately.`,
+    bodyFR: `L'aide graissage et lavage fournit un soutien essentiel a l'equipe d'entretien en effectuant les taches routinieres de graissage, lavage et nettoyage des equipements du site. Ce role releve du responsable atelier et assure que les machines sont correctement lubrifiees et propres.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez le nombre de machines graissees, les taches de lavage terminees et les autres affectations d'aide effectuees pendant votre quart.
+
+Votre tableau de bord KPI suit les metriques de soutien a l'entretien, y compris les machines graissees, les lavages termines et le total des taches d'aide effectuees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["GREASING_WASHING_HELPER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 16,
+  },
+  {
+    id: "rg-017",
+    category: "role_guide",
+    titleEN: `Gate Security Role Guide`,
+    titleFR: `Guide du role Securite au portail`,
+    bodyEN: `The Gate Security role is responsible for controlling access at site entry and exit points. This role reports to the Security Manager and ensures that all personnel, vehicles, and items entering or leaving the site are properly logged and searched.
+
+Your primary form is Template 11 (Gate, Search and Items Movement Register) where you record gate logs, search activities, and item movements throughout your shift. Accurate and timely entries are essential for maintaining site security and audit compliance.
+
+Your KPI dashboard tracks security metrics including gate logs recorded, searches conducted, incidents reported, patrol rounds completed, and unauthorized access attempts. The target for incidents and unauthorized attempts is zero, reflecting the goal of a fully secured site.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Report all security incidents immediately to the Security Manager and maintain vigilance at all times during your shift.`,
+    bodyFR: `Le role de securite au portail est responsable du controle d'acces aux points d'entree et de sortie du site. Ce role releve du responsable securite et veille a ce que tout le personnel, les vehicules et les articles entrant ou sortant du site soient correctement enregistres et fouilles.
+
+Votre formulaire principal est le modele 11 (Registre de portail, fouille et mouvement d'articles) ou vous enregistrez les journaux de portail, les activites de fouille et les mouvements d'articles pendant votre quart.
+
+Votre tableau de bord KPI suit les metriques de securite, y compris les journaux de portail enregistres, les fouilles effectuees, les incidents signales, les rondes de patrouille effectuees et les tentatives d'acces non autorisees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["GATE_SECURITY"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 17,
+  },
+  {
+    id: "rg-018",
+    category: "role_guide",
+    titleEN: `Drum Pump Supervisor Role Guide`,
+    titleFR: `Guide du role Superviseur pompe a tambour`,
+    bodyEN: `The Drum Pump Supervisor oversees the operation of drum and sand pumps that feed material into the processing plant. This role reports to the Plant Manager and ensures consistent and efficient slurry delivery to downstream processing stages.
+
+Your primary form is Template 06 (Drum and Sand Pump Daily Log) where you record pump operating hours, slurry volumes processed, and pressure check results. Accurate logging is essential for correlating feed supply with plant throughput.
+
+Your KPI dashboard tracks production metrics including pump operating hours, slurry processed in cubic metres, and pressure checks completed. Maintaining target operating hours and completing all scheduled pressure checks helps prevent equipment failure and production interruptions.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Drum Pump Assistant and Plant Manager to ensure continuous feed supply during production hours.`,
+    bodyFR: `Le superviseur pompe a tambour supervise le fonctionnement des pompes a tambour et a sable qui alimentent l'usine de traitement en materiau. Ce role releve du responsable usine et assure une livraison constante et efficace de la boue aux etapes de traitement en aval.
+
+Votre formulaire principal est le modele 06 (Journal quotidien des pompes a tambour et a sable) ou vous enregistrez les heures de fonctionnement des pompes, les volumes de boue traites et les resultats des controles de pression.
+
+Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement des pompes, la boue traitee en metres cubes et les controles de pression effectues.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["DRUM_PUMP_SUPERVISOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 18,
+  },
+  {
+    id: "rg-019",
+    category: "role_guide",
+    titleEN: `Drum Pump Assistant Role Guide`,
+    titleFR: `Guide du role Assistant pompe a tambour`,
+    bodyEN: `The Drum Pump Assistant supports the Drum Pump Supervisor in operating and maintaining drum and sand pump equipment. This role reports to the Plant Manager through the Drum Pump Supervisor and assists with daily pump operations and monitoring.
+
+Your primary form is Template 06 (Drum and Sand Pump Daily Log) where you record your pump operating hours and helper tasks completed during each shift. Your entries complement those of the Drum Pump Supervisor to provide a complete operational picture.
+
+Your KPI dashboard tracks production metrics including pump operating hours and helper tasks completed. Meeting your target operating hours and task count ensures the pump station runs smoothly throughout each shift.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Follow the instructions of the Drum Pump Supervisor and report any equipment anomalies immediately.`,
+    bodyFR: `L'assistant pompe a tambour soutient le superviseur pompe a tambour dans l'exploitation et l'entretien des equipements de pompe a tambour et a sable. Ce role releve du responsable usine par l'intermediaire du superviseur pompe a tambour.
+
+Votre formulaire principal est le modele 06 (Journal quotidien des pompes a tambour et a sable) ou vous enregistrez vos heures de fonctionnement des pompes et les taches d'aide effectuees pendant chaque quart.
+
+Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement des pompes et les taches d'aide effectuees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["DRUM_PUMP_ASSISTANT"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 19,
+  },
+  {
+    id: "rg-020",
+    category: "role_guide",
+    titleEN: `Centrifuge Operator Role Guide`,
+    titleFR: `Guide du role Operateur de centrifugeuse`,
+    bodyEN: `The Centrifuge Operator runs the centrifuge equipment used in the gravity separation stage of gold recovery. This role reports to the Plant Manager and works closely with the Processing Recovery Lead to maximise concentrate recovery from ore feed.
+
+Your primary form is Template 07 (Centrifuge Operations Log) where you record centrifuge runs completed, concentrate recovered in grams, and plant uptime hours. Accurate data entry is essential for tracking recovery efficiency and plant performance.
+
+Your KPI dashboard tracks processing metrics including centrifuge runs completed, concentrate recovered in grams, and plant uptime hours. Meeting the target of 3 runs per shift with 100 grams of concentrate recovery ensures consistent gold output.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Follow the operating procedures set by the Processing Recovery Lead and report any equipment malfunctions to the Plant Manager.`,
+    bodyFR: `L'operateur de centrifugeuse fait fonctionner l'equipement de centrifugeuse utilise dans l'etape de separation par gravite de la recuperation de l'or. Ce role releve du responsable usine et travaille en etroite collaboration avec le responsable traitement et recuperation.
+
+Votre formulaire principal est le modele 07 (Journal des operations de centrifugeuse) ou vous enregistrez les cycles de centrifugeuse termines, le concentre recupere en grammes et les heures de disponibilite de l'usine.
+
+Votre tableau de bord KPI suit les metriques de traitement, y compris les cycles de centrifugeuse termines, le concentre recupere en grammes et les heures de disponibilite de l'usine.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["CENTRIFUGE_OPERATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 20,
+  },
+  {
+    id: "rg-021",
+    category: "role_guide",
+    titleEN: `Shaking Table Operator Role Guide`,
+    titleFR: `Guide du role Operateur de table a secousses`,
+    bodyEN: `The Shaking Table Operator manages the shaking table equipment used for gravity-based mineral separation. This role reports to the Plant Manager and works alongside the Processing Recovery Lead to refine concentrate quality through precise table adjustments.
+
+Your primary form is Template 08 (Shaking Table Operations Log) where you record table runs completed, concentrate recovered in grams, and plant uptime hours. Careful adjustment of table angle, water flow, and feed rate directly impacts recovery quality.
+
+Your KPI dashboard tracks processing metrics including table runs completed, concentrate recovered in grams, and plant uptime hours. A target of 4 runs per shift with 80 grams of concentrate ensures steady contribution to overall gold recovery.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Centrifuge Operator to ensure smooth material flow between processing stages.`,
+    bodyFR: `L'operateur de table a secousses gere l'equipement de table a secousses utilise pour la separation minerale par gravite. Ce role releve du responsable usine et travaille aux cotes du responsable traitement et recuperation pour affiner la qualite du concentre.
+
+Votre formulaire principal est le modele 08 (Journal des operations de table a secousses) ou vous enregistrez les cycles de table termines, le concentre recupere en grammes et les heures de disponibilite de l'usine.
+
+Votre tableau de bord KPI suit les metriques de traitement, y compris les cycles de table termines, le concentre recupere en grammes et les heures de disponibilite de l'usine.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["SHAKING_TABLE_OPERATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 21,
+  },
+  {
+    id: "rg-022",
+    category: "role_guide",
+    titleEN: `Site Petty Cash Manager Role Guide`,
+    titleFR: `Guide du role Responsable de la petite caisse du site`,
+    bodyEN: `The Site Petty Cash Manager handles day-to-day cash disbursements and receipt tracking for minor site expenditures. This role reports to the Finance Manager and ensures that all petty cash transactions are properly documented and reconciled.
+
+Your primary form is Template 14 (Petty Cash Daily Report) where you record cash disbursements made and receipts collected. You can also read Template 12 (Stores, Purchases and Expense Sheet) to cross-reference purchase records with petty cash outlays.
+
+Your KPI dashboard tracks finance metrics including cash disbursements processed, receipts recorded, and cash variance in dollars. Maintaining zero cash variance is the primary target, ensuring full accountability for all funds handled.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Reconcile your cash balance daily and submit any discrepancies to the Finance Manager immediately.`,
+    bodyFR: `Le responsable de la petite caisse du site gere les decaissements quotidiens et le suivi des recus pour les depenses mineures du site. Ce role releve du responsable financier et veille a ce que toutes les transactions de petite caisse soient correctement documentees et rapprochees.
+
+Votre formulaire principal est le modele 14 (Rapport quotidien de petite caisse) ou vous enregistrez les decaissements effectues et les recus collectes. Vous pouvez egalement consulter le modele 12 (Feuille de magasin, achats et depenses) pour croiser les registres d'achats.
+
+Votre tableau de bord KPI suit les metriques financieres, y compris les decaissements traites, les recus enregistres et l'ecart de tresorerie en dollars. Maintenir un ecart de tresorerie nul est l'objectif principal.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["SITE_PETTY_CASH_MANAGER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 22,
+  },
+  {
+    id: "rg-023",
+    category: "role_guide",
+    titleEN: `System Admin Role Guide`,
+    titleFR: `Guide du role Administrateur systeme`,
+    bodyEN: `The System Admin manages the technical configuration and user administration of the Alluvial Site Manager platform. This role has read access to all 14 report templates for monitoring and audit purposes, but does not create operational reports.
+
+Your primary responsibilities include managing user accounts, assigning roles, configuring site settings, and ensuring system availability. You can create, modify, and deactivate user accounts across all roles and departments.
+
+As System Admin, you have access to all KPI dashboards for monitoring purposes, including team-level KPI views across all departments. However, you do not input KPI data directly since your role is administrative rather than operational.
+
+You have full user management privileges, profile editing capabilities, and data export access. Use these permissions responsibly and maintain audit logs of all administrative actions. Coordinate with the Site Controller on organizational policy changes.`,
+    bodyFR: `L'administrateur systeme gere la configuration technique et l'administration des utilisateurs de la plateforme Alluvial Site Manager. Ce role a un acces en lecture a tous les 14 modeles de rapports a des fins de surveillance et d'audit, mais ne cree pas de rapports operationnels.
+
+Vos responsabilites principales incluent la gestion des comptes utilisateurs, l'attribution des roles, la configuration des parametres du site et la garantie de la disponibilite du systeme.
+
+En tant qu'administrateur systeme, vous avez acces a tous les tableaux de bord KPI a des fins de surveillance, y compris les vues KPI au niveau de l'equipe dans tous les departements. Cependant, vous ne saisissez pas de donnees KPI directement.
+
+Vous disposez de privileges complets de gestion des utilisateurs, de modification de profil et d'exportation de donnees. Utilisez ces autorisations de maniere responsable et maintenez les journaux d'audit de toutes les actions administratives.`,
+    relatedRoles: ["SYSTEM_ADMIN"],
+    relatedPages: ["dashboard", "reports", "users", "settings"],
+    sortOrder: 23,
+  },
+  {
+    id: "rg-024",
+    category: "role_guide",
+    titleEN: `Safety Compliance Manager Role Guide`,
+    titleFR: `Guide du role Responsable securite et conformite`,
+    bodyEN: `The Safety Compliance Manager ensures that all site operations comply with health, safety, and environmental regulations. This role has read access to all 14 report templates, providing full visibility into operational data to identify safety risks and compliance gaps.
+
+You create entries for Template 02 (Staff Attendance and Shift Roster) to track safety-related personnel records and Template 13 (Safety and Compliance Report) to document inspections, drills, and incident investigations. You also verify submissions for Template 13 to ensure compliance standards are met.
+
+Your KPI dashboard tracks safety metrics including safety drills conducted, HSE inspections completed, near miss reports filed, safety meetings held, audit findings documented, and regulatory submissions made. Zero near misses and full audit compliance are your primary targets.
+
+You have data export privileges and can view team-level KPIs across all departments. You do not have user management capabilities. Coordinate with department managers to implement corrective actions and ensure all staff are trained on safety procedures.`,
+    bodyFR: `Le responsable securite et conformite veille a ce que toutes les operations du site soient conformes aux reglementations en matiere de sante, de securite et d'environnement. Ce role a un acces en lecture a tous les 14 modeles de rapports pour identifier les risques et les lacunes de conformite.
+
+Vous creez des entrees pour le modele 02 (Presence du personnel et tableau des quarts) pour suivre les registres du personnel lies a la securite et le modele 13 (Rapport de securite et conformite) pour documenter les inspections, les exercices et les enquetes sur les incidents. Vous verifiez egalement les soumissions du modele 13.
+
+Votre tableau de bord KPI suit les metriques de securite, y compris les exercices de securite effectues, les inspections HSE terminees, les rapports de quasi-accidents deposes, les reunions de securite tenues, les conclusions d'audit documentees et les soumissions reglementaires.
+
+Vous disposez de privileges d'exportation de donnees et pouvez consulter les KPI au niveau de l'equipe dans tous les departements. Vous ne disposez pas de capacites de gestion des utilisateurs.`,
+    relatedRoles: ["SAFETY_COMPLIANCE_MANAGER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 24,
+  },
+  {
+    id: "rg-025",
+    category: "role_guide",
+    titleEN: `Mine Foreman Role Guide`,
+    titleFR: `Guide du role Contremaitre de mine`,
+    bodyEN: `The Mine Foreman supervises the mining crew and coordinates daily extraction activities on site. This role reports to the Mine Manager and serves as the front-line supervisor for excavator operators, dredge operators, and general workers in the mining area.
+
+You work with three templates daily. Template 03 (Excavator / Machine Daily Log) records equipment operations under your supervision. Template 05 (Mining and Geology Daily Sheet) tracks geological observations and pit progress. Template 13 (Safety and Compliance Report) documents safety conditions in the mining area. You also verify submissions for Template 03 to ensure accuracy of operator reports.
+
+Your KPI dashboard tracks production metrics including shift reports filed, task assignments distributed, safety incidents recorded, and production meetings held. Zero safety incidents is a non-negotiable target for your team.
+
+You can view team-level KPIs for the mining crew, input your own KPIs, and verify Template 03 submissions. You do not have user management or data export privileges. Maintain close communication with the Mine Manager on daily production targets and safety conditions.`,
+    bodyFR: `Le contremaitre de mine supervise l'equipe miniere et coordonne les activites d'extraction quotidiennes sur le site. Ce role releve du directeur de mine et sert de superviseur de premiere ligne pour les operateurs d'excavatrice, les operateurs de drague et les travailleurs generaux.
+
+Vous travaillez avec trois modeles quotidiennement. Le modele 03 (Journal quotidien d'excavatrice / machine) enregistre les operations d'equipement sous votre supervision. Le modele 05 (Feuille quotidienne de geologie miniere) suit les observations geologiques. Le modele 13 (Rapport de securite et conformite) documente les conditions de securite. Vous verifiez egalement les soumissions du modele 03.
+
+Votre tableau de bord KPI suit les metriques de production, y compris les rapports de quart deposes, les affectations de taches distribuees, les incidents de securite enregistres et les reunions de production tenues.
+
+Vous pouvez consulter les KPI au niveau de l'equipe pour l'equipe miniere, saisir vos propres KPI et verifier les soumissions du modele 03. Vous ne disposez pas de privileges de gestion des utilisateurs ou d'exportation de donnees.`,
+    relatedRoles: ["MINE_FOREMAN"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 25,
+  },
+  {
+    id: "rg-026",
+    category: "role_guide",
+    titleEN: `Dredge Operator Role Guide`,
+    titleFR: `Guide du role Operateur de drague`,
+    bodyEN: `The Dredge Operator runs dredging equipment used to extract alluvial material from riverbeds and water-bearing deposits. This role reports to the Mine Foreman and is responsible for maximising material extraction while maintaining equipment in good condition.
+
+Your primary form is Template 03 (Excavator / Machine Daily Log) where you record dredge operating hours, area covered in square metres, and sediment processed in cubic metres. Complete your log at the end of each shift with accurate measurements.
+
+Your KPI dashboard tracks production metrics including dredge operating hours, dredge area covered in square metres, and sediment processed in cubic metres. A target of 8 operating hours and 300 cubic metres of sediment per shift reflects optimal dredge utilisation.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Report any mechanical issues to the Workshop Manager and coordinate dredging locations with the Mining Geology Lead.`,
+    bodyFR: `L'operateur de drague fait fonctionner l'equipement de dragage utilise pour extraire le materiau alluvionnaire des lits de riviere et des gisements aquiferes. Ce role releve du contremaitre de mine et est responsable de maximiser l'extraction de materiau tout en maintenant l'equipement en bon etat.
+
+Votre formulaire principal est le modele 03 (Journal quotidien d'excavatrice / machine) ou vous enregistrez les heures de fonctionnement de la drague, la superficie couverte en metres carres et le sediment traite en metres cubes.
+
+Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement de la drague, la superficie couverte en metres carres et le sediment traite en metres cubes.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["DREDGE_OPERATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 26,
+  },
+  {
+    id: "rg-027",
+    category: "role_guide",
+    titleEN: `Process Plant Operator Role Guide`,
+    titleFR: `Guide du role Operateur d'usine de traitement`,
+    bodyEN: `The Process Plant Operator runs centrifuge and shaking table equipment in the processing plant. This role reports to the Plant Manager and works alongside the Processing Recovery Lead to maintain consistent processing throughput and recovery rates.
+
+You work with two templates. Template 07 (Centrifuge Operations Log) records centrifuge processing data, and Template 08 (Shaking Table Operations Log) tracks shaking table operations. Both forms capture the essential data for evaluating plant efficiency.
+
+Your KPI dashboard tracks processing metrics including plant uptime hours, feed rate in cubic metres per hour, and cleanups conducted. A target of 8 uptime hours per shift with a 15 cubic metres per hour feed rate ensures optimal plant performance.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Follow the processing parameters set by the Plant Manager and report any deviations immediately.`,
+    bodyFR: `L'operateur d'usine de traitement fait fonctionner les equipements de centrifugeuse et de table a secousses dans l'usine de traitement. Ce role releve du responsable usine et travaille aux cotes du responsable traitement et recuperation.
+
+Vous travaillez avec deux modeles. Le modele 07 (Journal des operations de centrifugeuse) enregistre les donnees de traitement de la centrifugeuse, et le modele 08 (Journal des operations de table a secousses) suit les operations de table a secousses.
+
+Votre tableau de bord KPI suit les metriques de traitement, y compris les heures de disponibilite de l'usine, le debit d'alimentation en metres cubes par heure et les nettoyages effectues.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["PROCESS_PLANT_OPERATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 27,
+  },
+  {
+    id: "rg-028",
+    category: "role_guide",
+    titleEN: `Pump Operator Role Guide`,
+    titleFR: `Guide du role Operateur de pompe`,
+    bodyEN: `The Pump Operator manages pump equipment that moves slurry and water through the processing circuit. This role reports to the Plant Manager and ensures continuous flow of material to the processing plant during production hours.
+
+Your primary form is Template 06 (Drum and Sand Pump Daily Log) where you record pump operating hours, pressure check results, and slurry volumes processed in cubic metres. Regular pressure monitoring is critical for detecting blockages and preventing pump failures.
+
+Your KPI dashboard tracks production metrics including pump operating hours, pressure checks completed, and slurry processed in cubic metres. A target of 8 operating hours with 6 pressure checks and 150 cubic metres of slurry per shift reflects efficient pump utilisation.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Drum Pump Supervisor on pump scheduling and report any pressure anomalies immediately.`,
+    bodyFR: `L'operateur de pompe gere les equipements de pompe qui deplacent la boue et l'eau a travers le circuit de traitement. Ce role releve du responsable usine et assure un flux continu de materiau vers l'usine de traitement pendant les heures de production.
+
+Votre formulaire principal est le modele 06 (Journal quotidien des pompes a tambour et a sable) ou vous enregistrez les heures de fonctionnement des pompes, les resultats des controles de pression et les volumes de boue traites en metres cubes.
+
+Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement des pompes, les controles de pression effectues et la boue traitee en metres cubes.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["PUMP_OPERATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 28,
+  },
+  {
+    id: "rg-029",
+    category: "role_guide",
+    titleEN: `Driller Sampling Crew Role Guide`,
+    titleFR: `Guide du role Equipe de forage et echantillonnage`,
+    bodyEN: `The Driller Sampling Crew collects geological samples through drilling operations to evaluate ore body characteristics. This role reports to the Mining Geology Lead and provides the raw sample data that informs mine planning and extraction strategies.
+
+Your primary form is Template 05 (Mining and Geology Daily Sheet) where you record the number of samples collected and hours of drilling operations completed during each shift. Accurate sample documentation is essential for reliable geological analysis.
+
+Your KPI dashboard tracks geology metrics including samples collected and hours operated. A target of 15 samples per shift with 8 hours of drilling ensures adequate coverage of the exploration area for ore grade assessment.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Follow drilling plans set by the Mining Geology Lead and handle all samples according to established chain-of-custody procedures.`,
+    bodyFR: `L'equipe de forage et echantillonnage collecte des echantillons geologiques par des operations de forage pour evaluer les caracteristiques du gisement. Ce role releve du responsable geologie miniere et fournit les donnees brutes d'echantillons qui guident la planification miniere.
+
+Votre formulaire principal est le modele 05 (Feuille quotidienne de geologie miniere) ou vous enregistrez le nombre d'echantillons collectes et les heures d'operations de forage effectuees pendant chaque quart.
+
+Votre tableau de bord KPI suit les metriques geologiques, y compris les echantillons collectes et les heures de fonctionnement. Un objectif de 15 echantillons par quart avec 8 heures de forage assure une couverture adequate.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["DRILLER_SAMPLING_CREW"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 29,
+  },
+  {
+    id: "rg-030",
+    category: "role_guide",
+    titleEN: `Accountant Role Guide`,
+    titleFR: `Guide du role Comptable`,
+    bodyEN: `The Accountant manages financial record-keeping, invoice verification, and budget tracking for the site. This role reports to the Finance Manager and ensures that all financial transactions are accurately recorded and reconciled against approved budgets.
+
+You work with three templates. Template 12 (Stores, Purchases and Expense Sheet) records purchase transactions and stock movements. Template 14 (Petty Cash Daily Report) tracks daily cash transactions. You can also read Template 04 (Fuel Consumption and Distribution Report) to verify fuel-related expenditures against financial records.
+
+Your KPI dashboard tracks finance metrics including invoices verified, purchase orders processed, and budget variance percentage. Keeping budget variance within 5 percent of approved allocations is a key performance target.
+
+You have data export privileges for generating financial reports and analyses. You can view and input your own KPIs through the dashboard. You do not have user management or report verification capabilities. Work with the Finance Manager on monthly reconciliations and the Procurement Officer on purchase order documentation.`,
+    bodyFR: `Le comptable gere la tenue des registres financiers, la verification des factures et le suivi budgetaire du site. Ce role releve du responsable financier et veille a ce que toutes les transactions financieres soient enregistrees avec precision.
+
+Vous travaillez avec trois modeles. Le modele 12 (Feuille de magasin, achats et depenses) enregistre les transactions d'achat et les mouvements de stock. Le modele 14 (Rapport quotidien de petite caisse) suit les transactions de tresorerie quotidiennes. Vous pouvez egalement lire le modele 04 (Rapport de consommation et distribution de carburant).
+
+Votre tableau de bord KPI suit les metriques financieres, y compris les factures verifiees, les bons de commande traites et le pourcentage d'ecart budgetaire.
+
+Vous disposez de privileges d'exportation de donnees pour generer des rapports financiers. Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs ou de verification des rapports.`,
+    relatedRoles: ["ACCOUNTANT"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 30,
+  },
+  {
+    id: "rg-031",
+    category: "role_guide",
+    titleEN: `Procurement Officer Role Guide`,
+    titleFR: `Guide du role Responsable des achats`,
+    bodyEN: `The Procurement Officer manages purchasing activities, supplier relationships, and cost optimisation for site operations. This role reports to the Finance Manager and ensures that materials and supplies are procured efficiently and at competitive prices.
+
+Your primary form is Template 12 (Stores, Purchases and Expense Sheet) where you record purchase orders, supplier details, and delivery receipts. Accurate documentation of procurement activities is essential for financial audit compliance and inventory management.
+
+Your KPI dashboard tracks finance metrics including procurement requests processed, suppliers managed, and cost savings achieved in dollars. Identifying cost savings while maintaining supply quality is a key performance objective.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Finance Manager for purchase approvals and with department managers to prioritise procurement requests based on operational needs.`,
+    bodyFR: `Le responsable des achats gere les activites d'achat, les relations avec les fournisseurs et l'optimisation des couts pour les operations du site. Ce role releve du responsable financier et veille a ce que les materiaux et les fournitures soient acquis de maniere efficace et a des prix competitifs.
+
+Votre formulaire principal est le modele 12 (Feuille de magasin, achats et depenses) ou vous enregistrez les bons de commande, les coordonnees des fournisseurs et les receptions de livraison.
+
+Votre tableau de bord KPI suit les metriques financieres, y compris les demandes d'achat traitees, les fournisseurs geres et les economies realisees en dollars.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["PROCUREMENT_OFFICER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 31,
+  },
+  {
+    id: "rg-032",
+    category: "role_guide",
+    titleEN: `Assay Lab Technician Role Guide`,
+    titleFR: `Guide du role Technicien de laboratoire d'essai`,
+    bodyEN: `The Assay Lab Technician performs laboratory analyses on geological samples and gold concentrates to determine mineral grades and purity. This role reports to the Plant Manager and provides the analytical data that validates recovery efficiency and ore quality.
+
+Your primary form is Template 09 (Gold Recovery and Assay Report) where you record assays completed, samples tested, and analytical reports prepared. Precision and accuracy in laboratory work are paramount for reliable grade determinations.
+
+Your KPI dashboard tracks quality metrics including assays completed, samples tested, and reports prepared. A target of 8 assays and 12 samples per shift ensures timely analytical turnaround for production decisions.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Maintain strict laboratory protocols and ensure all samples follow the chain-of-custody procedure from collection to analysis.`,
+    bodyFR: `Le technicien de laboratoire d'essai effectue des analyses de laboratoire sur les echantillons geologiques et les concentres d'or pour determiner les teneurs en mineraux et la purete. Ce role releve du responsable usine et fournit les donnees analytiques qui valident l'efficacite de la recuperation.
+
+Votre formulaire principal est le modele 09 (Rapport de recuperation d'or et d'essai) ou vous enregistrez les essais termines, les echantillons testes et les rapports analytiques prepares.
+
+Votre tableau de bord KPI suit les metriques de qualite, y compris les essais termines, les echantillons testes et les rapports prepares.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["ASSAY_LAB_TECHNICIAN"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 32,
+  },
+  {
+    id: "rg-033",
+    category: "role_guide",
+    titleEN: `Community Relations Officer Role Guide`,
+    titleFR: `Guide du role Responsable des relations communautaires`,
+    bodyEN: `The Community Relations Officer manages relationships with local communities surrounding the mining site. This role reports to the HR Manager and ensures that community concerns are addressed, engagement activities are conducted, and the company maintains its social licence to operate.
+
+Your primary form is Template 02 (Staff Attendance and Shift Roster) where you record community engagement activities and stakeholder interactions as part of the site personnel records. This documentation supports compliance with community engagement commitments.
+
+Your KPI dashboard tracks administration metrics including community meetings held, grievances resolved, and engagement activities conducted. Prompt resolution of grievances and regular community meetings are essential for maintaining positive relations.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Site Controller and HR Manager to ensure community feedback is incorporated into site operational planning.`,
+    bodyFR: `Le responsable des relations communautaires gere les relations avec les communautes locales entourant le site minier. Ce role releve du responsable RH et veille a ce que les preoccupations communautaires soient traitees et que les activites d'engagement soient menees.
+
+Votre formulaire principal est le modele 02 (Presence du personnel et tableau des quarts) ou vous enregistrez les activites d'engagement communautaire et les interactions avec les parties prenantes dans le cadre des registres du personnel du site.
+
+Votre tableau de bord KPI suit les metriques d'administration, y compris les reunions communautaires tenues, les reclamations resolues et les activites d'engagement menees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["COMMUNITY_RELATIONS_OFFICER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 33,
+  },
+  {
+    id: "rg-034",
+    category: "role_guide",
+    titleEN: `Admin Clerk Role Guide`,
+    titleFR: `Guide du role Commis administratif`,
+    bodyEN: `The Admin Clerk provides administrative support for site operations by managing documentation, records, and correspondence. This role reports to the HR Manager and ensures that all administrative processes run smoothly and records are kept up to date.
+
+You work with two templates. Template 02 (Staff Attendance and Shift Roster) records personnel attendance and shift information. Template 12 (Stores, Purchases and Expense Sheet) tracks stores transactions and expense documentation that you help process.
+
+Your KPI dashboard tracks administration metrics including documents processed, records updated, and correspondence handled. Timely processing of administrative documents ensures operational continuity across all departments.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Maintain organised filing systems and ensure all documents are accessible to authorised personnel when needed.`,
+    bodyFR: `Le commis administratif fournit un soutien administratif pour les operations du site en gerant la documentation, les registres et la correspondance. Ce role releve du responsable RH et veille a ce que tous les processus administratifs fonctionnent bien.
+
+Vous travaillez avec deux modeles. Le modele 02 (Presence du personnel et tableau des quarts) enregistre la presence du personnel et les informations sur les quarts. Le modele 12 (Feuille de magasin, achats et depenses) suit les transactions de magasin et la documentation des depenses.
+
+Votre tableau de bord KPI suit les metriques d'administration, y compris les documents traites, les registres mis a jour et la correspondance traitee.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["ADMIN_CLERK"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 34,
+  },
+  {
+    id: "rg-035",
+    category: "role_guide",
+    titleEN: `Security Guard Role Guide`,
+    titleFR: `Guide du role Agent de securite`,
+    bodyEN: `The Security Guard patrols the site and monitors designated areas to prevent unauthorized access and ensure the safety of personnel and assets. This role reports to the Security Manager and works alongside Gate Security to maintain comprehensive site security coverage.
+
+Your primary form is Template 11 (Gate, Search and Items Movement Register) where you record areas patrolled, access control checks performed, incidents reported, and patrol rounds completed during your shift.
+
+Your KPI dashboard tracks security metrics including areas patrolled, access control checks conducted, incidents reported, and patrol rounds completed. A target of 6 patrol rounds and 15 access control checks per shift ensures thorough site coverage.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Report all suspicious activity and security incidents to the Security Manager immediately and maintain a visible security presence at all times.`,
+    bodyFR: `L'agent de securite patrouille sur le site et surveille les zones designees pour empecher les acces non autorises et assurer la securite du personnel et des actifs. Ce role releve du responsable securite et travaille aux cotes de la securite au portail.
+
+Votre formulaire principal est le modele 11 (Registre de portail, fouille et mouvement d'articles) ou vous enregistrez les zones patrouillees, les controles d'acces effectues, les incidents signales et les rondes de patrouille accomplies pendant votre quart.
+
+Votre tableau de bord KPI suit les metriques de securite, y compris les zones patrouillees, les controles d'acces effectues, les incidents signales et les rondes de patrouille accomplies.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["SECURITY_GUARD"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 35,
+  },
+  {
+    id: "rg-036",
+    category: "role_guide",
+    titleEN: `Medical Officer Role Guide`,
+    titleFR: `Guide du role Officier medical`,
+    bodyEN: `The Medical Officer provides on-site medical care, first aid, and health screening services for all site personnel. This role reports to the HR Manager and ensures that health standards are maintained and medical incidents are properly documented and treated.
+
+Your primary form is Template 02 (Staff Attendance and Shift Roster) where you record medical consultations, first aid cases treated, and health screening results as part of the site personnel health records.
+
+Your KPI dashboard tracks administration metrics including medical consultations conducted, first aid cases treated, and health screenings completed. Consistent health screening coverage and prompt response to medical incidents are your primary performance targets.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Safety Compliance Manager on occupational health matters and ensure the site medical facility is always stocked and operational.`,
+    bodyFR: `L'officier medical fournit des soins medicaux sur le site, les premiers soins et des services de depistage sanitaire pour tout le personnel du site. Ce role releve du responsable RH et veille au maintien des normes de sante.
+
+Votre formulaire principal est le modele 02 (Presence du personnel et tableau des quarts) ou vous enregistrez les consultations medicales, les cas de premiers soins traites et les resultats du depistage sanitaire.
+
+Votre tableau de bord KPI suit les metriques d'administration, y compris les consultations medicales effectuees, les cas de premiers soins traites et les depistages sanitaires termines.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["MEDICAL_OFFICER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 36,
+  },
+  {
+    id: "rg-037",
+    category: "role_guide",
+    titleEN: `Camp Manager Role Guide`,
+    titleFR: `Guide du role Responsable de camp`,
+    bodyEN: `The Camp Manager oversees the site camp facilities including accommodation, catering, and general welfare services for site personnel. This role reports to the HR Manager and ensures that living conditions on site meet the required standards for health and comfort.
+
+You work with two templates. Template 02 (Staff Attendance and Shift Roster) records personnel occupancy and welfare-related attendance data. Template 12 (Stores, Purchases and Expense Sheet) tracks camp supplies, food purchases, and maintenance expenses for camp facilities.
+
+Your KPI dashboard tracks administration metrics including meals served, accommodation checks completed, and facility inspections conducted. Consistent catering output and regular facility inspections ensure a safe and comfortable camp environment for all residents.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Procurement Officer for camp supply orders and with the HR Manager on personnel accommodation assignments.`,
+    bodyFR: `Le responsable de camp supervise les installations du camp du site, y compris l'hebergement, la restauration et les services generaux de bien-etre pour le personnel du site. Ce role releve du responsable RH et veille a ce que les conditions de vie sur le site respectent les normes requises.
+
+Vous travaillez avec deux modeles. Le modele 02 (Presence du personnel et tableau des quarts) enregistre l'occupation du personnel et les donnees de presence liees au bien-etre. Le modele 12 (Feuille de magasin, achats et depenses) suit les fournitures du camp, les achats alimentaires et les depenses d'entretien.
+
+Votre tableau de bord KPI suit les metriques d'administration, y compris les repas servis, les controles d'hebergement termines et les inspections d'installations effectuees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["CAMP_MANAGER"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 37,
+  },
+  {
+    id: "rg-038",
+    category: "role_guide",
+    titleEN: `Logistics Transport Coordinator Role Guide`,
+    titleFR: `Guide du role Coordinateur logistique et transport`,
+    bodyEN: `The Logistics Transport Coordinator manages the movement of materials, equipment, and personnel between the site and external locations. This role ensures that deliveries are scheduled efficiently, fleet vehicles are maintained, and transport documentation is complete.
+
+You work with two templates. Template 04 (Fuel Consumption and Distribution Report) tracks fuel usage for transport vehicles and fleet operations. Template 12 (Stores, Purchases and Expense Sheet) records delivery receipts, transport expenses, and material movements for supply chain documentation.
+
+Your KPI dashboard tracks logistics metrics including trips completed, deliveries coordinated, and fleet checks conducted. Meeting delivery schedules and completing all fleet checks ensures reliable supply chain operations for the site.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Fuel Admin Logistics on vehicle fuel allocations and with department managers on delivery priorities.`,
+    bodyFR: `Le coordinateur logistique et transport gere le mouvement des materiaux, des equipements et du personnel entre le site et les emplacements externes. Ce role veille a ce que les livraisons soient planifiees efficacement et que la documentation de transport soit complete.
+
+Vous travaillez avec deux modeles. Le modele 04 (Rapport de consommation et distribution de carburant) suit la consommation de carburant pour les vehicules de transport. Le modele 12 (Feuille de magasin, achats et depenses) enregistre les receptions de livraison, les depenses de transport et les mouvements de materiaux.
+
+Votre tableau de bord KPI suit les metriques logistiques, y compris les trajets effectues, les livraisons coordonnees et les controles de flotte effectues.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["LOGISTICS_TRANSPORT_COORDINATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 38,
+  },
+  {
+    id: "rg-039",
+    category: "role_guide",
+    titleEN: `Heavy Equipment Mechanic Role Guide`,
+    titleFR: `Guide du role Mecanicien d'equipement lourd`,
+    bodyEN: `The Heavy Equipment Mechanic specialises in maintaining and repairing large mining equipment such as excavators, loaders, and haul trucks. This role reports to the Workshop Manager and is critical for keeping high-value production equipment operational.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you record repairs completed, parts used, and machine uptime achieved. You can also read Template 03 (Excavator / Machine Daily Log) to review equipment performance and identify maintenance needs from operator reports.
+
+Your KPI dashboard tracks maintenance metrics including repairs completed, parts used, and machine uptime percentage. A target uptime of 88 percent reflects the demanding conditions of heavy equipment operation in alluvial mining environments.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Workshop Manager on repair prioritisation and with the Procurement Officer on spare parts orders.`,
+    bodyFR: `Le mecanicien d'equipement lourd est specialise dans l'entretien et la reparation des grands equipements miniers tels que les excavatrices, les chargeuses et les camions de transport. Ce role releve du responsable atelier et est essentiel pour maintenir les equipements de production operationnels.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez les reparations effectuees, les pieces utilisees et la disponibilite des machines atteinte. Vous pouvez egalement lire le modele 03 (Journal quotidien d'excavatrice / machine).
+
+Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparations effectuees, les pieces utilisees et le pourcentage de disponibilite des machines.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["HEAVY_EQUIPMENT_MECHANIC"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 39,
+  },
+  {
+    id: "rg-040",
+    category: "role_guide",
+    titleEN: `Auto Electrician Role Guide`,
+    titleFR: `Guide du role Auto-electricien`,
+    bodyEN: `The Auto Electrician maintains and repairs electrical systems on vehicles and mobile equipment across the site. This role reports to the Workshop Manager and ensures that all vehicle electrical components, wiring, and control systems are functioning correctly.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you record electrical repairs performed, motors serviced, and cable repairs completed. You can also read Template 03 (Excavator / Machine Daily Log) to review equipment electrical fault reports from operators.
+
+Your KPI dashboard tracks maintenance metrics including electrical repairs completed, motors serviced, and cable repairs performed. Consistent completion of electrical maintenance tasks prevents vehicle breakdowns and supports overall fleet availability.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with other mechanics in the workshop team and report any recurring electrical faults to the Workshop Manager for investigation.`,
+    bodyFR: `L'auto-electricien entretient et repare les systemes electriques des vehicules et des equipements mobiles sur le site. Ce role releve du responsable atelier et veille a ce que tous les composants electriques des vehicules fonctionnent correctement.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez les reparations electriques effectuees, les moteurs revises et les reparations de cables terminees. Vous pouvez egalement lire le modele 03 (Journal quotidien d'excavatrice / machine).
+
+Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparations electriques effectuees, les moteurs revises et les reparations de cables realisees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["AUTO_ELECTRICIAN"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 40,
+  },
+  {
+    id: "rg-041",
+    category: "role_guide",
+    titleEN: `Welder Fabricator Role Guide`,
+    titleFR: `Guide du role Soudeur-fabricant`,
+    bodyEN: `The Welder Fabricator performs welding, cutting, and metal fabrication work to repair and construct equipment components on site. This role reports to the Workshop Manager and provides essential fabrication support for maintenance and repair operations across all departments.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you record welding jobs completed, repairs performed, and parts fabricated or consumed during your shift.
+
+Your KPI dashboard tracks maintenance metrics including welding jobs completed, repairs completed, and parts used. Meeting daily welding targets ensures that equipment repairs and fabrication requests are fulfilled without delays to production.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Follow all welding safety protocols and coordinate with the Workshop Manager on job prioritisation and material requirements.`,
+    bodyFR: `Le soudeur-fabricant effectue des travaux de soudage, de decoupe et de fabrication metallique pour reparer et construire des composants d'equipement sur le site. Ce role releve du responsable atelier et fournit un soutien essentiel en fabrication pour les operations d'entretien et de reparation.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez les travaux de soudage termines, les reparations effectuees et les pieces fabriquees ou consommees pendant votre quart.
+
+Votre tableau de bord KPI suit les metriques d'entretien, y compris les travaux de soudage termines, les reparations effectuees et les pieces utilisees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["WELDER_FABRICATOR"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 41,
+  },
+  {
+    id: "rg-042",
+    category: "role_guide",
+    titleEN: `Light Vehicle Mechanic Role Guide`,
+    titleFR: `Guide du role Mecanicien de vehicules legers`,
+    bodyEN: `The Light Vehicle Mechanic maintains and repairs light vehicles including pickup trucks, utility vehicles, and passenger cars used for site transport and logistics. This role reports to the Workshop Manager and ensures that the light vehicle fleet remains safe and available for daily operations.
+
+Your primary form is Template 10 (Maintenance, Greasing and Washing Log) where you record vehicles serviced, repairs completed, and parts used. You can also read Template 03 (Excavator / Machine Daily Log) to review vehicle usage patterns and identify vehicles requiring attention.
+
+Your KPI dashboard tracks maintenance metrics including vehicles serviced, repairs completed, and parts used. A target of 3 vehicles serviced per shift with minimal parts consumption reflects efficient and proactive vehicle maintenance.
+
+You can view and input your own KPIs through the dashboard. You do not have user management, data export, or report verification privileges. Coordinate with the Logistics Transport Coordinator on vehicle availability and with the Procurement Officer on spare parts requirements.`,
+    bodyFR: `Le mecanicien de vehicules legers entretient et repare les vehicules legers, y compris les camionnettes, les vehicules utilitaires et les voitures de tourisme utilises pour le transport et la logistique du site. Ce role releve du responsable atelier et veille a ce que la flotte de vehicules legers reste sure et disponible.
+
+Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et lavage) ou vous enregistrez les vehicules revises, les reparations effectuees et les pieces utilisees. Vous pouvez egalement lire le modele 03 (Journal quotidien d'excavatrice / machine).
+
+Votre tableau de bord KPI suit les metriques d'entretien, y compris les vehicules revises, les reparations effectuees et les pieces utilisees.
+
+Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
+    relatedRoles: ["LIGHT_VEHICLE_MECHANIC"],
+    relatedPages: ["dashboard", "reports"],
+    sortOrder: 42,
+  },
+  {
     id: "kpi-001",
     category: "kpi_definition",
     titleEN: `What Are KPIs`,
