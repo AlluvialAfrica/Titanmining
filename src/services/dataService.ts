@@ -6,6 +6,7 @@
 
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
+import { logger } from '../utils/logger';
 
 let _client: ReturnType<typeof generateClient<Schema>> | null = null;
 
@@ -19,7 +20,7 @@ export function isAmplifyConfigured(): boolean {
     if (outputs?.auth?.user_pool_id?.includes('placeholder')) return false;
     return true;
   } catch (err) {
-    console.warn('[dataService] isAmplifyConfigured check failed:', err);
+    logger.warn('isAmplifyConfigured check failed:', err);
     return false;
   }
 }
@@ -42,7 +43,7 @@ export function saveData<T>(key: string, data: T): void {
   try {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (err) {
-    console.error(`[dataService] saveData failed for key "${key}":`, err);
+    logger.error(`saveData failed for key "${key}":`, err);
   }
 }
 
@@ -52,7 +53,7 @@ export function loadData<T>(key: string): T | null {
     if (raw === null) return null;
     return JSON.parse(raw) as T;
   } catch (err) {
-    console.error(`[dataService] loadData failed for key "${key}":`, err);
+    logger.error(`loadData failed for key "${key}":`, err);
     return null;
   }
 }
@@ -61,7 +62,7 @@ export function removeData(key: string): void {
   try {
     localStorage.removeItem(key);
   } catch (err) {
-    console.error(`[dataService] removeData failed for key "${key}":`, err);
+    logger.error(`removeData failed for key "${key}":`, err);
   }
 }
 
@@ -76,13 +77,13 @@ export function queryData<T>(prefix: string): Array<{ key: string; value: T }> {
           try {
             results.push({ key, value: JSON.parse(raw) as T });
           } catch (parseErr) {
-            console.warn(`[dataService] queryData: failed to parse key "${key}":`, parseErr);
+            logger.warn(`queryData: failed to parse key "${key}":`, parseErr);
           }
         }
       }
     }
   } catch (err) {
-    console.error(`[dataService] queryData failed for prefix "${prefix}":`, err);
+    logger.error(`queryData failed for prefix "${prefix}":`, err);
   }
   return results;
 }

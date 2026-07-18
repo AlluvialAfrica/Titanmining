@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getDataClient } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 interface TenantInfo {
   id: string;
@@ -57,7 +59,8 @@ export default function AdminDashboard() {
         setMetrics(prev => ({ ...prev, reportsFiled: reports.length }));
       }
     } catch (err) {
-      console.error('Failed to load admin data:', err);
+      logger.error('Failed to load admin data:', err);
+      toast.error('Failed to load dashboard data. Please try again.');
     } finally {
       setLoadingData(false);
     }

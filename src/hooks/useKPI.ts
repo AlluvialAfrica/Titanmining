@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
+import toast from 'react-hot-toast';
 import { useAuth } from './useAuth';
 import { ROLE_KPI_PROFILES, KPIField } from '../types/kpiDefinitions';
 import { getDataClient } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 export interface KPIEntry {
   id: string;
@@ -20,7 +22,7 @@ function safeGetJSON<T>(key: string, fallback: T): T {
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch (err) {
-    console.warn(`Failed to parse localStorage key "${key}":`, err);
+    logger.warn(`Failed to parse localStorage key "${key}":`, err);
     return fallback;
   }
 }
@@ -29,7 +31,7 @@ function safeSetJSON(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (err) {
-    console.error(`Failed to write localStorage key "${key}":`, err);
+    logger.error(`Failed to write localStorage key "${key}":`, err);
   }
 }
 
@@ -62,7 +64,7 @@ export function useKPI() {
     try {
       return JSON.parse(raw);
     } catch (err) {
-      console.warn('Failed to parse KPI draft:', err);
+      logger.warn('Failed to parse KPI draft:', err);
       return null;
     }
   }, [user, getStorageKey]);
@@ -104,7 +106,8 @@ export function useKPI() {
             source: 'WEB',
           });
         } catch (err) {
-          console.error('Failed to persist KPI to AppSync:', err);
+          logger.error('Failed to persist KPI to AppSync:', err);
+          toast.error('KPI saved locally but failed to sync to server.');
         }
 
         // Also store locally for quick access

@@ -1,24 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
 import { Role, ROLE_PERMISSIONS } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
+import { logger } from '../utils/logger';
 import LanguageToggle from '../components/LanguageToggle';
 import OfflineBanner from '../components/OfflineBanner';
 import HelpButton from '../components/HelpButton';
-import FuelReconciliation from './reports/FuelReconciliation';
-import SiteDailySummary from './reports/SiteDailySummary';
-import GenericReportForm from './reports/GenericReportForm';
-import UserManagement from './UserManagement';
-import InstitutionalProfile from './InstitutionalProfile';
-import KPIInputForm from './kpi/KPIInputForm';
-import KPIDashboard from './kpi/KPIDashboard';
-import TeamKPIDashboard from './kpi/TeamKPIDashboard';
-import RoleProfile from './profile/RoleProfile';
-import HelpViewer from './help/HelpViewer';
 import { useReport } from '../hooks/useReport';
-import TermsOfService from './TermsOfService';
-import Disclaimer from './Disclaimer';
-import AdminDashboard from './AdminDashboard';
+
+// Lazy-loaded page components for code-splitting
+const FuelReconciliation = lazy(() => import('./reports/FuelReconciliation'));
+const SiteDailySummary = lazy(() => import('./reports/SiteDailySummary'));
+const GenericReportForm = lazy(() => import('./reports/GenericReportForm'));
+const UserManagement = lazy(() => import('./UserManagement'));
+const InstitutionalProfile = lazy(() => import('./InstitutionalProfile'));
+const KPIInputForm = lazy(() => import('./kpi/KPIInputForm'));
+const KPIDashboard = lazy(() => import('./kpi/KPIDashboard'));
+const TeamKPIDashboard = lazy(() => import('./kpi/TeamKPIDashboard'));
+const RoleProfile = lazy(() => import('./profile/RoleProfile'));
+const HelpViewer = lazy(() => import('./help/HelpViewer'));
+const TermsOfService = lazy(() => import('./TermsOfService'));
+const Disclaimer = lazy(() => import('./Disclaimer'));
+const AdminDashboard = lazy(() => import('./AdminDashboard'));
 
 type TabType = 'form' | 'history' | 'users' | 'settings' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help';
 
@@ -33,17 +37,24 @@ export default function Dashboard() {
 
   useEffect(() => {
     getReportHistory().then(setHistory).catch((err) => {
-      console.error('Failed to load report history:', err);
+      logger.error('Failed to load report history:', err);
+      toast.error('Failed to load report history.');
       setHistory([]);
     });
   }, []);
 
+  const suspenseFallback = (
+    <div className="flex items-center justify-center py-12">
+      <span className="font-serif italic text-zinc-400">Loading...</span>
+    </div>
+  );
+
   if (activeModal === 'terms') {
-    return <TermsOfService onClose={() => setActiveModal(null)} />;
+    return <Suspense fallback={suspenseFallback}><TermsOfService onClose={() => setActiveModal(null)} /></Suspense>;
   }
 
   if (activeModal === 'disclaimer') {
-    return <Disclaimer onClose={() => setActiveModal(null)} />;
+    return <Suspense fallback={suspenseFallback}><Disclaimer onClose={() => setActiveModal(null)} /></Suspense>;
   }
 
   if (!user) return null;
@@ -105,6 +116,7 @@ export default function Dashboard() {
       </header>
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-12 py-12">
+        <Suspense fallback={suspenseFallback}>
         {user.role === Role.SYSTEM_ADMIN ? (
           <AdminDashboard />
         ) : (
@@ -218,6 +230,7 @@ export default function Dashboard() {
             </section>
           </div>
         )}
+        </Suspense>
       </main>
 
       <footer className="border-t border-zinc-100 py-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">

@@ -4,16 +4,24 @@ import App from "./App.tsx";
 import "./index.css";
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
+import { logger } from "./utils/logger";
+
+const isProd = import.meta.env.PROD;
 
 try {
   if (outputs.auth && outputs.auth.user_pool_id && !outputs.auth.user_pool_id.includes('placeholder')) {
     Amplify.configure(outputs);
-    console.log('Amplify configured successfully.');
+    logger.info('Amplify configured successfully.');
+  } else if (isProd) {
+    throw new Error('Invalid Amplify configuration: missing or placeholder auth settings in production.');
   } else {
-    console.warn('Amplify is running in offline demo mode with placeholder configuration.');
+    logger.warn('Amplify is running in offline demo mode with placeholder configuration.');
   }
 } catch (err) {
-  console.error('Failed to configure Amplify:', err);
+  if (isProd) {
+    throw err;
+  }
+  logger.error('Failed to configure Amplify:', err);
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

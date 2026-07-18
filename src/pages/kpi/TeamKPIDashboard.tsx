@@ -7,6 +7,8 @@ import { ROLE_PERMISSIONS } from '../../types/roles';
 import type { Role } from '../../types/roles';
 import { getAllSubordinates, ROLE_HIERARCHY } from '../../types/roleHierarchy';
 import { getDataClient } from '../../services/dataService';
+import { logger } from '../../utils/logger';
+import toast from 'react-hot-toast';
 import KPICard from '../../components/KPICard';
 
 interface TeamMember {
@@ -58,7 +60,8 @@ export default function TeamKPIDashboard() {
           })));
         }
       } catch (err) {
-        console.error('Failed to load team members:', err);
+        logger.error('Failed to load team members:', err);
+        toast.error('Failed to load team members.');
       }
     }
     if (hasAccess) loadMembers();

@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getDataClient } from '../services/dataService';
+import { logger } from '../utils/logger';
+
+const MAX_QUEUE_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const MAX_QUEUE_SIZE = 100;
+const MAX_RETRIES = 3;
 
 interface QueuedSubmission {
   id: string;
@@ -15,7 +20,7 @@ function safeGetJSON<T>(key: string, fallback: T): T {
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch (err) {
-    console.warn(`Failed to parse localStorage key "${key}":`, err);
+    logger.warn(`Failed to parse localStorage key "${key}":`, err);
     return fallback;
   }
 }
@@ -24,8 +29,27 @@ function safeSetJSON(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (err) {
-    console.error(`Failed to write localStorage key "${key}":`, err);
+    logger.error(`Failed to write localStorage key "${key}":`, err);
   }
+}
+
+/**
+ * Remove expired items (older than MAX_QUEUE_AGE_MS) and items that
+ * have exceeded MAX_RETRIES from the queue.
+ */
+function cleanQueue(items: QueuedSubmission[]): QueuedSubmission[] {
+  const now = Date.now();
+  return items.filter(item => {
+    if (now - item.timestamp > MAX_QUEUE_AGE_MS) {
+      logger.warn(`Removing expired offline queue item ${item.id} (age: ${Math.round((now - item.timestamp) / 86400000)}d)`);
+      return false;
+    }
+    if (item.retries >= MAX_RETRIES) {
+      logger.warn(`Removing failed offline queue item ${item.id} (retries: ${item.retries})`);
+      return false;
+    }
+    return true;
+  });
 }
 
 export function useOfflineSync() {
@@ -42,7 +66,13 @@ export function useOfflineSync() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    setQueue(safeGetJSON<QueuedSubmission[]>('offlineQueue', []));
+    // Load and clean queue on mount
+    const raw = safeGetJSON<QueuedSubmission[]>('offlineQueue', []);
+    const cleaned = cleanQueue(raw);
+    if (cleaned.length !== raw.length) {
+      safeSetJSON('offlineQueue', cleaned);
+    }
+    setQueue(cleaned);
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -57,13 +87,21 @@ export function useOfflineSync() {
       timestamp: Date.now(),
       retries: 0,
     };
-    const newQueue = [...queue, item];
+
+    // Enforce max queue size by dropping oldest items
+    let newQueue = [...queue, item];
+    if (newQueue.length > MAX_QUEUE_SIZE) {
+      const overflow = newQueue.length - MAX_QUEUE_SIZE;
+      logger.warn(`Offline queue full (${MAX_QUEUE_SIZE}), dropping ${overflow} oldest items.`);
+      newQueue = newQueue.slice(overflow);
+    }
+
     setQueue(newQueue);
     safeSetJSON('offlineQueue', newQueue);
   };
 
   const processQueue = async () => {
-    const pending = queue.filter(item => item.retries < 3);
+    const pending = queue.filter(item => item.retries < MAX_RETRIES);
 
     for (const item of pending) {
       try {
@@ -75,7 +113,7 @@ export function useOfflineSync() {
         setQueue(newQueue);
         safeSetJSON('offlineQueue', newQueue);
       } catch (error) {
-        console.error(`Failed to sync queued report ${item.id}:`, error);
+        logger.error(`Failed to sync queued report ${item.id}:`, error);
         const newQueue = queue.map(q =>
           q.id === item.id ? { ...q, retries: q.retries + 1 } : q
         );

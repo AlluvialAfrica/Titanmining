@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useLanguage } from '../contexts/LanguageContext';
+import { logger } from '../utils/logger';
 
 interface OrgProfileData {
   name: string;
@@ -28,7 +29,7 @@ export default function InstitutionalProfile() {
 
   const onSubmit = (data: OrgProfileData) => {
     alert(t('profile.updated'));
-    console.log('Updated Profile:', data);
+    logger.debug('Updated Profile:', data);
   };
 
   return (

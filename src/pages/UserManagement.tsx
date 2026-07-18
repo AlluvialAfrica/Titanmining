@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useForm, Controller } from 'react-hook-form';
 import { Role } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../hooks/useAuth';
 import { getDataClient } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 interface UserCreationFormData {
   role: Role;
@@ -64,13 +66,14 @@ export default function UserManagement() {
         })));
       }
     } catch (err) {
-      console.error('Failed to load users from AppSync:', err);
+      logger.error('Failed to load users from AppSync:', err);
+      toast.error('Failed to load users from server. Showing cached data.');
       // Fallback: load from localStorage
       try {
         const saved = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
         setUsersList(saved);
       } catch (fallbackErr) {
-        console.warn('Failed to load users from localStorage fallback:', fallbackErr);
+        logger.warn('Failed to load users from localStorage fallback:', fallbackErr);
         setUsersList([]);
       }
     } finally {
@@ -121,7 +124,8 @@ export default function UserManagement() {
         createdBy: user.id,
       });
     } catch (err) {
-      console.error('Failed to create user in AppSync:', err);
+      logger.error('Failed to create user in AppSync:', err);
+      toast.error('User created locally but failed to sync to server.');
     }
 
     setUsersList([...usersList, newUser]);

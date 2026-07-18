@@ -9,6 +9,7 @@ import {
   type SignInOutput,
 } from 'aws-amplify/auth';
 import { Role } from '../types/roles';
+import { logger } from '../utils/logger';
 
 export interface User {
   id: string;
@@ -88,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(appUser);
     } catch (err) {
       // No current session on mount is expected (user not logged in)
-      console.debug('No existing auth session:', err);
+      logger.debug('No existing auth session:', err);
     } finally {
       setLoading(false);
     }
@@ -185,7 +186,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await signOut();
     } catch (err) {
-      console.error('Sign out error:', err);
+      logger.error('Sign out error:', err);
     }
     setUser(null);
     setTempUser(null);

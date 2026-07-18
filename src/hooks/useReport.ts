@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useAuth } from './useAuth';
 import { useOfflineSync } from './useOfflineSync';
 import { checkSoD } from '../utils/sodChecks';
 import { getDataClient } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 function safeGetJSON<T>(key: string, fallback: T): T {
   try {
@@ -10,7 +12,7 @@ function safeGetJSON<T>(key: string, fallback: T): T {
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch (err) {
-    console.warn(`Failed to parse localStorage key "${key}":`, err);
+    logger.warn(`Failed to parse localStorage key "${key}":`, err);
     return fallback;
   }
 }
@@ -19,7 +21,7 @@ function safeSetJSON(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (err) {
-    console.error(`Failed to write localStorage key "${key}":`, err);
+    logger.error(`Failed to write localStorage key "${key}":`, err);
   }
 }
 
@@ -104,7 +106,8 @@ export function useReport() {
       const { data } = await client.models.DailyReport.list();
       if (data && data.length > 0) return data;
     } catch (err) {
-      console.error('Failed to fetch reports from AppSync, falling back to local:', err);
+      logger.error('Failed to fetch reports from AppSync, falling back to local:', err);
+      toast.error('Unable to load reports from server. Showing cached data.');
     }
     // Fallback to localStorage
     const historyKey = `history_${user.orgId}`;

@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getDataClient } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
@@ -83,7 +84,7 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
           currency: 'USD',
         });
       } catch (orgErr) {
-        console.error('Failed to create organization record:', orgErr);
+        logger.error('Failed to create organization record:', orgErr);
       }
       onPaymentSuccess();
     } catch (err: any) {
