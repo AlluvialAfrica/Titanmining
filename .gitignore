@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# environment
+.env
+.env.local
+.env.production.local
+
 # amplify
 .amplify
 amplify_outputs*

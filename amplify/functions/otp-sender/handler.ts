@@ -6,11 +6,11 @@ export const handler = async (event: { phone: string; code: string; email?: stri
 
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
-  let twilioSender = process.env.TWILIO_CHATWORKS_WHATSAPP_NUMBER || '+12058469763';
-  const contentSid = process.env.TWILIO_CHATWORKS_WHATSAPP_AUTH_CONTENT_SID || 'HX4d5746edf889c25dfc00c86cf5442232';
+  const twilioSender = process.env.TWILIO_CHATWORKS_WHATSAPP_NUMBER;
+  const contentSid = process.env.TWILIO_CHATWORKS_WHATSAPP_AUTH_CONTENT_SID;
 
-  if (!twilioSid || !twilioToken) {
-    console.warn('Twilio credentials not configured. Falling back to SMS via AWS SNS.');
+  if (!twilioSid || !twilioToken || !twilioSender) {
+    console.warn('Twilio credentials not fully configured. Falling back to SMS via AWS SNS.');
     return await sendSnsFallback(phone, code);
   }
 

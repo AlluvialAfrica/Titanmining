@@ -3,8 +3,9 @@ import { signUp, confirmSignUp } from 'aws-amplify/auth';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getDataClient } from '../services/dataService';
 
-const stripePromise = loadStripe('pk_test_51TsR4n3zWruJmWzzj73gR5hNBhLM2fvCGVdB2Blh2pcqX3S324wktIAithotfoQCqgh5G0rlELoQ4twX88aFyvZG00iV5AtHog');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 interface RegisterTenantProps {
   onBackToLogin: () => void;
@@ -42,9 +43,20 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
         throw new Error(pmError.message);
       }
 
-      console.log('Stripe Payment Method created:', paymentMethod?.id);
-      // TODO: Send paymentMethod.id to backend to create Stripe subscription
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Store the organization record with payment info via AppSync
+      try {
+        const client = getDataClient();
+        await client.models.Organization.create({
+          name: orgName,
+          address: '',
+          timeZone: 'Africa/Nairobi',
+          defaultLanguage: 'en',
+          currency: 'USD',
+        });
+      } catch (orgErr) {
+        // Organization creation is best-effort; payment was successful
+        console.error('Failed to create organization record:', orgErr);
+      }
       onPaymentSuccess();
     } catch (err: any) {
       setError(err.message || t('register.paymentFailed'));

@@ -35,7 +35,7 @@ Apres avoir entre vos identifiants, cliquez sur le bouton Connexion.
 
 Une fois connecte, vous serez dirige vers votre tableau de bord specifique a votre role.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["login", "dashboard"],
+    relatedPages: ["form", "profile"],
     sortOrder: 1,
   },
   {
@@ -58,7 +58,7 @@ Si vous oubliez votre mot de passe, utilisez le lien Mot de passe oublie sur la 
 
 Contactez votre controleur de site ou administrateur systeme si vous ne parvenez pas a reinitialiser votre mot de passe.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["login", "settings"],
+    relatedPages: ["form", "settings", "profile"],
     sortOrder: 2,
   },
   {
@@ -81,7 +81,7 @@ La zone de contenu principale a droite affiche le module actuellement selectionn
 
 En bas de la barre laterale, vous pouvez voir votre identifiant d'organisation et identifiant de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard"],
+    relatedPages: ["form", "history", "profile"],
     sortOrder: 3,
   },
   {
@@ -104,7 +104,7 @@ Les roles operationnels ont un acces cible aux modeles specifiques pertinents po
 
 Contactez votre controleur de site ou responsable RH pour demander un changement de role.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "settings"],
+    relatedPages: ["form", "settings", "profile"],
     sortOrder: 4,
   },
   {
@@ -127,7 +127,7 @@ Avant de soumettre, verifiez attentivement toutes les donnees saisies. Une fois 
 
 Apres la soumission, le rapport apparait dans votre historique des rapports.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 5,
   },
   {
@@ -150,7 +150,7 @@ La sauvegarde automatique se produit toutes les 30 secondes. Vous pouvez egaleme
 
 Notez que les brouillons sont specifiques a l'appareil. Completez et soumettez vos rapports depuis le meme appareil.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 6,
   },
   {
@@ -173,7 +173,7 @@ La file d'attente hors ligne est visible dans votre historique des rapports avec
 
 Certaines fonctionnalites necessitent une connexion active, notamment la gestion des utilisateurs et les changements de mot de passe.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["dashboard"],
+    relatedPages: ["form", "history", "profile"],
     sortOrder: 7,
   },
   {
@@ -196,7 +196,7 @@ La signature numerique est cryptographiquement liee a votre compte utilisateur e
 
 Les rapports signes affichent un badge verifie dans l'historique des rapports.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["reports", "dashboard"],
+    relatedPages: ["form", "history"],
     sortOrder: 8,
   },
   {
@@ -219,7 +219,7 @@ Les donnees de rapport que vous saisissez sont stockees telles quelles quelle qu
 
 Si vous remarquez des traductions manquantes ou du texte incorrect, veuillez signaler le probleme a votre controleur de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard"],
+    relatedPages: ["form", "history", "profile"],
     sortOrder: 9,
   },
   {
@@ -242,7 +242,7 @@ Pour les problemes non couverts dans la documentation, contactez votre controleu
 
 Pour les problemes techniques urgents, contactez directement l'administrateur systeme.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "help"],
+    relatedPages: ["form", "help"],
     sortOrder: 10,
   },
   {
@@ -265,7 +265,7 @@ Vous avez acces au menu deroulant complet de selection de formulaires, vous perm
 
 De plus, vous pouvez gerer les utilisateurs, ajuster les parametres du site et configurer les informations du profil institutionnel.`,
     relatedRoles: ["SITE_CONTROLLER"],
-    relatedPages: ["dashboard", "reports", "users"],
+    relatedPages: ["form", "history", "users"],
     sortOrder: 1,
   },
   {
@@ -288,7 +288,7 @@ En tant que directeur de mine, vous avez egalement une visibilite sur les tablea
 
 Vous pouvez gerer les utilisateurs au sein de votre departement et avez acces aux parametres du site.`,
     relatedRoles: ["MINE_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 2,
   },
   {
@@ -311,7 +311,7 @@ Le tableau de bord du responsable des operations met en evidence les metriques o
 
 Vous travaillez en etroite collaboration avec le controleur de site et le directeur de mine.`,
     relatedRoles: ["OPERATIONS_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 3,
   },
   {
@@ -334,7 +334,7 @@ Votre tableau de bord KPI montre les metriques d'efficacite du traitement, les p
 
 En tant que responsable usine, vous pouvez gerer les affectations du personnel de traitement et examiner leurs soumissions quotidiennes.`,
     relatedRoles: ["PLANT_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 4,
   },
   {
@@ -357,7 +357,7 @@ Votre tableau de bord montre les metriques de sante des equipements, les taux d'
 
 Coordonnez avec le responsable des operations et le responsable usine pour planifier des fenetres d'entretien.`,
     relatedRoles: ["WORKSHOP_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 5,
   },
   {
@@ -380,7 +380,7 @@ Votre tableau de bord affiche les KPI financiers, y compris les depenses quotidi
 
 En tant que responsable financier, vous examinez et approuvez les soumissions financieres du personnel d'achats.`,
     relatedRoles: ["FINANCE_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 6,
   },
   {
@@ -403,7 +403,7 @@ Votre tableau de bord montre les metriques de dotation en personnel, y compris l
 
 Travaillez avec les responsables de departement pour assurer des niveaux de dotation adequats.`,
     relatedRoles: ["HR_MANAGER"],
-    relatedPages: ["dashboard", "users", "reports"],
+    relatedPages: ["form", "users", "history"],
     sortOrder: 7,
   },
   {
@@ -426,7 +426,7 @@ Votre tableau de bord montre les metriques de securite, y compris le trafic au p
 
 Coordonnez avec le controleur de site sur les protocoles de securite.`,
     relatedRoles: ["SECURITY_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 8,
   },
   {
@@ -449,7 +449,7 @@ Votre formulaire capture les donnees critiques, y compris les heures moteur, le 
 
 Soumettez votre journal quotidien a la fin de chaque quart.`,
     relatedRoles: ["EXCAVATOR_OPERATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 9,
   },
   {
@@ -472,7 +472,7 @@ Si vous rencontrez des champs que vous ne comprenez pas, utilisez le bouton d'ai
 
 Soumettez toujours vos formulaires avant la fin de votre quart pour assurer la collecte et le rapport des donnees en temps opportun.`,
     relatedRoles: ["GENERAL_WORKER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 10,
   },
   {
@@ -495,7 +495,7 @@ Votre tableau de bord KPI suit les metriques geologiques, y compris les echantil
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["MINING_GEOLOGY_LEAD"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 11,
   },
   {
@@ -518,7 +518,7 @@ Votre tableau de bord KPI suit les metriques de traitement, y compris le concent
 
 Vous pouvez consulter et saisir vos propres KPI et verifier les rapports des modeles 07 et 08. Vous ne disposez pas de privileges de gestion des utilisateurs ou d'exportation de donnees.`,
     relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 12,
   },
   {
@@ -541,7 +541,7 @@ Votre tableau de bord KPI suit les metriques de carburant, y compris le carburan
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 13,
   },
   {
@@ -564,7 +564,7 @@ Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparati
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["ENGINE_MECHANIC"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 14,
   },
   {
@@ -587,7 +587,7 @@ Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparati
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["ELECTRICAL_MECHANIC"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 15,
   },
   {
@@ -610,7 +610,7 @@ Votre tableau de bord KPI suit les metriques de soutien a l'entretien, y compris
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["GREASING_WASHING_HELPER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 16,
   },
   {
@@ -633,7 +633,7 @@ Votre tableau de bord KPI suit les metriques de securite, y compris les journaux
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["GATE_SECURITY"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 17,
   },
   {
@@ -656,7 +656,7 @@ Votre tableau de bord KPI suit les metriques de production, y compris les heures
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["DRUM_PUMP_SUPERVISOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 18,
   },
   {
@@ -679,7 +679,7 @@ Votre tableau de bord KPI suit les metriques de production, y compris les heures
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["DRUM_PUMP_ASSISTANT"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 19,
   },
   {
@@ -702,7 +702,7 @@ Votre tableau de bord KPI suit les metriques de traitement, y compris les cycles
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["CENTRIFUGE_OPERATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 20,
   },
   {
@@ -725,7 +725,7 @@ Votre tableau de bord KPI suit les metriques de traitement, y compris les cycles
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["SHAKING_TABLE_OPERATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 21,
   },
   {
@@ -748,7 +748,7 @@ Votre tableau de bord KPI suit les metriques financieres, y compris les decaisse
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["SITE_PETTY_CASH_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 22,
   },
   {
@@ -771,7 +771,7 @@ En tant qu'administrateur systeme, vous avez acces a tous les tableaux de bord K
 
 Vous disposez de privileges complets de gestion des utilisateurs, de modification de profil et d'exportation de donnees. Utilisez ces autorisations de maniere responsable et maintenez les journaux d'audit de toutes les actions administratives.`,
     relatedRoles: ["SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "reports", "users", "settings"],
+    relatedPages: ["form", "history", "users", "settings"],
     sortOrder: 23,
   },
   {
@@ -794,7 +794,7 @@ Votre tableau de bord KPI suit les metriques de securite, y compris les exercice
 
 Vous disposez de privileges d'exportation de donnees et pouvez consulter les KPI au niveau de l'equipe dans tous les departements. Vous ne disposez pas de capacites de gestion des utilisateurs.`,
     relatedRoles: ["SAFETY_COMPLIANCE_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 24,
   },
   {
@@ -817,7 +817,7 @@ Votre tableau de bord KPI suit les metriques de production, y compris les rappor
 
 Vous pouvez consulter les KPI au niveau de l'equipe pour l'equipe miniere, saisir vos propres KPI et verifier les soumissions du modele 03. Vous ne disposez pas de privileges de gestion des utilisateurs ou d'exportation de donnees.`,
     relatedRoles: ["MINE_FOREMAN"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 25,
   },
   {
@@ -840,7 +840,7 @@ Votre tableau de bord KPI suit les metriques de production, y compris les heures
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["DREDGE_OPERATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 26,
   },
   {
@@ -863,7 +863,7 @@ Votre tableau de bord KPI suit les metriques de traitement, y compris les heures
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["PROCESS_PLANT_OPERATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 27,
   },
   {
@@ -886,7 +886,7 @@ Votre tableau de bord KPI suit les metriques de production, y compris les heures
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["PUMP_OPERATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 28,
   },
   {
@@ -909,7 +909,7 @@ Votre tableau de bord KPI suit les metriques geologiques, y compris les echantil
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["DRILLER_SAMPLING_CREW"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 29,
   },
   {
@@ -932,7 +932,7 @@ Votre tableau de bord KPI suit les metriques financieres, y compris les factures
 
 Vous disposez de privileges d'exportation de donnees pour generer des rapports financiers. Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs ou de verification des rapports.`,
     relatedRoles: ["ACCOUNTANT"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 30,
   },
   {
@@ -955,7 +955,7 @@ Votre tableau de bord KPI suit les metriques financieres, y compris les demandes
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["PROCUREMENT_OFFICER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 31,
   },
   {
@@ -978,7 +978,7 @@ Votre tableau de bord KPI suit les metriques de qualite, y compris les essais te
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["ASSAY_LAB_TECHNICIAN"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 32,
   },
   {
@@ -1001,7 +1001,7 @@ Votre tableau de bord KPI suit les metriques d'administration, y compris les reu
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["COMMUNITY_RELATIONS_OFFICER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 33,
   },
   {
@@ -1024,7 +1024,7 @@ Votre tableau de bord KPI suit les metriques d'administration, y compris les doc
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["ADMIN_CLERK"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 34,
   },
   {
@@ -1047,7 +1047,7 @@ Votre tableau de bord KPI suit les metriques de securite, y compris les zones pa
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["SECURITY_GUARD"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 35,
   },
   {
@@ -1070,7 +1070,7 @@ Votre tableau de bord KPI suit les metriques d'administration, y compris les con
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["MEDICAL_OFFICER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 36,
   },
   {
@@ -1093,7 +1093,7 @@ Votre tableau de bord KPI suit les metriques d'administration, y compris les rep
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["CAMP_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 37,
   },
   {
@@ -1116,7 +1116,7 @@ Votre tableau de bord KPI suit les metriques logistiques, y compris les trajets 
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["LOGISTICS_TRANSPORT_COORDINATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 38,
   },
   {
@@ -1139,7 +1139,7 @@ Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparati
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["HEAVY_EQUIPMENT_MECHANIC"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 39,
   },
   {
@@ -1162,7 +1162,7 @@ Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparati
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["AUTO_ELECTRICIAN"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 40,
   },
   {
@@ -1185,7 +1185,7 @@ Votre tableau de bord KPI suit les metriques d'entretien, y compris les travaux 
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["WELDER_FABRICATOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 41,
   },
   {
@@ -1208,7 +1208,7 @@ Votre tableau de bord KPI suit les metriques d'entretien, y compris les vehicule
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
     relatedRoles: ["LIGHT_VEHICLE_MECHANIC"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 42,
   },
   {
@@ -1231,7 +1231,7 @@ Chaque KPI a une valeur cible definie par la direction. Le systeme compare la pe
 
 Comprendre vos KPI vous aide a vous concentrer sur les metriques les plus importantes pour votre role.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "kpi"],
+    relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 1,
   },
   {
@@ -1254,7 +1254,7 @@ Certains KPI sont calcules automatiquement a partir d'autres champs. Par exemple
 
 Vos donnees KPI sont immediatement refletees dans le tableau de bord apres la soumission de votre rapport.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["dashboard", "reports", "kpi"],
+    relatedPages: ["form", "history", "kpiInput", "kpiDashboard"],
     sortOrder: 2,
   },
   {
@@ -1277,7 +1277,7 @@ Trois niveaux de seuil existent: vert (dans la cible), orange (variance mineure)
 
 Examinez regulierement vos objectifs KPI et discutez de toute preoccupation avec votre responsable.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER"],
-    relatedPages: ["dashboard", "kpi", "settings"],
+    relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard", "settings"],
     sortOrder: 3,
   },
   {
@@ -1300,7 +1300,7 @@ Les filtres vous permettent de visualiser les KPI par periode de temps, departem
 
 Le tableau de bord se rafraichit automatiquement a mesure que de nouveaux rapports sont soumis.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER"],
-    relatedPages: ["dashboard", "kpi"],
+    relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 4,
   },
   {
@@ -1323,7 +1323,7 @@ Les tableaux de bord d'equipe respectent les controles d'acces bases sur les rol
 
 Exportez les rapports KPI d'equipe pour inclusion dans les reunions de direction hebdomadaires.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER"],
-    relatedPages: ["dashboard", "kpi"],
+    relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 5,
   },
   {
@@ -1346,7 +1346,7 @@ Les alertes de variance se declenchent lorsque la production quotidienne tombe e
 
 Les donnees KPI de production alimentent le Resume quotidien du site (modele 01) et la Feuille quotidienne de geologie miniere (modele 05).`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "MINING_GEOLOGY_LEAD"],
-    relatedPages: ["dashboard", "kpi", "reports"],
+    relatedPages: ["form", "kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 6,
   },
   {
@@ -1369,7 +1369,7 @@ Les KPI de conformite securitaire surveillent l'achevement des controles de secu
 
 Un objectif zero incident est maintenu. Tout incident de securite declenche un flux de travail de revue automatique.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "kpi"],
+    relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 7,
   },
   {
@@ -1392,7 +1392,7 @@ Le temps d'arret non planifie est suivi en pourcentage des heures totales dispon
 
 Les donnees KPI de maintenance proviennent du modele 10 (Journal d'entretien, graissage et lavage).`,
     relatedRoles: ["SITE_CONTROLLER", "WORKSHOP_MANAGER", "OPERATIONS_MANAGER"],
-    relatedPages: ["dashboard", "kpi", "reports"],
+    relatedPages: ["form", "kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 8,
   },
   {
@@ -1415,7 +1415,7 @@ Les alertes de variance se declenchent lorsque les depenses quotidiennes depasse
 
 Les donnees KPI financieres proviennent du modele 12 et du modele 14.`,
     relatedRoles: ["SITE_CONTROLLER", "FINANCE_MANAGER", "MINE_MANAGER"],
-    relatedPages: ["dashboard", "kpi", "reports"],
+    relatedPages: ["form", "kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 9,
   },
   {
@@ -1438,7 +1438,7 @@ Les roles operationnels voient les KPI specifiques qu'ils influencent directemen
 
 Les profils KPI peuvent etre personnalises par le controleur de site via la page Parametres du site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "kpi", "settings"],
+    relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard", "settings"],
     sortOrder: 10,
   },
   {
@@ -1461,7 +1461,7 @@ Les sections cles incluent les volumes de production, l'etat des equipements, le
 
 Ce modele doit etre complete a la fin de chaque journee operationnelle.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 1,
   },
   {
@@ -1484,7 +1484,7 @@ Les affectations de quarts sont enregistrees avec les heures de debut et de fin.
 
 Les heures supplementaires doivent etre enregistrees et justifiees.`,
     relatedRoles: ["HR_MANAGER", "SITE_CONTROLLER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 2,
   },
   {
@@ -1507,7 +1507,7 @@ La liste de controle de pre-operation doit etre completee avant de commencer le 
 
 Les donnees de performance de la machine alimentent les KPI de production et la planification de l'entretien.`,
     relatedRoles: ["EXCAVATOR_OPERATOR", "OPERATIONS_MANAGER", "WORKSHOP_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 3,
   },
   {
@@ -1530,7 +1530,7 @@ La reconciliation quotidienne compare le stock d'ouverture, le carburant recu, l
 
 Ce modele implemente des controles de separation des taches necessitant differents utilisateurs pour enregistrer les distributions et effectuer la reconciliation.`,
     relatedRoles: ["FUEL_ADMIN_LOGISTICS", "SITE_CONTROLLER", "FINANCE_MANAGER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 4,
   },
   {
@@ -1553,7 +1553,7 @@ Les mesures de profondeur de fosse, les observations de la nappe phreatique et l
 
 Ce modele est utilise par le responsable geologie miniere et examine par le directeur de mine.`,
     relatedRoles: ["MINING_GEOLOGY_LEAD", "MINE_MANAGER", "SITE_CONTROLLER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 5,
   },
   {
@@ -1576,7 +1576,7 @@ Chaque modele inclut des points de controle de qualite et des evaluations de l'e
 
 Le responsable usine supervise les trois modeles. Les operateurs de traitement soumettent leurs formulaires respectifs.`,
     relatedRoles: ["PLANT_MANAGER", "PROCESSING_RECOVERY_LEAD", "DRUM_PUMP_SUPERVISOR"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 6,
   },
   {
@@ -1599,7 +1599,7 @@ Enregistrez le processus source, le poids de recuperation (brut et net), l'estim
 
 Ce modele a une journalisation d'audit amelioree. Chaque acces, modification et soumission est enregistre avec des horodatages.`,
     relatedRoles: ["SITE_CONTROLLER", "PLANT_MANAGER", "PROCESSING_RECOVERY_LEAD"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 7,
   },
   {
@@ -1622,7 +1622,7 @@ Les calendriers de graissage sont automatiquement generes en fonction des heures
 
 Les journaux de lavage capturent l'utilisation d'eau et les procedures de nettoyage des equipements.`,
     relatedRoles: ["WORKSHOP_MANAGER", "ENGINE_MECHANIC", "ELECTRICAL_MECHANIC"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 8,
   },
   {
@@ -1645,7 +1645,7 @@ Le suivi des mouvements d'articles assure la responsabilite des materiaux, equip
 
 Le responsable securite examine les journaux quotidiens du portail pour les anomalies.`,
     relatedRoles: ["GATE_SECURITY", "SECURITY_MANAGER", "SITE_CONTROLLER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 9,
   },
   {
@@ -1668,7 +1668,7 @@ T14 suit les transactions de petite caisse avec le solde d'ouverture, les decais
 
 Ces modeles implementent des controles stricts de separation des taches.`,
     relatedRoles: ["FINANCE_MANAGER", "SITE_CONTROLLER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 10,
   },
   {
@@ -1691,7 +1691,7 @@ Verifiez votre connexion Internet. Si vous etes hors ligne, le rapport sera mis 
 
 Si le probleme persiste, essayez de rafraichir la page et de re-saisir les donnees. Contactez votre controleur de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["reports", "dashboard"],
+    relatedPages: ["form", "history"],
     sortOrder: 1,
   },
   {
@@ -1714,7 +1714,7 @@ Verifiez la file d'attente hors ligne dans l'historique des rapports. Si les rap
 
 Si la file d'attente semble bloquee, essayez de fermer et rouvrir votre navigateur. Contactez votre controleur de site si les problemes persistent.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 2,
   },
   {
@@ -1737,7 +1737,7 @@ Si la signature apparait deformee ou ne s'enregistre pas, essayez de vider le ca
 
 Pour les problemes de signature persistants, vous pouvez demander une derogation temporaire a votre controleur de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["reports", "dashboard"],
+    relatedPages: ["form", "history"],
     sortOrder: 3,
   },
   {
@@ -1760,7 +1760,7 @@ Si vous recevez une alerte de violation SoD, vous devez faire completer l'action
 
 Contactez votre controleur de site si vous pensez que la configuration SoD est incorrecte.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["reports", "dashboard"],
+    relatedPages: ["form", "history"],
     sortOrder: 4,
   },
   {
@@ -1783,7 +1783,7 @@ Pour resoudre une alerte de variance, verifiez que la valeur saisie est correcte
 
 Les seuils de variance sont configures par le controleur de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["reports", "dashboard"],
+    relatedPages: ["form", "history"],
     sortOrder: 5,
   },
   {
@@ -1806,7 +1806,7 @@ Assurez-vous que votre navigateur est a jour. L'application necessite un navigat
 
 Si des champs specifiques manquent, votre role peut ne pas avoir la permission de voir ces champs. Contactez votre controleur de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["reports", "dashboard"],
+    relatedPages: ["form", "history"],
     sortOrder: 6,
   },
   {
@@ -1829,7 +1829,7 @@ Si vous avez oublie votre mot de passe, utilisez le lien Mot de passe oublie sur
 
 Si vous etes un nouvel utilisateur et n'avez pas recu vos identifiants, contactez votre responsable RH ou controleur de site.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["login"],
+    relatedPages: ["form", "profile"],
     sortOrder: 7,
   },
   {
@@ -1852,7 +1852,7 @@ Les liens de reinitialisation expirent apres 24 heures. Si votre lien a expire, 
 
 Si les problemes persistent, votre controleur de site ou administrateur systeme peut reinitialiser manuellement votre mot de passe.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["login", "settings"],
+    relatedPages: ["form", "settings", "profile"],
     sortOrder: 8,
   },
   {
@@ -1875,7 +1875,7 @@ Les rapports brouillons sont stockes localement et ne se synchronisent pas entre
 
 Si les rapports soumis n'apparaissent pas sur un autre appareil, verifiez que vous etes connecte avec le meme compte.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
-    relatedPages: ["dashboard", "reports"],
+    relatedPages: ["form", "history"],
     sortOrder: 9,
   },
   {
@@ -1898,7 +1898,7 @@ Niveau 2: Contactez votre controleur de site. Il a acces aux outils administrati
 
 Niveau 3: Pour les problemes au niveau du systeme, la corruption de donnees ou les incidents de securite, le controleur de site escalade a l'administrateur systeme.`,
     relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
-    relatedPages: ["dashboard", "help"],
+    relatedPages: ["form", "help"],
     sortOrder: 10,
   },
 ];

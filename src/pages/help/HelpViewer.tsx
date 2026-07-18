@@ -26,7 +26,9 @@ export default function HelpViewer({ contextFilter, onClose }: HelpViewerProps) 
   const filteredArticles = useMemo(() => {
     let arts = HELP_ARTICLES.filter((a) => a.category === selectedCategory);
 
-    if (contextFilter) {
+    // Only apply page filter when help is opened from a specific context
+    // (not when user is browsing the help tab directly)
+    if (contextFilter && contextFilter !== 'help') {
       arts = arts.filter((a) => a.relatedPages.includes(contextFilter));
     }
 

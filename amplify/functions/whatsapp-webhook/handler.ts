@@ -11,7 +11,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const challenge = queryParams['hub.challenge'];
 
     if (mode && token) {
-      if (mode === 'subscribe' && token === (process.env.WHATSAPP_VERIFY_TOKEN || 'chatworks_verify')) {
+      if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
         console.log('Webhook verified successfully.');
         return {
           statusCode: 200,
@@ -56,9 +56,9 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 async function sendAutoReply(to: string, incomingText: string) {
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
-  const twilioSender = process.env.TWILIO_CHATWORKS_WHATSAPP_NUMBER || '+12058469763';
+  const twilioSender = process.env.TWILIO_CHATWORKS_WHATSAPP_NUMBER;
 
-  if (!twilioSid || !twilioToken) {
+  if (!twilioSid || !twilioToken || !twilioSender) {
     console.warn('Twilio credentials not configured. Auto-reply skipped.');
     return;
   }
