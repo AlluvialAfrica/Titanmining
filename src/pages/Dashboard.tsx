@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Role, ROLE_PERMISSIONS } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -29,6 +29,11 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('form');
   const [selectedControllerForm, setSelectedControllerForm] = useState<string>('TEMPLATE_01');
   const [activeModal, setActiveModal] = useState<'terms' | 'disclaimer' | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+
+  useEffect(() => {
+    getReportHistory().then(setHistory).catch(() => setHistory([]));
+  }, []);
 
   if (activeModal === 'terms') {
     return <TermsOfService onClose={() => setActiveModal(null)} />;
@@ -41,7 +46,6 @@ export default function Dashboard() {
   if (!user) return null;
 
   const permissions = ROLE_PERMISSIONS[user.role];
-  const history = getReportHistory();
 
   const renderForm = (templateId: string) => {
     switch (templateId) {

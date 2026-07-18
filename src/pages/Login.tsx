@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
-import { DEMO_USERS } from '../contexts/AuthContext';
 import RegisterTenant from './RegisterTenant';
 import TermsOfService from './TermsOfService';
 import Disclaimer from './Disclaimer';
@@ -28,7 +27,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await login(mobileNumber, '', password);
+      await login(mobileNumber, mobileNumber, password);
     } catch (err: any) {
       setError(err.message || t('login.loginFailed'));
     } finally {
@@ -60,11 +59,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const selectDemoUser = (user: any) => {
-    setMobileNumber(user.mobileNumber);
-    setPassword('TempPass123!');
   };
 
   if (activeModal === 'terms') {
@@ -115,7 +109,7 @@ export default function Login() {
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
                 className="minimal-input"
-                placeholder="••••••••"
+                placeholder="Min 8 chars, upper + lower + number + symbol"
               />
             </div>
 
@@ -208,12 +202,12 @@ export default function Login() {
             <div>
               <label className="minimal-label">{t('login.mobileNumber')}</label>
               <input
-                type="tel"
+                type="text"
                 required
                 value={mobileNumber}
                 onChange={e => setMobileNumber(e.target.value)}
                 className="minimal-input"
-                placeholder="+254722828481"
+                placeholder="email@example.com or +254..."
               />
             </div>
 
@@ -225,7 +219,7 @@ export default function Login() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="minimal-input"
-                placeholder="••••••••"
+                placeholder="Enter your password"
               />
             </div>
 
@@ -252,22 +246,6 @@ export default function Login() {
               </div>
             </div>
           </form>
-
-          <div className="mt-12 pt-8 border-t border-zinc-100">
-            <h3 className="text-xs uppercase tracking-widest text-zinc-400 mb-4 font-semibold">{t('login.testProfiles')}</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {DEMO_USERS.map(u => (
-                <button
-                  key={u.id}
-                  onClick={() => selectDemoUser(u)}
-                  className="p-2 text-left border border-zinc-200 hover:border-black text-[11px] transition-all"
-                >
-                  <p className="font-semibold text-black">{u.firstName} {u.lastName}</p>
-                  <p className="text-zinc-500 uppercase text-[9px] tracking-wide mt-1">{t(`roles.${u.role}`)}</p>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         <footer className="border-t border-zinc-100 pt-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">

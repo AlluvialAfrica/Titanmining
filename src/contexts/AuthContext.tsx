@@ -1,4 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  signIn,
+  signOut,
+  getCurrentUser,
+  fetchUserAttributes,
+  fetchAuthSession,
+  confirmSignIn,
+  type SignInOutput,
+} from 'aws-amplify/auth';
 import { Role } from '../types/roles';
 
 export interface User {
@@ -39,231 +48,149 @@ const AuthContext = createContext<AuthContextType>({
   otpPending: false,
 });
 
-// Prepopulated demo users for testing each role
-const DEMO_USERS: User[] = [
-  {
-    id: 'user_controller',
-    firstName: 'Amoroso',
-    lastName: 'Gombe',
-    role: Role.SITE_CONTROLLER,
-    mobileNumber: '+254722828481',
-    email: 'agombe@a1strategy.com',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_geology',
-    firstName: 'Moses',
-    lastName: 'Kiprono',
-    role: Role.MINING_GEOLOGY_LEAD,
-    mobileNumber: '+254711223344',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_processing',
-    firstName: 'David',
-    lastName: 'Ochieng',
-    role: Role.PROCESSING_RECOVERY_LEAD,
-    mobileNumber: '+254722334455',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_fuel',
-    firstName: 'Sarah',
-    lastName: 'Wambui',
-    role: Role.FUEL_ADMIN_LOGISTICS,
-    mobileNumber: '+254733445566',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_excavator',
-    firstName: 'Peter',
-    lastName: 'Kamau',
-    role: Role.EXCAVATOR_OPERATOR,
-    mobileNumber: '+254744556677',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    assignedMachine: 'CAT_1',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_cashier',
-    firstName: 'Grace',
-    lastName: 'Muthoni',
-    role: Role.SITE_PETTY_CASH_MANAGER,
-    mobileNumber: '+254755667788',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_admin',
-    firstName: 'System',
-    lastName: 'Admin',
-    role: Role.SYSTEM_ADMIN,
-    mobileNumber: '+254700000000',
-    email: 'admin@alluvial.africa',
-    orgId: 'org_alluvial_system',
-    siteId: 'site_global_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_mine_manager',
-    firstName: 'James',
-    lastName: 'Otieno',
-    role: Role.MINE_MANAGER,
-    mobileNumber: '+254766112233',
-    email: 'jotieno@alluvial.africa',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_ops_manager',
-    firstName: 'Catherine',
-    lastName: 'Njeri',
-    role: Role.OPERATIONS_MANAGER,
-    mobileNumber: '+254777223344',
-    email: 'cnjeri@alluvial.africa',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_plant_manager',
-    firstName: 'Daniel',
-    lastName: 'Kipchoge',
-    role: Role.PLANT_MANAGER,
-    mobileNumber: '+254788334455',
-    email: 'dkipchoge@alluvial.africa',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_workshop_manager',
-    firstName: 'Joseph',
-    lastName: 'Mwenda',
-    role: Role.WORKSHOP_MANAGER,
-    mobileNumber: '+254799445566',
-    email: 'jmwenda@alluvial.africa',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_security_manager',
-    firstName: 'Francis',
-    lastName: 'Barasa',
-    role: Role.SECURITY_MANAGER,
-    mobileNumber: '+254710556677',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-  {
-    id: 'user_finance_manager',
-    firstName: 'Margaret',
-    lastName: 'Wafula',
-    role: Role.FINANCE_MANAGER,
-    mobileNumber: '+254721667788',
-    email: 'mwafula@alluvial.africa',
-    orgId: 'org_alluvial_africa',
-    siteId: 'site_migori_01',
-    status: 'ACTIVE',
-  },
-];
+/**
+ * Build our app User object from Cognito user attributes.
+ */
+function buildUserFromAttributes(attrs: Record<string, string | undefined>, sub: string): User {
+  return {
+    id: sub,
+    firstName: attrs['given_name'] || attrs['custom:firstName'] || '',
+    lastName: attrs['family_name'] || attrs['custom:lastName'] || '',
+    role: (attrs['custom:role'] as Role) || Role.SITE_CONTROLLER,
+    mobileNumber: attrs['phone_number'] || '',
+    email: attrs['email'] || '',
+    orgId: attrs['custom:orgId'] || '',
+    siteId: attrs['custom:siteId'] || '',
+    shift: attrs['custom:shift'] || undefined,
+    assignedMachine: attrs['custom:machine'] || undefined,
+    status: (attrs['custom:status'] as 'PENDING' | 'ACTIVE' | 'SUSPENDED') || 'ACTIVE',
+  };
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [tempUser, setTempUser] = useState<User | null>(null);
+  const [tempUser, setTempUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [forcePasswordChange, setForcePasswordChange] = useState(false);
   const [otpPending, setOtpPending] = useState(false);
+  const [signInResult, setSignInResult] = useState<SignInOutput | null>(null);
 
+  // Check for existing session on mount
   useEffect(() => {
-    // Check if user session exists in localStorage
-    const saved = localStorage.getItem('currentUser');
-    if (saved) {
-      setUser(JSON.parse(saved));
-    }
-    setLoading(false);
+    checkExistingSession();
   }, []);
+
+  async function checkExistingSession() {
+    try {
+      const currentUser = await getCurrentUser();
+      const attrs = await fetchUserAttributes();
+      const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
+      setUser(appUser);
+    } catch {
+      // No current session — that's fine
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const login = async (mobileNumber: string, emailOrUsername: string, password: string) => {
     setLoading(true);
     try {
-      const customUsers = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
-      // Find matching demo user by phone number
-      const match = [...DEMO_USERS, ...customUsers].find(
-        u => u.mobileNumber === mobileNumber || u.email === emailOrUsername
-      );
+      // Determine username: prefer email, fall back to phone number
+      const username = emailOrUsername || mobileNumber;
 
-      if (!match) {
-        throw new Error('Invalid mobile number or credentials.');
-      }
+      const result = await signIn({ username, password });
+      setSignInResult(result);
 
-      // Check if user is pending first login
-      if (match.status === 'PENDING') {
-        setTempUser(match);
+      if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
+        // User must set a new password (admin-created account)
         setForcePasswordChange(true);
+        setTempUser({ username });
         setLoading(false);
         return;
       }
 
-      // Simulate sending WhatsApp OTP
-      console.log(`[WhatsApp OTP] Sending security code to ${match.mobileNumber}...`);
-      setTempUser(match);
-      setOtpPending(true);
+      if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_SMS_CODE' ||
+          result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_TOTP_CODE') {
+        // MFA required
+        setOtpPending(true);
+        setTempUser({ username });
+        setLoading(false);
+        return;
+      }
+
+      if (result.isSignedIn) {
+        // Fully authenticated — fetch user profile
+        const currentUser = await getCurrentUser();
+        const attrs = await fetchUserAttributes();
+        const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
+        setUser(appUser);
+      }
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      throw error;
+      throw new Error(error.message || 'Authentication failed.');
     }
   };
 
   const changePassword = async (newPassword: string) => {
     setLoading(true);
-    if (tempUser) {
-      const updatedUser = { ...tempUser, status: 'ACTIVE' as const };
-      setTempUser(updatedUser);
+    try {
+      const result = await confirmSignIn({ challengeResponse: newPassword });
+      setSignInResult(result);
       setForcePasswordChange(false);
-      setOtpPending(true);
-      console.log(`[WhatsApp OTP] Sending security code to ${updatedUser.mobileNumber}...`);
+
+      if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_SMS_CODE' ||
+          result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_TOTP_CODE') {
+        setOtpPending(true);
+        setLoading(false);
+        return;
+      }
+
+      if (result.isSignedIn) {
+        const currentUser = await getCurrentUser();
+        const attrs = await fetchUserAttributes();
+        const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
+        setUser(appUser);
+      }
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      throw new Error(error.message || 'Failed to change password.');
     }
-    setLoading(false);
   };
 
   const verifyOtp = async (code: string) => {
     setLoading(true);
     try {
-      if (code === '123456' || code === '1234') { // master bypass code
-        if (tempUser) {
-          setUser(tempUser);
-          localStorage.setItem('currentUser', JSON.stringify(tempUser));
-          setTempUser(null);
-          setOtpPending(false);
-        }
-        setLoading(false);
-      } else {
-        throw new Error('Invalid verification code.');
+      const result = await confirmSignIn({ challengeResponse: code });
+
+      if (result.isSignedIn) {
+        const currentUser = await getCurrentUser();
+        const attrs = await fetchUserAttributes();
+        const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
+        setUser(appUser);
+        setTempUser(null);
+        setOtpPending(false);
       }
-    } catch (error) {
       setLoading(false);
-      throw error;
+    } catch (error: any) {
+      setLoading(false);
+      throw new Error(error.message || 'Invalid verification code.');
     }
   };
 
   const logout = async () => {
+    try {
+      await signOut();
+    } catch (err) {
+      console.error('Sign out error:', err);
+    }
     setUser(null);
-    localStorage.removeItem('currentUser');
+    setTempUser(null);
+    setForcePasswordChange(false);
+    setOtpPending(false);
+    setSignInResult(null);
   };
 
   return (
@@ -286,4 +213,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-export { DEMO_USERS };

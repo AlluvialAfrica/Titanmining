@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { signUp, confirmSignUp } from 'aws-amplify/auth';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -41,9 +42,8 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
         throw new Error(pmError.message);
       }
 
-      console.log('Stripe Payment Method created:', paymentMethod);
-      
-      // Simulate backend subscription processing
+      console.log('Stripe Payment Method created:', paymentMethod?.id);
+      // TODO: Send paymentMethod.id to backend to create Stripe subscription
       await new Promise(resolve => setTimeout(resolve, 2000));
       onPaymentSuccess();
     } catch (err: any) {
@@ -105,61 +105,67 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
     password: '',
   });
 
-  const [verificationCode, setVerificationCode] = useState('');
   const [userInputCode, setUserInputCode] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { t } = useLanguage();
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (!formData.mobileNumber.startsWith('+254')) {
-      setError(t('register.mobileStartError'));
-      return;
+    try {
+      // Sign up with Cognito
+      await signUp({
+        username: formData.email,
+        password: formData.password,
+        options: {
+          userAttributes: {
+            email: formData.email,
+            phone_number: formData.mobileNumber,
+            given_name: formData.ownerFirstName,
+            family_name: formData.ownerLastName,
+            'custom:role': 'SITE_CONTROLLER',
+            'custom:orgId': `org_${formData.orgName.toLowerCase().replace(/\s/g, '_')}`,
+            'custom:siteId': 'site_alpha_01',
+            'custom:status': 'ACTIVE',
+          },
+        },
+      });
+
+      setStep(2);
+    } catch (err: any) {
+      setError(err.message || 'Registration failed.');
+    } finally {
+      setLoading(false);
     }
-
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    setVerificationCode(code);
-    setStep(2);
-
-    setTimeout(() => {
-      alert(`[Alluvial Email Verification Code] Your signup code is: ${code}`);
-    }, 500);
   };
 
-  const handleVerifyCodeSubmit = (e: React.FormEvent) => {
+  const handleVerifyCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (userInputCode === verificationCode || userInputCode === '1234') {
+    setError('');
+    setLoading(true);
+
+    try {
+      await confirmSignUp({
+        username: formData.email,
+        confirmationCode: userInputCode,
+      });
       setStep(3);
-    } else {
-      setError(t('register.incorrectCode'));
+    } catch (err: any) {
+      setError(err.message || t('register.incorrectCode'));
+    } finally {
+      setLoading(false);
     }
   };
 
   const handlePaymentSuccess = () => {
-    const newUser = {
-      id: `user_${Date.now()}`,
-      firstName: formData.ownerFirstName,
-      lastName: formData.ownerLastName,
-      role: 'SITE_CONTROLLER' as const,
-      mobileNumber: formData.mobileNumber,
-      email: formData.email,
-      orgId: `org_${formData.orgName.toLowerCase().replace(/\s/g, '_')}`,
-      siteId: 'site_alpha_01',
-      status: 'ACTIVE' as const,
-    };
-
-    const existingUsers = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
-    existingUsers.push(newUser);
-    localStorage.setItem('registeredTenants', JSON.stringify(existingUsers));
-
     setStep(4);
   };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white text-black">
-      {/* Left side info block */}
       <div className="md:w-1/2 bg-zinc-50 border-r border-black p-12 flex flex-col justify-between">
         <div>
           <img src="/atlas.png" alt="Atlas Logo" className="h-12 mb-8 object-contain" />
@@ -170,7 +176,6 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
             "{t('register.subtitle')}"
           </p>
 
-          {/* Pricing Selection Option (Left Pane) */}
           <div className="mt-8 border-t border-black pt-8">
             <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-4">{t('register.selectPlan')}</p>
             <div className="flex flex-col gap-3">
@@ -205,15 +210,13 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
           onClick={onBackToLogin}
           className="text-left text-xs uppercase tracking-widest text-zinc-500 hover:text-black font-semibold mt-12"
         >
-          ← {t('register.backToLogin')}
+          &larr; {t('register.backToLogin')}
         </button>
       </div>
 
-      {/* Right side Wizard Forms */}
       <div className="md:w-1/2 flex flex-col justify-center p-12">
         <div className="max-w-md w-full mx-auto">
-          
-          {/* Step 1: Registration Form */}
+
           {step === 1 && (
             <div>
               <div className="mb-8">
@@ -287,17 +290,17 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                     value={formData.password}
                     onChange={e => setFormData({ ...formData, password: e.target.value })}
                     className="minimal-input"
-                    placeholder="••••••••"
+                    placeholder="Min 8 chars, upper + lower + number + symbol"
                   />
                 </div>
 
-                <button type="submit" className="w-full minimal-btn pt-4">{t('register.continueVerification')}
+                <button type="submit" disabled={loading} className="w-full minimal-btn pt-4">
+                  {loading ? t('login.processing') : t('register.continueVerification')}
                 </button>
               </form>
             </div>
           )}
 
-          {/* Step 2: Email verification */}
           {step === 2 && (
             <div>
               <div className="mb-8">
@@ -319,15 +322,16 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                     className="minimal-input text-center text-lg tracking-widest font-mono"
                     placeholder="123456"
                   />
+                  <p className="text-[10px] text-zinc-400 mt-2 font-mono">Check your email for the verification code</p>
                 </div>
 
-                <button type="submit" className="w-full minimal-btn">{t('register.verifyCode')}
+                <button type="submit" disabled={loading} className="w-full minimal-btn">
+                  {loading ? t('login.processing') : t('register.verifyCode')}
                 </button>
               </form>
             </div>
           )}
 
-          {/* Step 3: Subscription plan selection & Stripe Checkout */}
           {step === 3 && (
             <div>
               <div className="mb-8">
@@ -346,15 +350,14 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
             </div>
           )}
 
-          {/* Step 4: Success screen */}
           {step === 4 && (
             <div className="text-center space-y-6">
-              <span className="text-5xl">🎉</span>
+              <span className="text-5xl">&#127881;</span>
               <h2 className="editorial-title text-3xl font-light">{t('register.portalCreated')}</h2>
               <p className="font-serif italic text-zinc-600 text-sm leading-relaxed">
                 {t('register.thanksMessage', { orgName: formData.orgName })}
               </p>
-              
+
               <div className="bg-zinc-50 p-4 border border-zinc-200 font-mono text-xs text-left">
                 <p className="font-semibold text-black uppercase text-[10px] tracking-wider mb-2">{t('register.loginDetails')}</p>
                 <p>{t('register.username')}: {formData.email}</p>

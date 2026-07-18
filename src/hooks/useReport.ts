@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from './useAuth';
 import { useOfflineSync } from './useOfflineSync';
 import { checkSoD } from '../utils/sodChecks';
+import { getDataClient } from '../services/dataService';
 
 export function useReport() {
   const { user } = useAuth();
@@ -10,23 +11,11 @@ export function useReport() {
 
   const saveDraft = async (reportType: string, data: any) => {
     if (!user) return;
-    
-    // Save draft locally to localStorage
     const draftKey = `draft_${user.id}_${reportType}`;
     localStorage.setItem(draftKey, JSON.stringify({
       data,
       savedAt: new Date().toISOString()
     }));
-    console.log(`[Auto-Save] Draft saved for ${reportType} locally.`);
-
-    // If online, we would also update DynamoDB draft
-    if (isOnline) {
-      try {
-        // mock API call
-      } catch (err) {
-        console.error('Failed to sync draft to cloud:', err);
-      }
-    }
   };
 
   const loadDraft = (reportType: string) => {
@@ -53,38 +42,34 @@ export function useReport() {
         throw new Error(`SoD Violation: ${sodViolation.violation} (${sodViolation.ruleId})`);
       }
 
-      // 2. Submit report
       const submission = {
-        id: `report_${Date.now()}`,
-        reportType,
         orgId: user.orgId,
         siteId: user.siteId,
         userId: user.id,
         role: user.role,
-        data: reportData,
+        reportType,
+        reportDate: new Date().toISOString().slice(0, 10),
+        data: JSON.stringify(reportData),
         submittedAt: new Date().toISOString(),
         status: 'SUBMITTED',
+        source: 'WEB',
       };
 
       if (!isOnline) {
-        console.log('User is offline. Queueing report for later sync...');
-        addToQueue({
-          reportType,
-          data: submission,
-        });
+        addToQueue({ reportType, data: submission });
         clearDraft(reportType);
         setLoading(false);
         return { success: true, queued: true };
       }
 
-      // If online, simulate network submission
-      console.log('Submitting report online to Amplify backend:', submission);
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Submit to AppSync/DynamoDB
+      const client = getDataClient();
+      await client.models.DailyReport.create(submission);
 
-      // Save to local history
+      // Also keep in local history for quick access
       const historyKey = `history_${user.orgId}`;
       const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-      history.unshift(submission);
+      history.unshift({ ...submission, id: `report_${Date.now()}` });
       localStorage.setItem(historyKey, JSON.stringify(history));
 
       clearDraft(reportType);
@@ -96,8 +81,16 @@ export function useReport() {
     }
   };
 
-  const getReportHistory = () => {
+  const getReportHistory = async () => {
     if (!user) return [];
+    try {
+      const client = getDataClient();
+      const { data } = await client.models.DailyReport.list();
+      if (data && data.length > 0) return data;
+    } catch (err) {
+      console.error('Failed to fetch reports from AppSync, falling back to local:', err);
+    }
+    // Fallback to localStorage
     const historyKey = `history_${user.orgId}`;
     return JSON.parse(localStorage.getItem(historyKey) || '[]');
   };

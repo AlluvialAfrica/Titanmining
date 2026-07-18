@@ -1,17 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import { seedDemoKPIData } from './utils/seedDemoData';
 
 function AppContent() {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
-
-  useEffect(() => {
-    seedDemoKPIData();
-  }, []);
 
   if (loading) {
     return (

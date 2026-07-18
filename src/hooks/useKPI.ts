@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from './useAuth';
 import { ROLE_KPI_PROFILES, KPIField } from '../types/kpiDefinitions';
+import { getDataClient } from '../services/dataService';
 
 export interface KPIEntry {
   id: string;
@@ -22,7 +23,6 @@ export function useKPI() {
     [user],
   );
 
-  /** Persist a draft to localStorage */
   const saveDraft = useCallback(
     (values: Record<string, number>, entryDate: string, shift: 'DAY' | 'NIGHT') => {
       if (!user) return;
@@ -35,7 +35,6 @@ export function useKPI() {
     [user, getStorageKey],
   );
 
-  /** Load draft from localStorage */
   const loadDraft = useCallback((): {
     values: Record<string, number>;
     entryDate: string;
@@ -51,13 +50,11 @@ export function useKPI() {
     }
   }, [user, getStorageKey]);
 
-  /** Clear draft */
   const clearDraft = useCallback(() => {
     if (!user) return;
     localStorage.removeItem(getStorageKey('draft'));
   }, [user, getStorageKey]);
 
-  /** Submit a KPI entry */
   const submitKPIEntry = useCallback(
     async (values: Record<string, number>, entryDate: string, shift: 'DAY' | 'NIGHT') => {
       if (!user) throw new Error('Not authenticated.');
@@ -74,13 +71,31 @@ export function useKPI() {
           status: 'SUBMITTED',
         };
 
-        // Store in history array
+        // Persist to AppSync/DynamoDB
+        try {
+          const client = getDataClient();
+          await client.models.KPIEntry.create({
+            orgId: user.orgId,
+            siteId: user.siteId,
+            userId: user.id,
+            role: user.role,
+            entryDate,
+            shift,
+            kpiData: JSON.stringify(values),
+            status: 'SUBMITTED',
+            submittedAt: new Date().toISOString(),
+            source: 'WEB',
+          });
+        } catch (err) {
+          console.error('Failed to persist KPI to AppSync:', err);
+        }
+
+        // Also store locally for quick access
         const historyKey = `kpi_history_${user.id}`;
         const existing: KPIEntry[] = JSON.parse(localStorage.getItem(historyKey) || '[]');
         existing.unshift(entry);
         localStorage.setItem(historyKey, JSON.stringify(existing));
 
-        // Also store in site-wide KPI store for team dashboard
         const siteKey = `kpi_site_${user.siteId}`;
         const siteData: KPIEntry[] = JSON.parse(localStorage.getItem(siteKey) || '[]');
         siteData.unshift(entry);
@@ -97,7 +112,6 @@ export function useKPI() {
     [user, clearDraft],
   );
 
-  /** Get KPI history for current user */
   const getKPIHistory = useCallback(
     (days?: number): KPIEntry[] => {
       if (!user) return [];
@@ -111,7 +125,6 @@ export function useKPI() {
     [user],
   );
 
-  /** Get site-wide KPI entries (for team dashboards) */
   const getSiteKPIEntries = useCallback(
     (days?: number): KPIEntry[] => {
       if (!user) return [];
@@ -125,7 +138,6 @@ export function useKPI() {
     [user],
   );
 
-  /** Get KPI entries for a specific user (for team view) */
   const getUserKPIHistory = useCallback(
     (userId: string, days?: number): KPIEntry[] => {
       const historyKey = `kpi_history_${userId}`;
@@ -138,7 +150,6 @@ export function useKPI() {
     [],
   );
 
-  /** Get all KPI fields for a role */
   const getFieldsForRole = useCallback((role: string): KPIField[] => {
     const profile = ROLE_KPI_PROFILES[role as keyof typeof ROLE_KPI_PROFILES];
     if (!profile) return [];

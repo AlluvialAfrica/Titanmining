@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useKPI } from '../../hooks/useKPI';
@@ -6,12 +6,24 @@ import { ROLE_KPI_PROFILES } from '../../types/kpiDefinitions';
 import { ROLE_PERMISSIONS } from '../../types/roles';
 import type { Role } from '../../types/roles';
 import { getAllSubordinates, ROLE_HIERARCHY } from '../../types/roleHierarchy';
-import { DEMO_USERS } from '../../contexts/AuthContext';
+import { getDataClient } from '../../services/dataService';
 import KPICard from '../../components/KPICard';
+
+interface TeamMember {
+  id: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  mobileNumber: string;
+  email?: string;
+  orgId: string;
+  siteId?: string;
+  status: string;
+}
 
 interface SubordinateGroup {
   role: Role;
-  members: typeof DEMO_USERS;
+  members: TeamMember[];
   avgValues: Record<string, number>;
 }
 
@@ -19,11 +31,38 @@ export default function TeamKPIDashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const { getUserKPIHistory, getFieldsForRole } = useKPI();
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   const hasAccess = useMemo(() => {
     if (!user) return false;
     return ROLE_PERMISSIONS[user.role as Role]?.canViewTeamKPI === true;
   }, [user]);
+
+  // Load team members from AppSync
+  useEffect(() => {
+    async function loadMembers() {
+      try {
+        const client = getDataClient();
+        const { data } = await client.models.User.list();
+        if (data) {
+          setTeamMembers(data.map((u: any) => ({
+            id: u.id,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            role: u.role,
+            mobileNumber: u.mobileNumber,
+            email: u.email || '',
+            orgId: u.orgId,
+            siteId: u.orgId,
+            status: u.status || 'PENDING',
+          })));
+        }
+      } catch (err) {
+        console.error('Failed to load team members:', err);
+      }
+    }
+    if (hasAccess) loadMembers();
+  }, [hasAccess]);
 
   const subordinateRoles = useMemo(() => {
     if (!user) return [];
@@ -33,10 +72,10 @@ export default function TeamKPIDashboard() {
   const groups: SubordinateGroup[] = useMemo(() => {
     if (!user || subordinateRoles.length === 0) return [];
 
-    const grouped = new Map<Role, typeof DEMO_USERS>();
+    const grouped = new Map<Role, TeamMember[]>();
 
     for (const role of subordinateRoles) {
-      const matching = DEMO_USERS.filter((u) => u.role === role);
+      const matching = teamMembers.filter((u) => u.role === role);
       if (matching.length > 0) {
         grouped.set(role, matching);
       }
@@ -78,7 +117,7 @@ export default function TeamKPIDashboard() {
     });
 
     return result;
-  }, [user, subordinateRoles, getUserKPIHistory, getFieldsForRole]);
+  }, [user, subordinateRoles, teamMembers, getUserKPIHistory, getFieldsForRole]);
 
   if (!user) return null;
 
@@ -95,7 +134,6 @@ export default function TeamKPIDashboard() {
 
   return (
     <div className="py-4 space-y-12">
-      {/* Header */}
       <div>
         <h1 className="editorial-title text-3xl font-light mb-2 text-black">
           {t('kpi.team.title')}
@@ -105,7 +143,6 @@ export default function TeamKPIDashboard() {
         </p>
       </div>
 
-      {/* Subordinate Summary */}
       <div>
         <h2 className="font-serif italic text-lg mb-6 text-black border-b border-zinc-200 pb-2">
           {t('kpi.team.subordinateSummary')}
@@ -122,7 +159,6 @@ export default function TeamKPIDashboard() {
 
               return (
                 <div key={group.role} className="space-y-4">
-                  {/* Role group header */}
                   <div className="flex items-baseline gap-3">
                     <h3 className="font-serif italic text-base text-black">
                       {t('roles.' + group.role)}
@@ -133,7 +169,6 @@ export default function TeamKPIDashboard() {
                     </span>
                   </div>
 
-                  {/* Average KPI Cards */}
                   {profile && fields.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                       {fields.slice(0, 4).map((f) => (
@@ -154,7 +189,6 @@ export default function TeamKPIDashboard() {
         )}
       </div>
 
-      {/* Team Members Table */}
       <div>
         <h3 className="font-serif italic text-lg mb-4 text-black">
           {t('kpi.team.directReports')}
