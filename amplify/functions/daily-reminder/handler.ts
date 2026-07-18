@@ -4,15 +4,12 @@ import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(dbClient);
 
-async function scanAll(params: Record<string, any>) {
+async function scanAll(params: any) {
   const items: any[] = [];
   let lastKey: any = undefined;
   do {
-    const result: any = await docClient.send(new ScanCommand({
-      ...params,
-      Limit: 500,
-      ExclusiveStartKey: lastKey,
-    }));
+    const cmd = new ScanCommand({ ...params, Limit: 500, ExclusiveStartKey: lastKey });
+    const result = await docClient.send(cmd);
     items.push(...(result.Items || []));
     lastKey = result.LastEvaluatedKey;
   } while (lastKey);
