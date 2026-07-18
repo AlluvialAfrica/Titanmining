@@ -10,6 +10,7 @@ import {
 } from 'aws-amplify/auth';
 import { Role } from '../types/roles';
 import { logger } from '../utils/logger';
+import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 
 export interface User {
   id: string;
@@ -127,10 +128,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
         setUser(appUser);
+        trackEvent(AnalyticsEvents.LOGIN_SUCCESS, { role: appUser.role });
       }
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
+      trackEvent(AnalyticsEvents.LOGIN_FAILED);
       throw new Error(error.message || 'Authentication failed.');
     }
   };
@@ -183,6 +186,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    trackEvent(AnalyticsEvents.LOGOUT);
     try {
       await signOut();
     } catch (err) {

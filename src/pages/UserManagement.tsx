@@ -6,6 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../hooks/useAuth';
 import { getDataClient } from '../services/dataService';
 import { logger } from '../utils/logger';
+import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 
 interface UserCreationFormData {
   role: Role;
@@ -129,6 +130,7 @@ export default function UserManagement() {
     }
 
     setUsersList([...usersList, newUser]);
+    trackEvent(AnalyticsEvents.USER_CREATED, { role: data.role });
 
     setWelcomePreview({
       firstName: data.firstName,

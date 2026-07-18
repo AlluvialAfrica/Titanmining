@@ -29,3 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <App />
   </React.StrictMode>
 );
+
+// Report Web Vitals performance metrics
+import { reportWebVitals } from './utils/reportWebVitals';
+reportWebVitals();

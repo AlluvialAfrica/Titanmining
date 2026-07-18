@@ -4,6 +4,7 @@ import { useAuth } from './useAuth';
 import { ROLE_KPI_PROFILES, KPIField } from '../types/kpiDefinitions';
 import { getDataClient } from '../services/dataService';
 import { logger } from '../utils/logger';
+import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 
 export interface KPIEntry {
   id: string;
@@ -122,6 +123,7 @@ export function useKPI() {
         safeSetJSON(siteKey, siteData);
 
         clearDraft();
+        trackEvent(AnalyticsEvents.KPI_SUBMITTED, { role: user.role, shift });
         setLoading(false);
         return entry;
       } catch (err) {

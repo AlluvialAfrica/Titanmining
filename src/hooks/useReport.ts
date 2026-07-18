@@ -5,6 +5,7 @@ import { useOfflineSync } from './useOfflineSync';
 import { checkSoD } from '../utils/sodChecks';
 import { getDataClient } from '../services/dataService';
 import { logger } from '../utils/logger';
+import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 
 function safeGetJSON<T>(key: string, fallback: T): T {
   try {
@@ -76,6 +77,7 @@ export function useReport() {
       if (!isOnline) {
         addToQueue({ reportType, data: submission });
         clearDraft(reportType);
+        trackEvent(AnalyticsEvents.REPORT_QUEUED_OFFLINE, { reportType });
         setLoading(false);
         return { success: true, queued: true };
       }
@@ -91,6 +93,7 @@ export function useReport() {
       safeSetJSON(historyKey, history);
 
       clearDraft(reportType);
+      trackEvent(AnalyticsEvents.REPORT_SUBMITTED, { reportType });
       setLoading(false);
       return { success: true, queued: false };
     } catch (error) {

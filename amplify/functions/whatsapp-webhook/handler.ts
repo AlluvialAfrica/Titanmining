@@ -1,4 +1,29 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { createHmac } from 'crypto';
+
+/**
+ * Validate Twilio request signature to ensure webhook requests come from Twilio.
+ * See: https://www.twilio.com/docs/usage/security#validating-requests
+ */
+function validateTwilioSignature(
+  authToken: string,
+  url: string,
+  params: Record<string, string>,
+  signature: string
+): boolean {
+  // Build validation string: URL + sorted params key/value concatenation
+  const sortedKeys = Object.keys(params).sort();
+  let data = url;
+  for (const key of sortedKeys) {
+    data += key + params[key];
+  }
+
+  const computed = createHmac('sha1', authToken)
+    .update(data, 'utf-8')
+    .digest('base64');
+
+  return computed === signature;
+}
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Received WhatsApp Webhook event:', event.httpMethod, event.path);
@@ -42,7 +67,32 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
       return { statusCode: 413, body: 'Payload too large' };
     }
 
-    const body = JSON.parse(rawBody);
+    // Validate Twilio request signature if auth token is configured
+    const twilioToken = process.env.TWILIO_AUTH_TOKEN;
+    const twilioSignature = event.headers?.['X-Twilio-Signature'] || event.headers?.['x-twilio-signature'];
+    if (twilioToken && twilioSignature) {
+      // Reconstruct request URL for validation
+      const host = event.headers?.['Host'] || event.headers?.['host'] || '';
+      const proto = event.headers?.['X-Forwarded-Proto'] || 'https';
+      const requestUrl = `${proto}://${host}${event.path || '/'}`;
+
+      // Parse form-encoded body params for signature validation
+      const params: Record<string, string> = {};
+      if (event.headers?.['content-type']?.includes('application/x-www-form-urlencoded') && rawBody) {
+        const entries = new URLSearchParams(rawBody);
+        entries.forEach((value, key) => { params[key] = value; });
+      }
+
+      if (!validateTwilioSignature(twilioToken, requestUrl, params, twilioSignature)) {
+        console.warn('Invalid Twilio signature, rejecting request');
+        return { statusCode: 403, body: 'Invalid signature' };
+      }
+    }
+
+    const body = typeof rawBody === 'string' && rawBody.startsWith('{')
+      ? JSON.parse(rawBody)
+      : Object.fromEntries(new URLSearchParams(rawBody));
+
     console.log('Webhook Body received, processing...');
 
     // Handle Twilio messaging webhook formats

@@ -1,5 +1,17 @@
 import Stripe from 'stripe';
 
+/**
+ * Structured audit log for payment events (CloudWatch Insights searchable).
+ */
+function auditLog(event: string, data: Record<string, unknown>) {
+  console.log(JSON.stringify({
+    audit: true,
+    event,
+    timestamp: new Date().toISOString(),
+    ...data,
+  }));
+}
+
 const PLANS: Record<string, { amount: number; interval: 'month' | 'year'; name: string }> = {
   monthly: { amount: 50000, interval: 'month', name: 'Alluvial Site Manager - Monthly' },
   annual: { amount: 480000, interval: 'year', name: 'Alluvial Site Manager - Annual' },
@@ -40,12 +52,20 @@ async function findOrCreatePrice(
   return price.id;
 }
 
-function respond(statusCode: number, body: any) {
+// Allowed origins for CORS (production domain + localhost for dev)
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://main.d29qwdlmuy3blg.amplifyapp.com,http://localhost:5173').split(',');
+
+function getOrigin(event: any): string {
+  return event.headers?.origin || event.headers?.Origin || '';
+}
+
+function respond(statusCode: number, body: any, origin?: string) {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     statusCode,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': allowedOrigin,
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'POST,OPTIONS',
     },
@@ -54,42 +74,52 @@ function respond(statusCode: number, body: any) {
 }
 
 export const handler = async (event: any) => {
+  const origin = getOrigin(event);
+
   // Handle CORS preflight
   if (event.requestContext?.http?.method === 'OPTIONS' || event.httpMethod === 'OPTIONS') {
-    return respond(200, {});
+    return respond(200, {}, origin);
+  }
+
+  // Reject requests from unknown origins in production
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+    console.warn(`Rejected request from disallowed origin: ${origin}`);
+    return respond(403, { success: false, error: 'Forbidden' }, origin);
   }
 
   let body: any;
   try {
     body = JSON.parse(event.body || '{}');
   } catch {
-    return respond(400, { success: false, error: 'Invalid JSON body' });
+    return respond(400, { success: false, error: 'Invalid JSON body' }, origin);
   }
 
   const { paymentMethodId, plan, email, orgName } = body;
 
   // Input validation
   if (!paymentMethodId || typeof paymentMethodId !== 'string' || paymentMethodId.length > 255) {
-    return respond(400, { success: false, error: 'Invalid payment method ID' });
+    return respond(400, { success: false, error: 'Invalid payment method ID' }, origin);
   }
   if (!plan || !PLANS[plan]) {
-    return respond(400, { success: false, error: 'Invalid plan. Must be "monthly" or "annual".' });
+    return respond(400, { success: false, error: 'Invalid plan. Must be "monthly" or "annual".' }, origin);
   }
   if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return respond(400, { success: false, error: 'Invalid email address' });
+    return respond(400, { success: false, error: 'Invalid email address' }, origin);
   }
   if (!orgName || typeof orgName !== 'string' || orgName.length > 200) {
-    return respond(400, { success: false, error: 'Invalid organization name' });
+    return respond(400, { success: false, error: 'Invalid organization name' }, origin);
   }
 
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) {
     console.error('STRIPE_SECRET_KEY not configured');
-    return respond(500, { success: false, error: 'Payment service not configured' });
+    return respond(500, { success: false, error: 'Payment service not configured' }, origin);
   }
 
   const stripe = new Stripe(stripeKey);
   const selectedPlan = PLANS[plan];
+
+  auditLog('payment.initiated', { email, orgName, plan, amount: selectedPlan.amount });
 
   try {
     // 1. Create or retrieve customer
@@ -133,28 +163,43 @@ export const handler = async (event: any) => {
     const paymentIntent = (invoice as any).payment_intent as Stripe.PaymentIntent | null;
 
     if (paymentIntent && paymentIntent.status === 'requires_action') {
+      auditLog('payment.requires_action', {
+        email, orgName, plan,
+        subscriptionId: subscription.id,
+        paymentIntentId: paymentIntent.id,
+      });
       return respond(200, {
         success: false,
         requiresAction: true,
         clientSecret: paymentIntent.client_secret,
         subscriptionId: subscription.id,
-      });
+      }, origin);
     }
 
-    console.log(`Subscription created for org "${orgName}": ${subscription.id}`);
+    auditLog('payment.success', {
+      email, orgName, plan,
+      subscriptionId: subscription.id,
+      customerId: customer.id,
+      amount: selectedPlan.amount,
+    });
     return respond(200, {
       success: true,
       subscriptionId: subscription.id,
       customerId: customer.id,
       status: subscription.status,
-    });
+    }, origin);
   } catch (err: any) {
+    auditLog('payment.failed', {
+      email, orgName, plan,
+      errorType: err.type || 'unknown',
+      errorMessage: err.message || 'unknown',
+    });
     console.error('Stripe payment processing failed:', err.type || err.message);
     return respond(400, {
       success: false,
       error: err.type === 'StripeCardError'
         ? err.message
         : 'Payment processing failed. Please try again.',
-    });
+    }, origin);
   }
 };

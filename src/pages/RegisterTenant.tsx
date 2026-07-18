@@ -5,6 +5,7 @@ import { CardElement, Elements, useStripe, useElements } from '@stripe/react-str
 import { useLanguage } from '../contexts/LanguageContext';
 import { getDataClient } from '../services/dataService';
 import { logger } from '../utils/logger';
+import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
@@ -29,6 +30,7 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
 
     setLoading(true);
     setError('');
+    trackEvent(AnalyticsEvents.PAYMENT_INITIATED, { plan });
 
     try {
       const cardElement = elements.getElement(CardElement);
@@ -86,8 +88,10 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
       } catch (orgErr) {
         logger.error('Failed to create organization record:', orgErr);
       }
+      trackEvent(AnalyticsEvents.PAYMENT_SUCCESS, { plan });
       onPaymentSuccess();
     } catch (err: any) {
+      trackEvent(AnalyticsEvents.PAYMENT_FAILED, { plan, error: err.message || 'unknown' });
       setError(err.message || t('register.paymentFailed'));
     } finally {
       setLoading(false);
@@ -155,6 +159,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
     e.preventDefault();
     setError('');
     setLoading(true);
+    trackEvent(AnalyticsEvents.REGISTRATION_STARTED);
 
     try {
       // Sign up with Cognito
@@ -202,6 +207,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
   };
 
   const handlePaymentSuccess = () => {
+    trackEvent(AnalyticsEvents.REGISTRATION_COMPLETED);
     setStep(4);
   };
 
