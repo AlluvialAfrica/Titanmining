@@ -6,6 +6,7 @@ import { reportAggregator } from './functions/report-aggregator/resource';
 import { otpSender } from './functions/otp-sender/resource';
 import { whatsappWebhook } from './functions/whatsapp-webhook/resource';
 import { PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam';
+import { Function as LambdaFunction } from 'aws-cdk-lib/aws-lambda';
 
 const backend = defineBackend({
   auth,
@@ -43,6 +44,22 @@ backend.otpSender.resources.lambda.addToRolePolicy(
     resources: ['*'],
   })
 );
+
+// --- Table name environment variables ---
+const tables = backend.data.resources.tables;
+
+// Cast IFunction to Function to access addEnvironment
+const dailyReminderFn = backend.dailyReminder.resources.lambda as LambdaFunction;
+const reportAggregatorFn = backend.reportAggregator.resources.lambda as LambdaFunction;
+
+// daily-reminder needs User + DailyReport tables
+dailyReminderFn.addEnvironment('USER_TABLE_NAME', tables['User'].tableName);
+dailyReminderFn.addEnvironment('REPORT_TABLE_NAME', tables['DailyReport'].tableName);
+
+// report-aggregator needs DailyReport + FuelReconciliation + GoldRecovery tables
+reportAggregatorFn.addEnvironment('REPORT_TABLE_NAME', tables['DailyReport'].tableName);
+reportAggregatorFn.addEnvironment('FUEL_TABLE_NAME', tables['FuelReconciliation'].tableName);
+reportAggregatorFn.addEnvironment('GOLD_TABLE_NAME', tables['GoldRecovery'].tableName);
 
 // Configure custom Cognito User Pool attributes using CDK schema overrides
 const cfnUserPool = backend.auth.resources.cfnResources.cfnUserPool;
