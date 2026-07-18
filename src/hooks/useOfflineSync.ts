@@ -9,6 +9,24 @@ interface QueuedSubmission {
   retries: number;
 }
 
+function safeGetJSON<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeSetJSON(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    console.error(`Failed to write localStorage key "${key}":`, err);
+  }
+}
+
 export function useOfflineSync() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [queue, setQueue] = useState<QueuedSubmission[]>([]);
@@ -23,8 +41,7 @@ export function useOfflineSync() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    const saved = localStorage.getItem('offlineQueue');
-    if (saved) setQueue(JSON.parse(saved));
+    setQueue(safeGetJSON<QueuedSubmission[]>('offlineQueue', []));
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -41,7 +58,7 @@ export function useOfflineSync() {
     };
     const newQueue = [...queue, item];
     setQueue(newQueue);
-    localStorage.setItem('offlineQueue', JSON.stringify(newQueue));
+    safeSetJSON('offlineQueue', newQueue);
   };
 
   const processQueue = async () => {
@@ -55,14 +72,14 @@ export function useOfflineSync() {
         // Remove from queue on success
         const newQueue = queue.filter(q => q.id !== item.id);
         setQueue(newQueue);
-        localStorage.setItem('offlineQueue', JSON.stringify(newQueue));
+        safeSetJSON('offlineQueue', newQueue);
       } catch (error) {
         console.error(`Failed to sync queued report ${item.id}:`, error);
         const newQueue = queue.map(q =>
           q.id === item.id ? { ...q, retries: q.retries + 1 } : q
         );
         setQueue(newQueue);
-        localStorage.setItem('offlineQueue', JSON.stringify(newQueue));
+        safeSetJSON('offlineQueue', newQueue);
       }
     }
   };

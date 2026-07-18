@@ -7,6 +7,6 @@ export const whatsappWebhook = defineFunction({
     TWILIO_ACCOUNT_SID: secret('TWILIO_ACCOUNT_SID'),
     TWILIO_AUTH_TOKEN: secret('TWILIO_AUTH_TOKEN'),
     TWILIO_CHATWORKS_WHATSAPP_NUMBER: '+12058469763',
-    WHATSAPP_VERIFY_TOKEN: 'chatworks_verify',
+    WHATSAPP_VERIFY_TOKEN: secret('WHATSAPP_VERIFY_TOKEN'),
   },
 });

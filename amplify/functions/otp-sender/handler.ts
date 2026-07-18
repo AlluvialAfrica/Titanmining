@@ -2,7 +2,7 @@ import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 
 export const handler = async (event: { phone: string; code: string; email?: string }) => {
   const { phone, code } = event;
-  console.log(`Sending OTP code ${code} to phone ${phone}...`);
+  console.log(`Sending OTP to phone ***${phone.slice(-4)}...`);
 
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
@@ -47,7 +47,7 @@ export const handler = async (event: { phone: string; code: string; email?: stri
       throw new Error(`Twilio API returned status ${response.status}: ${responseText}`);
     }
 
-    console.log('WhatsApp OTP sent successfully via Twilio:', responseText);
+    console.log('WhatsApp OTP sent successfully via Twilio.');
     return { success: true, method: 'whatsapp' };
   } catch (error) {
     console.error('Failed to send OTP via WhatsApp. Falling back to SMS via AWS SNS.', error);
@@ -56,7 +56,7 @@ export const handler = async (event: { phone: string; code: string; email?: stri
 };
 
 async function sendSnsFallback(phone: string, code: string) {
-  console.log(`Sending SMS fallback via SNS to ${phone}...`);
+  console.log(`Sending SMS fallback via SNS to ***${phone.slice(-4)}...`);
   const sns = new SNSClient({ region: process.env.AWS_REGION || 'eu-north-1' });
   
   try {

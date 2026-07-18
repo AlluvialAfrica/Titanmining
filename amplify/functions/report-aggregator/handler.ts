@@ -1,8 +1,23 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, ScanCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(dbClient);
+
+async function scanAll(params: Record<string, any>) {
+  const items: any[] = [];
+  let lastKey: any = undefined;
+  do {
+    const result: any = await docClient.send(new ScanCommand({
+      ...params,
+      Limit: 500,
+      ExclusiveStartKey: lastKey,
+    }));
+    items.push(...(result.Items || []));
+    lastKey = result.LastEvaluatedKey;
+  } while (lastKey);
+  return items;
+}
 
 export const handler = async (event: { orgId?: string; siteId?: string; date?: string }) => {
   const date = event.date || new Date().toISOString().split('T')[0];
@@ -21,14 +36,13 @@ export const handler = async (event: { orgId?: string; siteId?: string; date?: s
       return { success: false, error: 'Table environment variables not configured' };
     }
 
-    // Scan daily reports for the given date
-    const reportsResult = await docClient.send(new ScanCommand({
+    // Scan daily reports for the given date with pagination
+    const reports = await scanAll({
       TableName: reportTableName,
       FilterExpression: 'reportDate = :date',
       ExpressionAttributeValues: { ':date': date },
-    }));
+    });
 
-    const reports = reportsResult.Items || [];
     console.log(`Found ${reports.length} reports for ${date}`);
 
     // Group reports by type
@@ -42,12 +56,11 @@ export const handler = async (event: { orgId?: string; siteId?: string; date?: s
     // Aggregate fuel data if table is configured
     let fuelSummary = { openingStock: 0, received: 0, issued: 0, closingStock: 0, variance: 0 };
     if (fuelTableName) {
-      const fuelResult = await docClient.send(new ScanCommand({
+      const fuelRecords = await scanAll({
         TableName: fuelTableName,
         FilterExpression: 'reportDate = :date',
         ExpressionAttributeValues: { ':date': date },
-      }));
-      const fuelRecords = fuelResult.Items || [];
+      });
       for (const f of fuelRecords) {
         fuelSummary.openingStock += f.openingStock || 0;
         fuelSummary.received += f.received || 0;
@@ -60,12 +73,11 @@ export const handler = async (event: { orgId?: string; siteId?: string; date?: s
     // Aggregate gold recovery data if table is configured
     let goldSummary = { totalRecoveryG: 0, entryCount: 0 };
     if (goldTableName) {
-      const goldResult = await docClient.send(new ScanCommand({
+      const goldRecords = await scanAll({
         TableName: goldTableName,
         FilterExpression: 'reportDate = :date',
         ExpressionAttributeValues: { ':date': date },
-      }));
-      const goldRecords = goldResult.Items || [];
+      });
       for (const g of goldRecords) {
         goldSummary.totalRecoveryG += g.goldWeight || 0;
         goldSummary.entryCount++;

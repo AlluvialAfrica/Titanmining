@@ -14,6 +14,24 @@ export interface KPIEntry {
   status: 'DRAFT' | 'SUBMITTED';
 }
 
+function safeGetJSON<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeSetJSON(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    console.error(`Failed to write localStorage key "${key}":`, err);
+  }
+}
+
 export function useKPI() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -27,10 +45,7 @@ export function useKPI() {
     (values: Record<string, number>, entryDate: string, shift: 'DAY' | 'NIGHT') => {
       if (!user) return;
       const key = getStorageKey('draft');
-      localStorage.setItem(
-        key,
-        JSON.stringify({ values, entryDate, shift, savedAt: new Date().toISOString() }),
-      );
+      safeSetJSON(key, { values, entryDate, shift, savedAt: new Date().toISOString() });
     },
     [user, getStorageKey],
   );
@@ -92,14 +107,14 @@ export function useKPI() {
 
         // Also store locally for quick access
         const historyKey = `kpi_history_${user.id}`;
-        const existing: KPIEntry[] = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        const existing: KPIEntry[] = safeGetJSON(historyKey, []);
         existing.unshift(entry);
-        localStorage.setItem(historyKey, JSON.stringify(existing));
+        safeSetJSON(historyKey, existing);
 
         const siteKey = `kpi_site_${user.siteId}`;
-        const siteData: KPIEntry[] = JSON.parse(localStorage.getItem(siteKey) || '[]');
+        const siteData: KPIEntry[] = safeGetJSON(siteKey, []);
         siteData.unshift(entry);
-        localStorage.setItem(siteKey, JSON.stringify(siteData));
+        safeSetJSON(siteKey, siteData);
 
         clearDraft();
         setLoading(false);
@@ -116,7 +131,7 @@ export function useKPI() {
     (days?: number): KPIEntry[] => {
       if (!user) return [];
       const historyKey = `kpi_history_${user.id}`;
-      const all: KPIEntry[] = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      const all: KPIEntry[] = safeGetJSON(historyKey, []);
       if (!days) return all;
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
@@ -129,7 +144,7 @@ export function useKPI() {
     (days?: number): KPIEntry[] => {
       if (!user) return [];
       const siteKey = `kpi_site_${user.siteId}`;
-      const all: KPIEntry[] = JSON.parse(localStorage.getItem(siteKey) || '[]');
+      const all: KPIEntry[] = safeGetJSON(siteKey, []);
       if (!days) return all;
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
@@ -141,7 +156,7 @@ export function useKPI() {
   const getUserKPIHistory = useCallback(
     (userId: string, days?: number): KPIEntry[] => {
       const historyKey = `kpi_history_${userId}`;
-      const all: KPIEntry[] = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      const all: KPIEntry[] = safeGetJSON(historyKey, []);
       if (!days) return all;
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);

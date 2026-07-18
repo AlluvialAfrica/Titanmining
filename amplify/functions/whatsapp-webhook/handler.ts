@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Received WhatsApp Webhook event:', JSON.stringify(event));
+  console.log('Received WhatsApp Webhook event:', event.httpMethod, event.path);
 
   // Verify GET webhook challenge for webhook registration
   if (event.httpMethod === 'GET') {
@@ -28,13 +28,13 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
   // Handle incoming POST events (messages)
   try {
     const body = JSON.parse(event.body || '{}');
-    console.log('Webhook Body:', JSON.stringify(body));
+    console.log('Webhook Body received, processing...');
 
     // Handle Twilio messaging webhook formats
     if (body.SmsSid || body.MessageSid) {
       const from = body.From; // e.g. whatsapp:+254712345678
       const text = body.Body; // message content
-      console.log(`Received message from ${from}: ${text}`);
+      console.log(`Received message from ***${(from || '').slice(-4)}`);
       
       // Send auto-reply
       await sendAutoReply(from, text);
@@ -92,8 +92,8 @@ async function sendAutoReply(to: string, incomingText: string) {
       },
       body: params.toString(),
     });
-    console.log(`Auto-reply sent to ${to}`);
+    console.log(`Auto-reply sent to ***${(to || '').slice(-4)}`);
   } catch (err) {
-    console.error(`Failed to send auto-reply to ${to}:`, err);
+    console.error(`Failed to send auto-reply to ***${(to || '').slice(-4)}:`, err);
   }
 }

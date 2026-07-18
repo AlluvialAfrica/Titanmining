@@ -4,6 +4,24 @@ import { useOfflineSync } from './useOfflineSync';
 import { checkSoD } from '../utils/sodChecks';
 import { getDataClient } from '../services/dataService';
 
+function safeGetJSON<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeSetJSON(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    console.error(`Failed to write localStorage key "${key}":`, err);
+  }
+}
+
 export function useReport() {
   const { user } = useAuth();
   const { isOnline, addToQueue } = useOfflineSync();
@@ -12,17 +30,14 @@ export function useReport() {
   const saveDraft = async (reportType: string, data: any) => {
     if (!user) return;
     const draftKey = `draft_${user.id}_${reportType}`;
-    localStorage.setItem(draftKey, JSON.stringify({
-      data,
-      savedAt: new Date().toISOString()
-    }));
+    safeSetJSON(draftKey, { data, savedAt: new Date().toISOString() });
   };
 
   const loadDraft = (reportType: string) => {
     if (!user) return null;
     const draftKey = `draft_${user.id}_${reportType}`;
-    const saved = localStorage.getItem(draftKey);
-    return saved ? JSON.parse(saved).data : null;
+    const saved = safeGetJSON<{ data: any } | null>(draftKey, null);
+    return saved ? saved.data : null;
   };
 
   const clearDraft = (reportType: string) => {
@@ -68,9 +83,9 @@ export function useReport() {
 
       // Also keep in local history for quick access
       const historyKey = `history_${user.orgId}`;
-      const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      const history = safeGetJSON<any[]>(historyKey, []);
       history.unshift({ ...submission, id: `report_${Date.now()}` });
-      localStorage.setItem(historyKey, JSON.stringify(history));
+      safeSetJSON(historyKey, history);
 
       clearDraft(reportType);
       setLoading(false);
@@ -92,7 +107,7 @@ export function useReport() {
     }
     // Fallback to localStorage
     const historyKey = `history_${user.orgId}`;
-    return JSON.parse(localStorage.getItem(historyKey) || '[]');
+    return safeGetJSON<any[]>(historyKey, []);
   };
 
   return {

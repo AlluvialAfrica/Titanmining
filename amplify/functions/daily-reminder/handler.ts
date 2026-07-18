@@ -4,40 +4,53 @@ import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(dbClient);
 
+async function scanAll(params: Record<string, any>) {
+  const items: any[] = [];
+  let lastKey: any = undefined;
+  do {
+    const result: any = await docClient.send(new ScanCommand({
+      ...params,
+      Limit: 500,
+      ExclusiveStartKey: lastKey,
+    }));
+    items.push(...(result.Items || []));
+    lastKey = result.LastEvaluatedKey;
+  } while (lastKey);
+  return items;
+}
+
 export const handler = async (event: any) => {
-  console.log('Running daily reminder checks...', JSON.stringify(event));
+  console.log('Running daily reminder checks...');
 
   try {
-    // Scan User table for active users who should submit daily reports
     const userTableName = process.env.USER_TABLE_NAME;
     const reportTableName = process.env.REPORT_TABLE_NAME;
 
     if (!userTableName || !reportTableName) {
-      console.warn('Table names not configured via environment variables. Scanning for table names...');
+      console.warn('Table names not configured via environment variables.');
       return { success: false, error: 'Table environment variables not configured' };
     }
 
-    // Get all active users
-    const usersResult = await docClient.send(new ScanCommand({
+    // Get all active users with pagination
+    const users = await scanAll({
       TableName: userTableName,
       FilterExpression: '#status = :active',
       ExpressionAttributeNames: { '#status': 'status' },
       ExpressionAttributeValues: { ':active': 'ACTIVE' },
-    }));
+    });
 
-    const users = usersResult.Items || [];
     console.log(`Found ${users.length} active users`);
 
-    // Check today's reports
+    // Check today's reports with pagination
     const today = new Date().toISOString().split('T')[0];
-    const reportsResult = await docClient.send(new ScanCommand({
+    const reports = await scanAll({
       TableName: reportTableName,
       FilterExpression: 'reportDate = :today',
       ExpressionAttributeValues: { ':today': today },
-    }));
+    });
 
     const submittedUserIds = new Set(
-      (reportsResult.Items || []).map((r: any) => r.userId)
+      reports.map((r: any) => r.userId)
     );
 
     // Find users who haven't submitted today
@@ -47,9 +60,14 @@ export const handler = async (event: any) => {
 
     console.log(`${pendingUsers.length} users have not submitted reports today`);
 
-    for (const user of pendingUsers) {
-      console.log(`Reminder needed: ${user.firstName} ${user.lastName} (${user.role}) at ${user.mobileNumber}`);
-      await triggerWhatsAppReminder(user);
+    // Send reminders with rate limiting (max 5 concurrent)
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < pendingUsers.length; i += BATCH_SIZE) {
+      const batch = pendingUsers.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map((user: any) => {
+        console.log(`Reminder needed: ${user.firstName} ${user.lastName} (${user.role})`);
+        return triggerWhatsAppReminder(user);
+      }));
     }
 
     return { success: true, pendingCount: pendingUsers.length, totalUsers: users.length };
@@ -97,7 +115,7 @@ async function triggerWhatsAppReminder(user: any) {
       },
       body: params.toString(),
     });
-    console.log(`Reminder sent to ${user.firstName}:`, response.status);
+    console.log(`Reminder sent to ${user.firstName}: ${response.status}`);
   } catch (err) {
     console.error(`Failed to send reminder to ${user.firstName}:`, err);
   }

@@ -66,8 +66,12 @@ export default function UserManagement() {
     } catch (err) {
       console.error('Failed to load users from AppSync:', err);
       // Fallback: load from localStorage
-      const saved = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
-      setUsersList(saved);
+      try {
+        const saved = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
+        setUsersList(saved);
+      } catch {
+        setUsersList([]);
+      }
     } finally {
       setLoadingUsers(false);
     }
@@ -76,8 +80,13 @@ export default function UserManagement() {
   const onSubmit = async (data: UserCreationFormData) => {
     if (!user) return;
 
-    const username = (data.firstName.toLowerCase() + data.lastName.toLowerCase() + Math.floor(Math.random() * 90 + 10)).replace(/\s/g, '');
-    const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+    const rng = new Uint32Array(1);
+    crypto.getRandomValues(rng);
+    const username = (data.firstName.toLowerCase() + data.lastName.toLowerCase() + (rng[0] % 90 + 10)).replace(/\s/g, '');
+    const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%';
+    const pwBytes = new Uint8Array(12);
+    crypto.getRandomValues(pwBytes);
+    const tempPassword = Array.from(pwBytes, b => chars[b % chars.length]).join('') + 'A1!';
 
     const newUser: UserRecord = {
       id: `user_${Date.now()}`,
