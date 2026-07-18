@@ -43,7 +43,36 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
         throw new Error(pmError.message);
       }
 
-      // Store the organization record with payment info via AppSync
+      // Process payment server-side via Stripe checkout Lambda
+      const checkoutUrl = import.meta.env.VITE_STRIPE_CHECKOUT_URL;
+      if (!checkoutUrl) throw new Error('Payment service URL not configured');
+
+      const response = await fetch(checkoutUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentMethodId: paymentMethod.id,
+          plan,
+          email,
+          orgName,
+        }),
+      });
+
+      const paymentResult = await response.json();
+
+      if (!paymentResult?.success) {
+        if (paymentResult?.requiresAction && paymentResult?.clientSecret) {
+          // Handle 3D Secure or other authentication
+          const { error: confirmError } = await stripe.confirmCardPayment(paymentResult.clientSecret);
+          if (confirmError) {
+            throw new Error(confirmError.message);
+          }
+        } else {
+          throw new Error(paymentResult?.error || t('register.paymentFailed'));
+        }
+      }
+
+      // Create organization record after successful payment
       try {
         const client = getDataClient();
         await client.models.Organization.create({
@@ -54,7 +83,6 @@ function StripeCheckoutForm({ plan, email, orgName, onPaymentSuccess }: { plan: 
           currency: 'USD',
         });
       } catch (orgErr) {
-        // Organization creation is best-effort; payment was successful
         console.error('Failed to create organization record:', orgErr);
       }
       onPaymentSuccess();

@@ -74,6 +74,8 @@ export const handler = async (event: any) => {
   }
 };
 
+const PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
+
 async function triggerWhatsAppReminder(user: any) {
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
@@ -85,22 +87,35 @@ async function triggerWhatsAppReminder(user: any) {
     return;
   }
 
+  // Validate user has a valid phone number
+  const phone = typeof user.mobileNumber === 'string' ? user.mobileNumber : '';
+  if (!phone || !PHONE_REGEX.test(phone)) {
+    console.warn(`Skipping reminder for ${user.firstName}: invalid phone number`);
+    return;
+  }
+
+  // Validate name fields to prevent injection into message templates
+  const firstName = typeof user.firstName === 'string' ? user.firstName.slice(0, 100) : 'User';
+
   const url = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`;
   const params = new URLSearchParams();
-  params.set('To', `whatsapp:${user.mobileNumber}`);
+  params.set('To', `whatsapp:${phone}`);
   params.set('From', `whatsapp:${twilioSender}`);
+
+  const role = typeof user.role === 'string' ? user.role.slice(0, 50) : 'N/A';
+  const shift = typeof user.shift === 'string' ? user.shift.slice(0, 20) : 'N/A';
 
   if (reminderTemplateSid) {
     params.set('ContentSid', reminderTemplateSid);
     params.set('ContentVariables', JSON.stringify({
-      '1': user.firstName,
+      '1': firstName,
       '2': 'Alluvial Mining',
-      '3': user.role,
+      '3': role,
       '4': new Date().toISOString().split('T')[0],
-      '5': user.shift || 'N/A',
+      '5': shift,
     }));
   } else {
-    params.set('Body', `Hi ${user.firstName}, this is a reminder to submit your daily report for ${new Date().toISOString().split('T')[0]}. Please log in to the Alluvial Site Manager.`);
+    params.set('Body', `Hi ${firstName}, this is a reminder to submit your daily report for ${new Date().toISOString().split('T')[0]}. Please log in to the Alluvial Site Manager.`);
   }
 
   try {
@@ -112,8 +127,8 @@ async function triggerWhatsAppReminder(user: any) {
       },
       body: params.toString(),
     });
-    console.log(`Reminder sent to ${user.firstName}: ${response.status}`);
+    console.log(`Reminder sent to ${firstName}: ${response.status}`);
   } catch (err) {
-    console.error(`Failed to send reminder to ${user.firstName}:`, err);
+    console.error(`Failed to send reminder to ${firstName}:`, err);
   }
 }

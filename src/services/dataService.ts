@@ -18,7 +18,8 @@ export function isAmplifyConfigured(): boolean {
     const outputs = (window as any).__amplify_outputs__ || {};
     if (outputs?.auth?.user_pool_id?.includes('placeholder')) return false;
     return true;
-  } catch {
+  } catch (err) {
+    console.warn('[dataService] isAmplifyConfigured check failed:', err);
     return false;
   }
 }
@@ -74,7 +75,9 @@ export function queryData<T>(prefix: string): Array<{ key: string; value: T }> {
         if (raw !== null) {
           try {
             results.push({ key, value: JSON.parse(raw) as T });
-          } catch { /* skip */ }
+          } catch (parseErr) {
+            console.warn(`[dataService] queryData: failed to parse key "${key}":`, parseErr);
+          }
         }
       }
     }

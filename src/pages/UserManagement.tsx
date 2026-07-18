@@ -69,7 +69,8 @@ export default function UserManagement() {
       try {
         const saved = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
         setUsersList(saved);
-      } catch {
+      } catch (fallbackErr) {
+        console.warn('Failed to load users from localStorage fallback:', fallbackErr);
         setUsersList([]);
       }
     } finally {

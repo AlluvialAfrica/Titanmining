@@ -32,7 +32,10 @@ export default function Dashboard() {
   const [history, setHistory] = useState<any[]>([]);
 
   useEffect(() => {
-    getReportHistory().then(setHistory).catch(() => setHistory([]));
+    getReportHistory().then(setHistory).catch((err) => {
+      console.error('Failed to load report history:', err);
+      setHistory([]);
+    });
   }, []);
 
   if (activeModal === 'terms') {

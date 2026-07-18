@@ -1,8 +1,30 @@
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 
+const PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
+const OTP_REGEX = /^\d{4,8}$/;
+
 export const handler = async (event: { phone: string; code: string; email?: string }) => {
   const { phone, code } = event;
-  console.log(`Sending OTP to phone ***${phone.slice(-4)}...`);
+
+  // Validate required inputs
+  if (!phone || typeof phone !== 'string') {
+    console.error('OTP send failed: missing or invalid phone');
+    return { success: false, error: 'Phone number is required' };
+  }
+  if (!code || typeof code !== 'string' || !OTP_REGEX.test(code)) {
+    console.error('OTP send failed: missing or invalid code format');
+    return { success: false, error: 'OTP code must be 4-8 digits' };
+  }
+
+  // Normalize phone number (must start with +)
+  const normalizedPhone = phone.startsWith('+') ? phone : `+${phone}`;
+
+  if (!PHONE_REGEX.test(normalizedPhone)) {
+    console.error(`OTP send failed: invalid phone format ***${normalizedPhone.slice(-4)}`);
+    return { success: false, error: 'Invalid phone number format. Must be international format (e.g. +254...)' };
+  }
+
+  console.log(`Sending OTP to phone ***${normalizedPhone.slice(-4)}...`);
 
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
@@ -11,11 +33,8 @@ export const handler = async (event: { phone: string; code: string; email?: stri
 
   if (!twilioSid || !twilioToken || !twilioSender) {
     console.warn('Twilio credentials not fully configured. Falling back to SMS via AWS SNS.');
-    return await sendSnsFallback(phone, code);
+    return await sendSnsFallback(normalizedPhone, code);
   }
-
-  // Normalize phone number (must start with +)
-  const normalizedPhone = phone.startsWith('+') ? phone : `+${phone}`;
 
   try {
     const authHeader = `Basic ${Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64')}`;

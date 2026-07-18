@@ -19,7 +19,8 @@ function safeGetJSON<T>(key: string, fallback: T): T {
     const raw = localStorage.getItem(key);
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
-  } catch {
+  } catch (err) {
+    console.warn(`Failed to parse localStorage key "${key}":`, err);
     return fallback;
   }
 }
@@ -60,7 +61,8 @@ export function useKPI() {
     if (!raw) return null;
     try {
       return JSON.parse(raw);
-    } catch {
+    } catch (err) {
+      console.warn('Failed to parse KPI draft:', err);
       return null;
     }
   }, [user, getStorageKey]);

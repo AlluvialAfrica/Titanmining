@@ -5,8 +5,11 @@ import { dailyReminder } from './functions/daily-reminder/resource';
 import { reportAggregator } from './functions/report-aggregator/resource';
 import { otpSender } from './functions/otp-sender/resource';
 import { whatsappWebhook } from './functions/whatsapp-webhook/resource';
+import { stripeCheckout } from './functions/stripe-checkout/resource';
 import { PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam';
 import { Function as LambdaFunction } from 'aws-cdk-lib/aws-lambda';
+import { FunctionUrlAuthType, HttpMethod } from 'aws-cdk-lib/aws-lambda';
+import { CfnOutput } from 'aws-cdk-lib';
 
 const backend = defineBackend({
   auth,
@@ -15,6 +18,7 @@ const backend = defineBackend({
   reportAggregator,
   otpSender,
   whatsappWebhook,
+  stripeCheckout,
 });
 
 // Grant Lambda functions access to DynamoDB tables
@@ -60,6 +64,23 @@ dailyReminderFn.addEnvironment('REPORT_TABLE_NAME', tables['DailyReport'].tableN
 reportAggregatorFn.addEnvironment('REPORT_TABLE_NAME', tables['DailyReport'].tableName);
 reportAggregatorFn.addEnvironment('FUEL_TABLE_NAME', tables['FuelReconciliation'].tableName);
 reportAggregatorFn.addEnvironment('GOLD_TABLE_NAME', tables['GoldRecovery'].tableName);
+
+// Create a function URL for the Stripe checkout Lambda
+const stripeCheckoutFn = backend.stripeCheckout.resources.lambda as LambdaFunction;
+const fnUrl = stripeCheckoutFn.addFunctionUrl({
+  authType: FunctionUrlAuthType.NONE,
+  cors: {
+    allowedOrigins: ['*'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedMethods: [HttpMethod.POST] as any,
+  },
+});
+
+// Output the function URL so the frontend can use it
+new CfnOutput(backend.stripeCheckout.resources.lambda.stack, 'StripeCheckoutUrl', {
+  value: fnUrl.url,
+  description: 'Stripe Checkout Lambda Function URL',
+});
 
 // Configure custom Cognito User Pool attributes using CDK schema overrides
 const cfnUserPool = backend.auth.resources.cfnResources.cfnUserPool;

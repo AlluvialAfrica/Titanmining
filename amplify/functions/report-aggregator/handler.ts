@@ -16,10 +16,27 @@ async function scanAll(params: any) {
   return items;
 }
 
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const ID_REGEX = /^[a-zA-Z0-9_\-]{1,128}$/;
+
 export const handler = async (event: { orgId?: string; siteId?: string; date?: string }) => {
   const date = event.date || new Date().toISOString().split('T')[0];
   const orgId = event.orgId || 'all';
   const siteId = event.siteId || 'all';
+
+  // Validate date format
+  if (!DATE_REGEX.test(date) || isNaN(new Date(date).getTime())) {
+    console.error(`Invalid date parameter: ${date}`);
+    return { success: false, error: 'Invalid date format. Expected YYYY-MM-DD.' };
+  }
+
+  // Validate IDs if provided
+  if (orgId !== 'all' && !ID_REGEX.test(orgId)) {
+    return { success: false, error: 'Invalid orgId format' };
+  }
+  if (siteId !== 'all' && !ID_REGEX.test(siteId)) {
+    return { success: false, error: 'Invalid siteId format' };
+  }
 
   console.log(`Running report aggregator for date=${date}, org=${orgId}, site=${siteId}`);
 
@@ -59,11 +76,11 @@ export const handler = async (event: { orgId?: string; siteId?: string; date?: s
         ExpressionAttributeValues: { ':date': date },
       });
       for (const f of fuelRecords) {
-        fuelSummary.openingStock += f.openingStock || 0;
-        fuelSummary.received += f.received || 0;
-        fuelSummary.issued += f.totalIssued || 0;
-        fuelSummary.closingStock += f.closingStock || 0;
-        fuelSummary.variance += f.variance || 0;
+        fuelSummary.openingStock += Number(f.openingStock) || 0;
+        fuelSummary.received += Number(f.received) || 0;
+        fuelSummary.issued += Number(f.totalIssued) || 0;
+        fuelSummary.closingStock += Number(f.closingStock) || 0;
+        fuelSummary.variance += Number(f.variance) || 0;
       }
     }
 
@@ -76,7 +93,7 @@ export const handler = async (event: { orgId?: string; siteId?: string; date?: s
         ExpressionAttributeValues: { ':date': date },
       });
       for (const g of goldRecords) {
-        goldSummary.totalRecoveryG += g.goldWeight || 0;
+        goldSummary.totalRecoveryG += Number(g.goldWeight) || 0;
         goldSummary.entryCount++;
       }
     }

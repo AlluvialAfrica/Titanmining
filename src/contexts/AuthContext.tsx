@@ -86,8 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const attrs = await fetchUserAttributes();
       const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
       setUser(appUser);
-    } catch {
-      // No current session — that's fine
+    } catch (err) {
+      // No current session on mount is expected (user not logged in)
+      console.debug('No existing auth session:', err);
     } finally {
       setLoading(false);
     }

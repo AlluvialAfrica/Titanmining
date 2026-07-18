@@ -9,7 +9,8 @@ function safeGetJSON<T>(key: string, fallback: T): T {
     const raw = localStorage.getItem(key);
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
-  } catch {
+  } catch (err) {
+    console.warn(`Failed to parse localStorage key "${key}":`, err);
     return fallback;
   }
 }

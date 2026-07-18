@@ -3,6 +3,12 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Received WhatsApp Webhook event:', event.httpMethod, event.path);
 
+  const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN;
+  if (!verifyToken) {
+    console.error('WHATSAPP_VERIFY_TOKEN not configured');
+    return { statusCode: 500, body: 'Server misconfigured' };
+  }
+
   // Verify GET webhook challenge for webhook registration
   if (event.httpMethod === 'GET') {
     const queryParams = event.queryStringParameters || {};
@@ -11,11 +17,13 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const challenge = queryParams['hub.challenge'];
 
     if (mode && token) {
-      if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
+      if (mode === 'subscribe' && token === verifyToken) {
         console.log('Webhook verified successfully.');
+        // Sanitize challenge to prevent response injection (alphanumeric + hyphens only)
+        const sanitizedChallenge = (challenge || 'OK').replace(/[^a-zA-Z0-9_\-]/g, '');
         return {
           statusCode: 200,
-          body: challenge || 'OK',
+          body: sanitizedChallenge,
         };
       }
       return {
@@ -27,15 +35,26 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   // Handle incoming POST events (messages)
   try {
-    const body = JSON.parse(event.body || '{}');
+    const rawBody = event.body || '{}';
+    // Reject excessively large payloads (100KB limit)
+    if (rawBody.length > 102400) {
+      console.warn('Webhook body too large, rejecting');
+      return { statusCode: 413, body: 'Payload too large' };
+    }
+
+    const body = JSON.parse(rawBody);
     console.log('Webhook Body received, processing...');
 
     // Handle Twilio messaging webhook formats
     if (body.SmsSid || body.MessageSid) {
-      const from = body.From; // e.g. whatsapp:+254712345678
-      const text = body.Body; // message content
-      console.log(`Received message from ***${(from || '').slice(-4)}`);
-      
+      const from = typeof body.From === 'string' ? body.From : '';
+      const text = typeof body.Body === 'string' ? body.Body.slice(0, 1000) : ''; // Cap message length
+      if (!from) {
+        console.warn('Webhook message missing From field');
+        return { statusCode: 200, body: 'OK' };
+      }
+      console.log(`Received message from ***${from.slice(-4)}`);
+
       // Send auto-reply
       await sendAutoReply(from, text);
     }
