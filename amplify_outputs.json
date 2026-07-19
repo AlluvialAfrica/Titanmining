@@ -17,6 +17,53 @@
       "email",
       "phone_number"
     ],
+    "groups": [
+      {
+        "SiteControllers": {
+          "precedence": 0
+        }
+      },
+      {
+        "DepartmentLeads": {
+          "precedence": 1
+        }
+      },
+      {
+        "Operators": {
+          "precedence": 2
+        }
+      },
+      {
+        "SupportStaff": {
+          "precedence": 3
+        }
+      },
+      {
+        "Security": {
+          "precedence": 4
+        }
+      },
+      {
+        "Management": {
+          "precedence": 5
+        }
+      },
+      {
+        "Maintenance": {
+          "precedence": 6
+        }
+      },
+      {
+        "Finance": {
+          "precedence": 7
+        }
+      },
+      {
+        "HRAdmin": {
+          "precedence": 8
+        }
+      }
+    ],
     "mfa_configuration": "NONE",
     "password_policy": {
       "min_length": 8,
@@ -1549,5 +1596,5 @@
       }
     }
   },
-  "version": "1.2"
+  "version": "1.4"
 }
