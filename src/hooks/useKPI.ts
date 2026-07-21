@@ -138,7 +138,45 @@ export function useKPI() {
     (days?: number): KPIEntry[] => {
       if (!user) return [];
       const historyKey = `kpi_history_${user.id}`;
-      const all: KPIEntry[] = safeGetJSON(historyKey, []);
+      let all: KPIEntry[] = safeGetJSON(historyKey, []);
+
+      // Async fetch from AppSync to hydrate cache
+      getDataClient().models.KPIEntry.list()
+        .then(({ data }) => {
+          if (data && data.length > 0) {
+            const fetched: KPIEntry[] = data
+              .filter((k: any) => k.userId === user.id || k.userId === user.email)
+              .map((k: any) => {
+                let parsed: Record<string, number> = {};
+                try {
+                  parsed = typeof k.kpiData === 'string' ? JSON.parse(k.kpiData) : (k.kpiData || {});
+                } catch {
+                  parsed = {};
+                }
+                return {
+                  id: k.id,
+                  userId: k.userId,
+                  role: k.role,
+                  entryDate: k.entryDate,
+                  shift: (k.shift as 'DAY' | 'NIGHT') || 'DAY',
+                  values: parsed,
+                  submittedAt: k.submittedAt || k.createdAt || new Date().toISOString(),
+                  status: (k.status as 'DRAFT' | 'SUBMITTED') || 'SUBMITTED',
+                };
+              });
+
+            if (fetched.length > 0) {
+              const combinedMap = new Map<string, KPIEntry>();
+              for (const item of [...all, ...fetched]) {
+                combinedMap.set(item.id, item);
+              }
+              const merged = Array.from(combinedMap.values()).sort((a, b) => (b.entryDate > a.entryDate ? 1 : -1));
+              safeSetJSON(historyKey, merged);
+            }
+          }
+        })
+        .catch((err) => logger.warn('AppSync KPI fetch failed:', err));
+
       if (!days) return all;
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
@@ -151,7 +189,44 @@ export function useKPI() {
     (days?: number): KPIEntry[] => {
       if (!user) return [];
       const siteKey = `kpi_site_${user.siteId}`;
-      const all: KPIEntry[] = safeGetJSON(siteKey, []);
+      let all: KPIEntry[] = safeGetJSON(siteKey, []);
+
+      getDataClient().models.KPIEntry.list()
+        .then(({ data }) => {
+          if (data && data.length > 0) {
+            const fetched: KPIEntry[] = data
+              .filter((k: any) => k.orgId === user.orgId || k.siteId === user.siteId)
+              .map((k: any) => {
+                let parsed: Record<string, number> = {};
+                try {
+                  parsed = typeof k.kpiData === 'string' ? JSON.parse(k.kpiData) : (k.kpiData || {});
+                } catch {
+                  parsed = {};
+                }
+                return {
+                  id: k.id,
+                  userId: k.userId,
+                  role: k.role,
+                  entryDate: k.entryDate,
+                  shift: (k.shift as 'DAY' | 'NIGHT') || 'DAY',
+                  values: parsed,
+                  submittedAt: k.submittedAt || k.createdAt || new Date().toISOString(),
+                  status: (k.status as 'DRAFT' | 'SUBMITTED') || 'SUBMITTED',
+                };
+              });
+
+            if (fetched.length > 0) {
+              const combinedMap = new Map<string, KPIEntry>();
+              for (const item of [...all, ...fetched]) {
+                combinedMap.set(item.id, item);
+              }
+              const merged = Array.from(combinedMap.values()).sort((a, b) => (b.entryDate > a.entryDate ? 1 : -1));
+              safeSetJSON(siteKey, merged);
+            }
+          }
+        })
+        .catch((err) => logger.warn('AppSync site KPI fetch failed:', err));
+
       if (!days) return all;
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
@@ -163,7 +238,7 @@ export function useKPI() {
   const getUserKPIHistory = useCallback(
     (userId: string, days?: number): KPIEntry[] => {
       const historyKey = `kpi_history_${userId}`;
-      const all: KPIEntry[] = safeGetJSON(historyKey, []);
+      let all: KPIEntry[] = safeGetJSON(historyKey, []);
       if (!days) return all;
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - days);
