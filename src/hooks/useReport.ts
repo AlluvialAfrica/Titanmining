@@ -86,6 +86,65 @@ export function useReport() {
       const client = getDataClient();
       await client.models.DailyReport.create(submission);
 
+      // Extract KPI metrics from report data to update KPI Dashboard dynamically
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const kpiMetrics: Record<string, number> = {};
+
+      if (reportData.totalGoldRecoveryG) kpiMetrics.daily_gold_recovery_g = Number(reportData.totalGoldRecoveryG);
+      if (reportData.materialMinedM3) kpiMetrics.material_mined_m3 = Number(reportData.materialMinedM3);
+      if (reportData.hoursWorked) kpiMetrics.operating_hours = Number(reportData.hoursWorked);
+      if (reportData.totalIssued) kpiMetrics.fuel_issued_l = Number(reportData.totalIssued);
+      if (reportData.fuelIssuedL) kpiMetrics.fuel_issued_l = Number(reportData.fuelIssuedL);
+      if (reportData.grossWeightG) kpiMetrics.daily_gold_recovery_g = Number(reportData.grossWeightG);
+      if (reportData.shakingTableRecoveryG) kpiMetrics.shaking_table_recovery_g = Number(reportData.shakingTableRecoveryG);
+      if (reportData.concentrateWeightG) kpiMetrics.shaking_table_recovery_g = Number(reportData.concentrateWeightG);
+      if (reportData.amountUSD) kpiMetrics.daily_expenses_usd = Number(reportData.amountUSD);
+      if (reportData.totalCost) kpiMetrics.daily_expenses_usd = Number(reportData.totalCost);
+
+      if (reportData.materialMinedM3 && reportData.fuelIssuedL) {
+        kpiMetrics.fuel_efficiency_l_per_m3 = parseFloat((Number(reportData.fuelIssuedL) / Number(reportData.materialMinedM3)).toFixed(2));
+      }
+
+      if (Object.keys(kpiMetrics).length > 0) {
+        try {
+          await client.models.KPIEntry.create({
+            orgId: user.orgId,
+            siteId: user.siteId,
+            userId: user.id,
+            role: user.role,
+            entryDate: todayStr,
+            shift: 'DAY',
+            kpiData: JSON.stringify(kpiMetrics),
+            status: 'SUBMITTED',
+            submittedAt: new Date().toISOString(),
+            source: 'WEB',
+          });
+        } catch (kpiErr) {
+          logger.warn('Failed to sync report KPI to AppSync:', kpiErr);
+        }
+
+        const kpiEntryObj = {
+          id: `kpi_${Date.now()}`,
+          userId: user.id,
+          role: user.role,
+          entryDate: todayStr,
+          shift: 'DAY' as const,
+          values: kpiMetrics,
+          submittedAt: new Date().toISOString(),
+          status: 'SUBMITTED' as const,
+        };
+
+        const userKey = `kpi_history_${user.id}`;
+        const uHist = safeGetJSON<any[]>(userKey, []);
+        uHist.unshift(kpiEntryObj);
+        safeSetJSON(userKey, uHist);
+
+        const siteKey = `kpi_site_${user.siteId}`;
+        const sHist = safeGetJSON<any[]>(siteKey, []);
+        sHist.unshift(kpiEntryObj);
+        safeSetJSON(siteKey, sHist);
+      }
+
       // Also keep in local history for quick access
       const historyKey = `history_${user.orgId}`;
       const history = safeGetJSON<any[]>(historyKey, []);

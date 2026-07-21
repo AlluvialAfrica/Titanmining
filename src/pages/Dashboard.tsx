@@ -165,6 +165,21 @@ export default function Dashboard() {
                         })}
                       </select>
                     </div>
+                  ) : creatableReports.length > 1 ? (
+                    <div className="mb-8">
+                      <label className="minimal-label">{t('reports_form.selectModule')}</label>
+                      <select
+                        value={creatableReports.includes(selectedControllerForm) ? selectedControllerForm : creatableReports[0]}
+                        onChange={e => setSelectedControllerForm(e.target.value)}
+                        className="minimal-select text-lg font-serif italic max-w-md"
+                      >
+                        {creatableReports.map((tid) => (
+                          <option key={tid} value={tid}>
+                            {`${tid}: ${t(`reports.${tid}`)}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   ) : (
                     <div className="mb-8">
                       <h1 className="editorial-title text-2xl font-light">
@@ -176,7 +191,7 @@ export default function Dashboard() {
                   <div className="mt-8">
                     {user.role === Role.SITE_CONTROLLER || user.role === Role.MINE_MANAGER || user.role === Role.OPERATIONS_MANAGER
                       ? renderForm(selectedControllerForm)
-                      : renderForm(creatableReports[0])}
+                      : renderForm(creatableReports.includes(selectedControllerForm) ? selectedControllerForm : (creatableReports[0] || 'TEMPLATE_01'))}
                   </div>
                 </div>
               )}

@@ -246,6 +246,49 @@ export default function Login() {
               </div>
             </div>
           </form>
+
+          {/* Quick Demo Logins Section */}
+          <div className="mt-10 pt-6 border-t border-black">
+            <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold mb-3">
+              Fast Role Switch & Demo Logins (Click to Sign In):
+            </p>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {[
+                { label: 'Site Controller (Osman)', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
+                { label: 'Mine Manager', email: 'demo.minemanager@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Geology & Mining Lead', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Processing & Recovery Lead', email: 'demo.plantlead@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Fuel & Logistics Admin', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Excavator Operator', email: 'demo.operator@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Engine Mechanic', email: 'demo.mechanic@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Security Manager', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Finance Manager', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'System Admin', email: 'administrator@alluvial.africa', pass: 'TitanMining2026!' },
+              ].map((demo) => (
+                <button
+                  key={demo.email}
+                  type="button"
+                  onClick={async () => {
+                    setMobileNumber(demo.email);
+                    setPassword(demo.pass);
+                    setError('');
+                    setLoading(true);
+                    try {
+                      await login(demo.email, demo.email, demo.pass);
+                    } catch (err: any) {
+                      setError(err.message || 'Demo login failed.');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  className="p-2 border border-zinc-200 hover:border-black text-left bg-zinc-50 hover:bg-white transition-all text-[11px]"
+                >
+                  <span className="font-serif italic font-semibold text-black block truncate">{demo.label}</span>
+                  <span className="text-[9px] text-zinc-400 font-mono block truncate">{demo.email}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <footer className="border-t border-zinc-100 pt-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">
