@@ -252,7 +252,13 @@ export default function SiteDailySummary() {
 
         {/* Submit */}
         <div className="flex gap-4 pt-6">
-          <button type="submit" className="minimal-btn">{t('siteSummary.verifyApprove')}
+          <button type="submit" className="minimal-btn">{t('siteSummary.verifyApprove')}</button>
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="minimal-btn-secondary"
+          >
+            Print / Save PDF
           </button>
         </div>
       </form>

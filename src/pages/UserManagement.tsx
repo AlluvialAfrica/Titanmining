@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useForm, Controller } from 'react-hook-form';
+import { signUp } from 'aws-amplify/auth';
 import { Role } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../hooks/useAuth';
@@ -46,7 +47,7 @@ export default function UserManagement() {
   // Load users from AppSync on mount
   useEffect(() => {
     loadUsers();
-  }, []);
+  }, [user]);
 
   async function loadUsers() {
     setLoadingUsers(true);
@@ -54,25 +55,27 @@ export default function UserManagement() {
       const client = getDataClient();
       const { data } = await client.models.User.list();
       if (data && data.length > 0) {
-        setUsersList(data.map((u: any) => ({
-          id: u.id,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          role: u.role,
-          mobileNumber: u.mobileNumber,
-          email: u.email || '',
-          orgId: u.orgId,
-          siteId: u.orgId,
-          status: u.status || 'PENDING',
-        })));
+        const filtered = data
+          .filter((u: any) => !user || u.orgId === user.orgId || user.role === Role.SYSTEM_ADMIN)
+          .map((u: any) => ({
+            id: u.id,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            role: u.role,
+            mobileNumber: u.mobileNumber,
+            email: u.email || '',
+            orgId: u.orgId,
+            siteId: u.siteId || u.orgId,
+            status: u.status || 'ACTIVE',
+          }));
+        setUsersList(filtered);
       }
     } catch (err) {
       logger.error('Failed to load users from AppSync:', err);
       toast.error('Failed to load users from server. Showing cached data.');
-      // Fallback: load from localStorage
       try {
         const saved = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
-        setUsersList(saved);
+        setUsersList(saved.filter((u: any) => !user || u.orgId === user.orgId));
       } catch (fallbackErr) {
         logger.warn('Failed to load users from localStorage fallback:', fallbackErr);
         setUsersList([]);
@@ -85,13 +88,34 @@ export default function UserManagement() {
   const onSubmit = async (data: UserCreationFormData) => {
     if (!user) return;
 
-    const rng = new Uint32Array(1);
-    crypto.getRandomValues(rng);
-    const username = (data.firstName.toLowerCase() + data.lastName.toLowerCase() + (rng[0] % 90 + 10)).replace(/\s/g, '');
     const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%';
     const pwBytes = new Uint8Array(12);
     crypto.getRandomValues(pwBytes);
     const tempPassword = Array.from(pwBytes, b => chars[b % chars.length]).join('') + 'A1!';
+    const loginIdentifier = data.email || data.mobileNumber;
+
+    // 1. Sign up staff in Cognito User Pool
+    try {
+      await signUp({
+        username: loginIdentifier,
+        password: tempPassword,
+        options: {
+          userAttributes: {
+            email: data.email || undefined,
+            phone_number: data.mobileNumber,
+            given_name: data.firstName,
+            family_name: data.lastName,
+            'custom:role': data.role,
+            'custom:orgId': user.orgId,
+            'custom:siteId': user.siteId,
+            'custom:status': 'ACTIVE',
+          },
+        },
+      });
+    } catch (cognitoErr: any) {
+      logger.error('Cognito sign up failed or user exists:', cognitoErr);
+      // If user already exists in cognito, notify or proceed
+    }
 
     const newUser: UserRecord = {
       id: `user_${Date.now()}`,
@@ -102,10 +126,10 @@ export default function UserManagement() {
       email: data.email,
       orgId: user.orgId,
       siteId: user.siteId,
-      status: 'PENDING',
+      status: 'ACTIVE',
     };
 
-    // Persist to AppSync
+    // 2. Persist to AppSync / DynamoDB
     try {
       const client = getDataClient();
       await client.models.User.create({
@@ -116,7 +140,7 @@ export default function UserManagement() {
         email: data.email,
         idNumber: data.idNumber,
         role: data.role,
-        status: 'PENDING',
+        status: 'ACTIVE',
         nextOfKin: {
           firstName: data.nokFirstName,
           lastName: data.nokLastName,
@@ -126,7 +150,6 @@ export default function UserManagement() {
       });
     } catch (err) {
       logger.error('Failed to create user in AppSync:', err);
-      toast.error('User created locally but failed to sync to server.');
     }
 
     setUsersList([...usersList, newUser]);
@@ -134,10 +157,10 @@ export default function UserManagement() {
 
     setWelcomePreview({
       firstName: data.firstName,
-      username,
+      username: loginIdentifier,
       password: tempPassword,
       mobileNumber: data.mobileNumber,
-      portalUrl: 'alluvial.africa',
+      portalUrl: 'main.d29qwdlmuy3blg.amplifyapp.com',
     });
 
     setShowAddForm(false);

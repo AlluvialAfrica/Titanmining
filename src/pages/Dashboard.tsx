@@ -183,7 +183,36 @@ export default function Dashboard() {
 
               {activeTab === 'history' && (
                 <div>
-                  <h1 className="editorial-title text-2xl font-light mb-8">{t('history.title')}</h1>
+                  <div className="flex justify-between items-center mb-8">
+                    <h1 className="editorial-title text-2xl font-light">{t('history.title')}</h1>
+                    {history.length > 0 && (
+                      <button
+                        onClick={() => {
+                          const headers = ['ID', 'Date', 'ReportType', 'SubmittedBy', 'Status', 'OrgID', 'SiteID'];
+                          const rows = history.map((h: any) => [
+                            h.id || '',
+                            h.submittedAt ? new Date(h.submittedAt).toISOString() : '',
+                            h.reportType || '',
+                            h.userId || '',
+                            h.status || '',
+                            h.orgId || '',
+                            h.siteId || ''
+                          ]);
+                          const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                          const encodedUri = encodeURI(csvContent);
+                          const link = document.createElement('a');
+                          link.setAttribute('href', encodedUri);
+                          link.setAttribute('download', `titan_mining_reports_${user.orgId}_${Date.now()}.csv`);
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                        className="minimal-btn text-xs"
+                      >
+                        Export CSV
+                      </button>
+                    )}
+                  </div>
 
                   {history.length === 0 ? (
                     <div className="border border-black p-8 text-center text-zinc-500 font-serif italic">
@@ -198,13 +227,14 @@ export default function Dashboard() {
                           <th>{t('history.submittedBy')}</th>
                           <th>{t('history.status')}</th>
                           <th>{t('history.source')}</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {history.map((h: any) => (
-                          <tr key={h.id}>
+                          <tr key={h.id || h.submittedAt}>
                             <td>{new Date(h.submittedAt).toLocaleDateString()}</td>
-                            <td className="font-serif italic font-semibold">{t(`reports.${h.reportType}`)}</td>
+                            <td className="font-serif italic font-semibold">{t(`reports.${h.reportType}`) || h.reportType}</td>
                             <td>{h.userId}</td>
                             <td>
                               <span className="text-[10px] font-semibold bg-zinc-150 border border-black px-2 py-0.5 uppercase tracking-wider">
@@ -212,6 +242,61 @@ export default function Dashboard() {
                               </span>
                             </td>
                             <td>{h.source || 'WEB'}</td>
+                            <td>
+                              <button
+                                onClick={() => {
+                                  const win = window.open('', '_blank');
+                                  if (!win) return;
+                                  let parsedData: any = {};
+                                  try {
+                                    parsedData = typeof h.data === 'string' ? JSON.parse(h.data) : (h.data || {});
+                                  } catch {
+                                    parsedData = { raw: h.data };
+                                  }
+                                  const dataRows = Object.entries(parsedData)
+                                    .map(([k, v]) => `<tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${typeof v === 'object' ? JSON.stringify(v) : v}</td></tr>`)
+                                    .join('');
+                                  win.document.write(`
+                                    <html>
+                                      <head>
+                                        <title>Report - ${h.reportType}</title>
+                                        <style>
+                                          body { font-family: 'Georgia', serif; padding: 40px; color: #111; }
+                                          h1 { font-weight: normal; border-bottom: 2px solid #000; padding-bottom: 10px; }
+                                          .meta { margin-bottom: 20px; font-family: sans-serif; font-size: 13px; color: #444; }
+                                          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                          .print-btn { background: #000; color: #fff; border: none; padding: 10px 20px; cursor: pointer; margin-bottom: 20px; }
+                                          @media print { .print-btn { display: none; } }
+                                        </style>
+                                      </head>
+                                      <body>
+                                        <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+                                        <h1>TITAN MINING - OFFICIAL REPORT</h1>
+                                        <div class="meta">
+                                          <p><strong>Report Type:</strong> ${h.reportType}</p>
+                                          <p><strong>Organization:</strong> ${h.orgId}</p>
+                                          <p><strong>Site:</strong> ${h.siteId || 'N/A'}</p>
+                                          <p><strong>Submitted By:</strong> ${h.userId}</p>
+                                          <p><strong>Date:</strong> ${new Date(h.submittedAt).toLocaleString()}</p>
+                                          <p><strong>Status:</strong> ${h.status}</p>
+                                        </div>
+                                        <h2>Report Data Payload</h2>
+                                        <table>
+                                          <thead>
+                                            <tr style="background:#f4f4f4;"><th style="padding:8px;border:1px solid #ddd;text-align:left;">Metric / Field</th><th style="padding:8px;border:1px solid #ddd;text-align:left;">Value</th></tr>
+                                          </thead>
+                                          <tbody>${dataRows}</tbody>
+                                        </table>
+                                      </body>
+                                    </html>
+                                  `);
+                                  win.document.close();
+                                }}
+                                className="text-xs font-mono underline hover:text-blue-600"
+                              >
+                                Print / PDF
+                              </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
