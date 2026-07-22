@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
-import { Role, ROLE_PERMISSIONS } from '../types/roles';
+import { Role, ROLE_PERMISSIONS, hasAdminAccess } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
 import { logger } from '../utils/logger';
 import LanguageToggle from '../components/LanguageToggle';
@@ -24,7 +24,7 @@ const TermsOfService = lazy(() => import('./TermsOfService'));
 const Disclaimer = lazy(() => import('./Disclaimer'));
 const AdminDashboard = lazy(() => import('./AdminDashboard'));
 
-type TabType = 'form' | 'history' | 'users' | 'settings' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help';
+type TabType = 'form' | 'history' | 'users' | 'settings' | 'admin' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -60,6 +60,7 @@ export default function Dashboard() {
   if (!user) return null;
 
   const permissions = ROLE_PERMISSIONS[user.role];
+  const isAdmin = hasAdminAccess(user.role);
 
   const renderForm = (templateId: string) => {
     switch (templateId) {
@@ -73,6 +74,14 @@ export default function Dashboard() {
   };
 
   const creatableReports = permissions.canCreate;
+
+  /** Roles that can see all 15 templates in the dropdown. */
+  const isFullAccessRole =
+    user.role === Role.SITE_MANAGER ||
+    user.role === Role.SITE_CONTROLLER ||
+    user.role === Role.MINE_MANAGER ||
+    user.role === Role.SYSTEM_ADMIN ||
+    user.role === Role.OPERATIONS_MANAGER;
 
   const navButton = (tab: TabType, label: string, show: boolean = true) => {
     if (!show) return null;
@@ -117,9 +126,6 @@ export default function Dashboard() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-12 py-12">
         <Suspense fallback={suspenseFallback}>
-        {user.role === Role.SYSTEM_ADMIN ? (
-          <AdminDashboard />
-        ) : (
           <div className="flex flex-col md:flex-row gap-12">
             <aside className="md:w-64 flex flex-col gap-2">
               <div className="flex items-center justify-between mb-4">
@@ -135,6 +141,7 @@ export default function Dashboard() {
               {navButton('profile', t('nav.roleProfile'))}
               {navButton('users', t('nav.userManagement'), permissions.canManageUsers)}
               {navButton('settings', t('nav.siteSettings'), permissions.canEditProfile)}
+              {navButton('admin', 'Admin Dashboard', isAdmin)}
               {navButton('help', t('nav.help'))}
 
               <div className="mt-auto pt-12 border-t border-zinc-100">
@@ -147,7 +154,7 @@ export default function Dashboard() {
             <section className="flex-1 border-l border-zinc-100 pl-12 min-h-[60vh]">
               {activeTab === 'form' && (
                 <div>
-                  {user.role === Role.SITE_CONTROLLER || user.role === Role.MINE_MANAGER || user.role === Role.OPERATIONS_MANAGER ? (
+                  {isFullAccessRole ? (
                     <div className="mb-8">
                       <label className="minimal-label">{t('reports_form.selectModule')}</label>
                       <select
@@ -155,7 +162,7 @@ export default function Dashboard() {
                         onChange={e => setSelectedControllerForm(e.target.value)}
                         className="minimal-select text-lg font-serif italic max-w-md"
                       >
-                        {Array.from({ length: 14 }, (_, i) => {
+                        {Array.from({ length: 15 }, (_, i) => {
                           const tid = `TEMPLATE_${String(i + 1).padStart(2, '0')}`;
                           return (
                             <option key={tid} value={tid}>
@@ -189,7 +196,7 @@ export default function Dashboard() {
                   )}
 
                   <div className="mt-8">
-                    {user.role === Role.SITE_CONTROLLER || user.role === Role.MINE_MANAGER || user.role === Role.OPERATIONS_MANAGER
+                    {isFullAccessRole
                       ? renderForm(selectedControllerForm)
                       : renderForm(creatableReports.includes(selectedControllerForm) ? selectedControllerForm : (creatableReports[0] || 'TEMPLATE_01'))}
                   </div>
@@ -326,10 +333,10 @@ export default function Dashboard() {
               {activeTab === 'profile' && <RoleProfile />}
               {activeTab === 'users' && permissions.canManageUsers && <UserManagement />}
               {activeTab === 'settings' && permissions.canEditProfile && <InstitutionalProfile />}
+              {activeTab === 'admin' && isAdmin && <AdminDashboard />}
               {activeTab === 'help' && <HelpViewer contextFilter={activeTab} />}
             </section>
           </div>
-        )}
         </Suspense>
       </main>
 

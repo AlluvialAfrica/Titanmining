@@ -54,6 +54,33 @@ const category = (name: string, fields: KPIField[]): KPICategory => ({
 // ---------------------------------------------------------------------------
 
 export const ROLE_KPI_PROFILES: Partial<Record<Role, KPIProfile>> = {
+  // -- SITE_MANAGER (merged SITE_CONTROLLER + MINE_MANAGER KPIs) --
+  [Role.SITE_MANAGER]: {
+    categories: [
+      category('management', [
+        field('siteInspections', 'count', 2),
+        field('reportsReviewed', 'count', 14),
+        field('goldHandovers', 'count', 1),
+        field('shiftHandovers', 'count', 2),
+        field('meetingsHeld', 'count', 3),
+        field('decisionsDocumented', 'count', 5),
+        field('complianceChecks', 'count', 3),
+      ]),
+    ],
+  },
+
+  // -- FUEL_MANAGER (copied from FUEL_ADMIN_LOGISTICS) --
+  [Role.FUEL_MANAGER]: {
+    categories: [
+      category('fuel', [
+        field('fuelIssuedL', 'number', 1500, { unit: 'L' }),
+        field('fuelVarianceL', 'number', 0, { unit: 'L' }),
+        field('stockReconciliations', 'count', 2),
+        field('shiftReportsFiled', 'count', 2),
+      ]),
+    ],
+  },
+
   // -- 1. EXCAVATOR_OPERATOR -------------------------------------
   [Role.EXCAVATOR_OPERATOR]: {
     categories: [

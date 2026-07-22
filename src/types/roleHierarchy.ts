@@ -12,10 +12,24 @@ export interface RoleHierarchyNode {
 
 /**
  * Complete role hierarchy mapping for the Titan Mining organisation.
- * Each role is mapped to its department and direct reports.
+ * SITE_MANAGER sits at the top (replaces MINE_MANAGER as hierarchy root).
+ * FUEL_MANAGER, HR_MANAGER, FINANCE_MANAGER are direct reports.
  */
 export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
-  // --- Management ---
+  // --- Top-level: SITE_MANAGER ---
+  [Role.SITE_MANAGER]: {
+    role: Role.SITE_MANAGER,
+    department: "Management",
+    directReports: [
+      Role.OPERATIONS_MANAGER,
+      Role.FINANCE_MANAGER,
+      Role.HR_MANAGER,
+      Role.FUEL_MANAGER,
+      Role.SAFETY_COMPLIANCE_MANAGER,
+    ],
+  },
+
+  // --- Legacy aliases (map to SITE_MANAGER hierarchy position) ---
   [Role.MINE_MANAGER]: {
     role: Role.MINE_MANAGER,
     department: "Management",
@@ -23,9 +37,30 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
       Role.OPERATIONS_MANAGER,
       Role.FINANCE_MANAGER,
       Role.HR_MANAGER,
+      Role.FUEL_MANAGER,
       Role.SAFETY_COMPLIANCE_MANAGER,
     ],
   },
+  [Role.SITE_CONTROLLER]: {
+    role: Role.SITE_CONTROLLER,
+    department: "Management",
+    directReports: [],
+  },
+  [Role.SYSTEM_ADMIN]: {
+    role: Role.SYSTEM_ADMIN,
+    department: "Management",
+    directReports: [],
+  },
+
+  // --- Direct reports to SITE_MANAGER ---
+  [Role.FUEL_MANAGER]: {
+    role: Role.FUEL_MANAGER,
+    department: "Fuel & Logistics",
+    directReports: [
+      Role.LOGISTICS_TRANSPORT_COORDINATOR,
+    ],
+  },
+
   [Role.OPERATIONS_MANAGER]: {
     role: Role.OPERATIONS_MANAGER,
     department: "Management",
@@ -35,8 +70,6 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
       Role.WORKSHOP_MANAGER,
       Role.SECURITY_MANAGER,
       Role.CAMP_MANAGER,
-      Role.LOGISTICS_TRANSPORT_COORDINATOR,
-      Role.SITE_CONTROLLER,
     ],
   },
   [Role.FINANCE_MANAGER]: {
@@ -44,8 +77,6 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
     department: "Finance",
     directReports: [
       Role.ACCOUNTANT,
-      Role.SITE_PETTY_CASH_MANAGER,
-      Role.FUEL_ADMIN_LOGISTICS,
       Role.PROCUREMENT_OFFICER,
     ],
   },
@@ -241,7 +272,7 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
   },
   [Role.FUEL_ADMIN_LOGISTICS]: {
     role: Role.FUEL_ADMIN_LOGISTICS,
-    department: "Finance",
+    department: "Fuel & Logistics",
     directReports: [],
   },
   [Role.PROCUREMENT_OFFICER]: {
@@ -268,11 +299,6 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
   },
 
   // --- Support ---
-  [Role.SITE_CONTROLLER]: {
-    role: Role.SITE_CONTROLLER,
-    department: "Support",
-    directReports: [],
-  },
   [Role.CAMP_MANAGER]: {
     role: Role.CAMP_MANAGER,
     department: "Support",
@@ -283,19 +309,11 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
     department: "Support",
     directReports: [],
   },
-  [Role.SYSTEM_ADMIN]: {
-    role: Role.SYSTEM_ADMIN,
-    department: "Support",
-    directReports: [],
-  },
 };
 
 /**
  * Recursively collects all subordinate roles beneath the given role
  * in the hierarchy tree.
- *
- * @param role - The role whose subordinates to retrieve.
- * @returns An array of all roles that fall under the given role, at any depth.
  */
 export function getAllSubordinates(role: Role): Role[] {
   const node = ROLE_HIERARCHY[role];
@@ -315,17 +333,10 @@ export function getAllSubordinates(role: Role): Role[] {
 
 /**
  * Returns the reporting chain from the given role up to the top of the
- * hierarchy (MINE_MANAGER). The returned array starts with the immediate
+ * hierarchy (SITE_MANAGER). The returned array starts with the immediate
  * supervisor and ends with the top-level role.
- *
- * If the role is already at the top (MINE_MANAGER) or has no supervisor,
- * an empty array is returned.
- *
- * @param role - The role whose upward reporting chain to retrieve.
- * @returns An ordered array of roles from the immediate supervisor to the top.
  */
 export function getReportingChain(role: Role): Role[] {
-  // Build a reverse lookup: child -> parent
   const parentMap = new Map<Role, Role>();
 
   for (const [parentRole, node] of Object.entries(ROLE_HIERARCHY)) {

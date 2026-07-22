@@ -11,10 +11,10 @@ export const SOD_RULES = [
     id: "SOD_01",
     name: "Controller cannot handle gold",
     description: "Site Controller cannot be listed as 'Received From' or 'Handed Over To' in Gold Recovery",
-    check: (report: any, userRole: Role, userId: string) => 
-      userRole === Role.SITE_CONTROLLER && 
+    check: (report: any, userRole: Role, userId: string) =>
+      (userRole === Role.SITE_CONTROLLER || userRole === Role.SITE_MANAGER) &&
       (report.receivedFrom === userId || report.handedOverTo === userId),
-    violation: "Site Controller cannot physically handle gold recovery",
+    violation: "Site Manager cannot physically handle gold recovery",
   },
   {
     id: "SOD_02",
@@ -56,7 +56,7 @@ export const SOD_RULES = [
     description: "General Worker cannot access any financial forms",
     check: (reportType: string, userRole: Role) =>
       userRole === Role.GENERAL_WORKER &&
-      ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"].includes(reportType),
+      ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"].includes(reportType),
     violation: "General Worker cannot access financial forms",
   },
 ];
@@ -81,7 +81,7 @@ export function checkSoD(reportType: string, reportData: any, userRole: Role, us
   }
 
   // General Worker Financial Isolation - cannot access financial forms
-  if (userRole === Role.GENERAL_WORKER && ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"].includes(reportType)) {
+  if (userRole === Role.GENERAL_WORKER && ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"].includes(reportType)) {
     return {
       ruleId: "SOD_06",
       name: "General Worker financial isolation",
@@ -91,11 +91,11 @@ export function checkSoD(reportType: string, reportData: any, userRole: Role, us
 
   // Gold Recovery checks
   if (reportType === "TEMPLATE_09") {
-    if (userRole === Role.SITE_CONTROLLER && (reportData.receivedFrom === userId || reportData.handedOverTo === userId)) {
+    if ((userRole === Role.SITE_CONTROLLER || userRole === Role.SITE_MANAGER) && (reportData.receivedFrom === userId || reportData.handedOverTo === userId)) {
       return {
         ruleId: "SOD_01",
-        name: "Controller cannot handle gold",
-        violation: "Site Controller cannot physically handle gold recovery",
+        name: "Site Manager cannot handle gold",
+        violation: "Site Manager cannot physically handle gold recovery",
       };
     }
     if (reportData.receivedBy && reportData.handedOverTo && reportData.receivedBy === reportData.handedOverTo) {

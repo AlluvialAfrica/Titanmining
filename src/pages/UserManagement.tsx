@@ -56,7 +56,7 @@ export default function UserManagement() {
       const { data } = await client.models.User.list();
       if (data && data.length > 0) {
         const filtered = data
-          .filter((u: any) => !user || u.orgId === user.orgId || user.role === Role.SYSTEM_ADMIN)
+          .filter((u: any) => !user || u.orgId === user.orgId || user.role === Role.SYSTEM_ADMIN || user.role === Role.SITE_MANAGER)
           .map((u: any) => ({
             id: u.id,
             firstName: u.firstName,

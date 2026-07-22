@@ -558,7 +558,9 @@
     "AUTO_ELECTRICIAN": "Auto-\u00c9lectricien",
     "WELDER_FABRICATOR": "Soudeur / Fabricant",
     "LIGHT_VEHICLE_MECHANIC": "M\u00e9canicien V\u00e9hicule L\u00e9ger",
-    "GENERAL_WORKER": "Ouvrier G\u00e9n\u00e9ral"
+    "GENERAL_WORKER": "Ouvrier G\u00e9n\u00e9ral",
+    "SITE_MANAGER": "Directeur de Site",
+    "FUEL_MANAGER": "Responsable Carburant"
   },
   "reports": {
     "TEMPLATE_01": "R\u00e9sum\u00e9 Quotidien du Site",
@@ -574,7 +576,8 @@
     "TEMPLATE_11": "Registre Porte, Fouille et Mouvement Articles",
     "TEMPLATE_12": "Feuille Magasins, Achats et D\u00e9penses",
     "TEMPLATE_13": "Certificat de Passation de Service",
-    "TEMPLATE_14": "Rapport Quotidien Petite Caisse"
+    "TEMPLATE_14": "Registre Paie et Cong\u00e9s RH",
+    "TEMPLATE_15": "Rapport Quotidien Petite Caisse"
   },
   "templates": {
     "TEMPLATE_02": {

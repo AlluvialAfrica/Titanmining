@@ -8,7 +8,7 @@ import {
   confirmSignIn,
   type SignInOutput,
 } from 'aws-amplify/auth';
-import { Role } from '../types/roles';
+import { Role, mapLegacyRole } from '../types/roles';
 import { logger } from '../utils/logger';
 import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 
@@ -52,13 +52,17 @@ const AuthContext = createContext<AuthContextType>({
 
 /**
  * Build our app User object from Cognito user attributes.
+ * Maps legacy roles (SITE_CONTROLLER, MINE_MANAGER, SYSTEM_ADMIN) to SITE_MANAGER.
  */
 function buildUserFromAttributes(attrs: Record<string, string | undefined>, sub: string): User {
+  const rawRole = attrs['custom:role'] || Role.SITE_MANAGER;
+  const mappedRole = mapLegacyRole(rawRole);
+
   return {
     id: sub,
     firstName: attrs['given_name'] || attrs['custom:firstName'] || '',
     lastName: attrs['family_name'] || attrs['custom:lastName'] || '',
-    role: (attrs['custom:role'] as Role) || Role.SITE_CONTROLLER,
+    role: mappedRole,
     mobileNumber: attrs['phone_number'] || '',
     email: attrs['email'] || '',
     orgId: attrs['custom:orgId'] || '',

@@ -558,7 +558,9 @@
     "AUTO_ELECTRICIAN": "Auto Electrician",
     "WELDER_FABRICATOR": "Welder / Fabricator",
     "LIGHT_VEHICLE_MECHANIC": "Light Vehicle Mechanic",
-    "GENERAL_WORKER": "General Worker"
+    "GENERAL_WORKER": "General Worker",
+    "SITE_MANAGER": "Site Manager",
+    "FUEL_MANAGER": "Fuel Manager"
   },
   "reports": {
     "TEMPLATE_01": "Site Daily Summary",
@@ -574,7 +576,8 @@
     "TEMPLATE_11": "Gate, Search & Items Movement Register",
     "TEMPLATE_12": "Stores, Purchases & Expense Sheet",
     "TEMPLATE_13": "Shift Handover Certificate",
-    "TEMPLATE_14": "Petty Cash Daily Report"
+    "TEMPLATE_14": "HR Payroll & Leave Record",
+    "TEMPLATE_15": "Petty Cash Daily Report"
   },
   "templates": {
     "TEMPLATE_02": {

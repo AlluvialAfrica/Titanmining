@@ -254,16 +254,15 @@ export default function Login() {
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {[
-                { label: 'Site Controller (Osman)', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
-                { label: 'Mine Manager', email: 'demo.minemanager@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Site Manager (Osman)', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
+                { label: 'Fuel Manager', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'HR Manager', email: 'demo.hr@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Finance Manager', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Geology & Mining Lead', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Processing & Recovery Lead', email: 'demo.plantlead@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Fuel & Logistics Admin', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Excavator Operator', email: 'demo.operator@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Engine Mechanic', email: 'demo.mechanic@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Security Manager', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Finance Manager', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'System Admin', email: 'administrator@alluvial.africa', pass: 'TitanMining2026!' },
               ].map((demo) => (
                 <button
                   key={demo.email}

@@ -172,7 +172,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
             phone_number: formData.mobileNumber,
             given_name: formData.ownerFirstName,
             family_name: formData.ownerLastName,
-            'custom:role': 'SITE_CONTROLLER',
+            'custom:role': 'SITE_MANAGER',
             'custom:orgId': `org_${formData.orgName.toLowerCase().replace(/\s/g, '_')}`,
             'custom:siteId': 'site_alpha_01',
             'custom:status': 'ACTIVE',
@@ -409,7 +409,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                 <p className="font-semibold text-black uppercase text-[10px] tracking-wider mb-2">{t('register.loginDetails')}</p>
                 <p>{t('register.username')}: {formData.email}</p>
                 <p>{t('register.mobile')}: {formData.mobileNumber}</p>
-                <p>{t('register.roleLabel')}: SITE_CONTROLLER</p>
+                <p>{t('register.roleLabel')}: SITE_MANAGER</p>
               </div>
 
               <button

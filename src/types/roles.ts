@@ -1,9 +1,16 @@
 export enum Role {
-  // Original 15 roles
+  // --- Consolidated management roles ---
+  SITE_MANAGER = "SITE_MANAGER",
+  FUEL_MANAGER = "FUEL_MANAGER",
+
+  // --- Legacy aliases (backward compat, map to SITE_MANAGER behavior) ---
   SITE_CONTROLLER = "SITE_CONTROLLER",
+  MINE_MANAGER = "MINE_MANAGER",
+  SYSTEM_ADMIN = "SYSTEM_ADMIN",
+
+  // --- Operational roles (unchanged) ---
   MINING_GEOLOGY_LEAD = "MINING_GEOLOGY_LEAD",
   PROCESSING_RECOVERY_LEAD = "PROCESSING_RECOVERY_LEAD",
-  FUEL_ADMIN_LOGISTICS = "FUEL_ADMIN_LOGISTICS",
   ENGINE_MECHANIC = "ENGINE_MECHANIC",
   ELECTRICAL_MECHANIC = "ELECTRICAL_MECHANIC",
   GREASING_WASHING_HELPER = "GREASING_WASHING_HELPER",
@@ -13,11 +20,8 @@ export enum Role {
   DRUM_PUMP_ASSISTANT = "DRUM_PUMP_ASSISTANT",
   CENTRIFUGE_OPERATOR = "CENTRIFUGE_OPERATOR",
   SHAKING_TABLE_OPERATOR = "SHAKING_TABLE_OPERATOR",
-  SITE_PETTY_CASH_MANAGER = "SITE_PETTY_CASH_MANAGER",
-  SYSTEM_ADMIN = "SYSTEM_ADMIN",
 
   // Management
-  MINE_MANAGER = "MINE_MANAGER",
   OPERATIONS_MANAGER = "OPERATIONS_MANAGER",
   FINANCE_MANAGER = "FINANCE_MANAGER",
   HR_MANAGER = "HR_MANAGER",
@@ -54,7 +58,19 @@ export enum Role {
 
   // General
   GENERAL_WORKER = "GENERAL_WORKER",
+
+  // Legacy (kept for backward compat, folded into FINANCE_MANAGER)
+  SITE_PETTY_CASH_MANAGER = "SITE_PETTY_CASH_MANAGER",
+  // Legacy (kept for backward compat, mapped to FUEL_MANAGER)
+  FUEL_ADMIN_LOGISTICS = "FUEL_ADMIN_LOGISTICS",
 }
+
+/** All template IDs used across the system. */
+const ALL_TEMPLATES = [
+  "TEMPLATE_01", "TEMPLATE_02", "TEMPLATE_03", "TEMPLATE_04", "TEMPLATE_05",
+  "TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09", "TEMPLATE_10",
+  "TEMPLATE_11", "TEMPLATE_12", "TEMPLATE_13", "TEMPLATE_14", "TEMPLATE_15",
+];
 
 export interface RolePermissions {
   canCreate: string[];
@@ -68,18 +84,87 @@ export interface RolePermissions {
   canViewTeamKPI: boolean;
 }
 
+/** Full SITE_MANAGER permissions (all templates, all admin). */
+const SITE_MANAGER_PERMISSIONS: RolePermissions = {
+  canCreate: ALL_TEMPLATES,
+  canRead: ["ALL"],
+  canVerify: ALL_TEMPLATES,
+  canManageUsers: true,
+  canEditProfile: true,
+  canExport: true,
+  canViewKPI: true,
+  canInputKPI: true,
+  canViewTeamKPI: true,
+};
+
 export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
-  [Role.SITE_CONTROLLER]: {
-    canCreate: ["TEMPLATE_01"],
+  // --- Consolidated roles ---
+  [Role.SITE_MANAGER]: { ...SITE_MANAGER_PERMISSIONS },
+
+  [Role.FUEL_MANAGER]: {
+    canCreate: ["TEMPLATE_04"],
+    canRead: ["TEMPLATE_04"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  // --- Legacy aliases → same as SITE_MANAGER ---
+  [Role.SITE_CONTROLLER]: { ...SITE_MANAGER_PERMISSIONS },
+  [Role.MINE_MANAGER]: { ...SITE_MANAGER_PERMISSIONS },
+  [Role.SYSTEM_ADMIN]: { ...SITE_MANAGER_PERMISSIONS },
+
+  // --- Management roles ---
+  [Role.OPERATIONS_MANAGER]: {
+    canCreate: ["TEMPLATE_01", "TEMPLATE_13"],
     canRead: ["ALL"],
-    canVerify: ["TEMPLATE_09", "TEMPLATE_13"],
+    canVerify: ["TEMPLATE_01", "TEMPLATE_09", "TEMPLATE_13"],
     canManageUsers: true,
-    canEditProfile: true,
+    canEditProfile: false,
     canExport: true,
     canViewKPI: true,
     canInputKPI: true,
     canViewTeamKPI: true,
   },
+  [Role.FINANCE_MANAGER]: {
+    canCreate: ["TEMPLATE_12", "TEMPLATE_15"],
+    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
+    canVerify: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.HR_MANAGER]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_14"],
+    canRead: ["TEMPLATE_02", "TEMPLATE_14"],
+    canVerify: ["TEMPLATE_02", "TEMPLATE_14"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+  [Role.SAFETY_COMPLIANCE_MANAGER]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_13"],
+    canRead: ["ALL"],
+    canVerify: ["TEMPLATE_13"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+
+  // --- Operational roles ---
   [Role.MINING_GEOLOGY_LEAD]: {
     canCreate: ["TEMPLATE_05"],
     canRead: ["TEMPLATE_03", "TEMPLATE_05"],
@@ -95,17 +180,6 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canCreate: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
     canRead: ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
     canVerify: ["TEMPLATE_07", "TEMPLATE_08"],
-    canManageUsers: false,
-    canEditProfile: false,
-    canExport: false,
-    canViewKPI: true,
-    canInputKPI: true,
-    canViewTeamKPI: false,
-  },
-  [Role.FUEL_ADMIN_LOGISTICS]: {
-    canCreate: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12"],
-    canRead: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12"],
-    canVerify: [],
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
@@ -212,9 +286,11 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canInputKPI: true,
     canViewTeamKPI: false,
   },
+
+  // Legacy: SITE_PETTY_CASH_MANAGER → folded into FINANCE_MANAGER
   [Role.SITE_PETTY_CASH_MANAGER]: {
-    canCreate: ["TEMPLATE_14"],
-    canRead: ["TEMPLATE_12", "TEMPLATE_14"],
+    canCreate: ["TEMPLATE_15"],
+    canRead: ["TEMPLATE_12", "TEMPLATE_15"],
     canVerify: [],
     canManageUsers: false,
     canEditProfile: false,
@@ -223,73 +299,18 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canInputKPI: true,
     canViewTeamKPI: false,
   },
-  [Role.SYSTEM_ADMIN]: {
-    canCreate: [],
-    canRead: ["ALL"],
-    canVerify: [],
-    canManageUsers: true,
-    canEditProfile: true,
-    canExport: true,
-    canViewKPI: true,
-    canInputKPI: false,
-    canViewTeamKPI: true,
-  },
 
-  // Management roles
-  [Role.MINE_MANAGER]: {
-    canCreate: ["TEMPLATE_01"],
-    canRead: ["ALL"],
-    canVerify: ["TEMPLATE_01", "TEMPLATE_09", "TEMPLATE_13"],
-    canManageUsers: true,
-    canEditProfile: true,
-    canExport: true,
-    canViewKPI: true,
-    canInputKPI: true,
-    canViewTeamKPI: true,
-  },
-  [Role.OPERATIONS_MANAGER]: {
-    canCreate: ["TEMPLATE_01", "TEMPLATE_13"],
-    canRead: ["ALL"],
-    canVerify: ["TEMPLATE_01", "TEMPLATE_09", "TEMPLATE_13"],
-    canManageUsers: true,
-    canEditProfile: false,
-    canExport: true,
-    canViewKPI: true,
-    canInputKPI: true,
-    canViewTeamKPI: true,
-  },
-  [Role.FINANCE_MANAGER]: {
-    canCreate: ["TEMPLATE_12", "TEMPLATE_14"],
-    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"],
-    canVerify: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"],
+  // Legacy: FUEL_ADMIN_LOGISTICS → mapped to FUEL_MANAGER
+  [Role.FUEL_ADMIN_LOGISTICS]: {
+    canCreate: ["TEMPLATE_04"],
+    canRead: ["TEMPLATE_04"],
+    canVerify: [],
     canManageUsers: false,
     canEditProfile: false,
-    canExport: true,
+    canExport: false,
     canViewKPI: true,
     canInputKPI: true,
-    canViewTeamKPI: true,
-  },
-  [Role.HR_MANAGER]: {
-    canCreate: ["TEMPLATE_02"],
-    canRead: ["TEMPLATE_02"],
-    canVerify: ["TEMPLATE_02"],
-    canManageUsers: true,
-    canEditProfile: false,
-    canExport: true,
-    canViewKPI: true,
-    canInputKPI: true,
-    canViewTeamKPI: true,
-  },
-  [Role.SAFETY_COMPLIANCE_MANAGER]: {
-    canCreate: ["TEMPLATE_02", "TEMPLATE_13"],
-    canRead: ["ALL"],
-    canVerify: ["TEMPLATE_13"],
-    canManageUsers: false,
-    canEditProfile: false,
-    canExport: true,
-    canViewKPI: true,
-    canInputKPI: true,
-    canViewTeamKPI: true,
+    canViewTeamKPI: false,
   },
 
   // Operations roles
@@ -362,8 +383,8 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
 
   // Admin/Commercial roles
   [Role.ACCOUNTANT]: {
-    canCreate: ["TEMPLATE_12", "TEMPLATE_14"],
-    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14"],
+    canCreate: ["TEMPLATE_12", "TEMPLATE_15"],
+    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
     canVerify: [],
     canManageUsers: false,
     canEditProfile: false,
@@ -544,3 +565,32 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canViewTeamKPI: false,
   },
 };
+
+/**
+ * Maps legacy Cognito role strings to the consolidated role.
+ * Used when building user from Cognito attributes.
+ */
+export function mapLegacyRole(role: string): Role {
+  switch (role) {
+    case Role.SITE_CONTROLLER:
+    case Role.MINE_MANAGER:
+    case Role.SYSTEM_ADMIN:
+      return Role.SITE_MANAGER;
+    case Role.FUEL_ADMIN_LOGISTICS:
+      return Role.FUEL_MANAGER;
+    case Role.SITE_PETTY_CASH_MANAGER:
+      return Role.FINANCE_MANAGER;
+    default:
+      return role as Role;
+  }
+}
+
+/**
+ * Checks whether the given role should have admin dashboard access.
+ */
+export function hasAdminAccess(role: Role): boolean {
+  return role === Role.SITE_MANAGER ||
+    role === Role.SYSTEM_ADMIN ||
+    role === Role.SITE_CONTROLLER ||
+    role === Role.MINE_MANAGER;
+}

@@ -21,32 +21,36 @@ export interface SiteDailySummaryData extends BaseReportData {
 }
 
 export interface AttendanceRecord {
-  userId: string;
-  name: string;
+  staffName: string;
   role: string;
   status: "PRESENT" | "ABSENT" | "LEAVE";
+  remarks?: string;
 }
 
 export interface StaffAttendanceData extends BaseReportData {
   reportDate: string;
-  shift: "SHIFT_1" | "SHIFT_2" | "SHIFT_3";
+  shift: "DAY" | "NIGHT";
+  supervisor: string;
   records: AttendanceRecord[];
   totalPresent: number;
   totalAbsent: number;
-  totalVisitors: number;
-  totalCasuals: number;
+  totalLeave: number;
 }
 
-export interface MachineDailyLogData extends BaseReportData {
+export interface MachineLogRow {
   machineId: string;
-  operatorId: string;
-  shift: string;
-  openingMeter: number;
-  closingMeter: number;
+  operator: string;
+  openingHours: number;
+  closingHours: number;
   hoursWorked: number;
   fuelAddedL: number;
   workArea: string;
-  issuesDescription?: string;
+  breakdowns?: string;
+}
+
+export interface MachineDailyLogData extends BaseReportData {
+  shift: string;
+  rows: MachineLogRow[];
 }
 
 export interface FuelReconciliationData extends BaseReportData {
@@ -68,52 +72,82 @@ export interface FuelReconciliationData extends BaseReportData {
   varianceReason?: string;
 }
 
-export interface MiningGeologyData extends BaseReportData {
+export interface GeologyRow {
   pitBlock: string;
   benchLevel: number;
-  materialType: "ALLUVIAL" | "OVERBURDEN" | "CLAY";
+  materialType: string;
   volumeMinedM3: number;
   estGradeGPerTon: number;
   excavatorId: string;
+  remarks?: string;
+}
+
+export interface MiningGeologyData extends BaseReportData {
+  geologist: string;
+  rows: GeologyRow[];
+  totalVolume: number;
+  avgGrade: number;
+}
+
+export interface DrumPumpRow {
+  pumpUnit: string;
+  operator: string;
+  inletPressure: number;
+  outletPressure: number;
+  slurryDensity: number;
+  operatingHours: number;
+  remarks?: string;
 }
 
 export interface DrumSandPumpData extends BaseReportData {
-  pumpId: string;
-  openingMeter: number;
-  closingMeter: number;
-  hoursRun: number;
-  pumpSpeedRpm: number;
-  dischargePressureBar: number;
-  sandSlurryDensity: number;
+  shift: string;
+  rows: DrumPumpRow[];
+}
+
+export interface CentrifugeRow {
+  centrifugeId: string;
+  feedRateM3Hr: number;
+  operatingHours: number;
+  concentrateWeightG: number;
+  cleanupOperator: string;
+  remarks?: string;
 }
 
 export interface CentrifugeCleanupData extends BaseReportData {
-  centrifugeId: string;
-  runTimeHrs: number;
-  feedRateTph: number;
-  concentrateWeightKg: number;
-  estimatedGradeGPerTon: number;
-  panCleanDone: boolean;
+  rows: CentrifugeRow[];
+  totalConcentrate: number;
+}
+
+export interface ShakingTableRow {
+  tableId: string;
+  feedRateM3Hr: number;
+  operatingHours: number;
+  concentrateWeightG: number;
+  operator: string;
+  remarks?: string;
 }
 
 export interface ShakingTableData extends BaseReportData {
-  tableId: string;
-  feedSource: string;
-  feedWeightKg: number;
-  processTimeHrs: number;
-  concentrateG: number;
-  tailingsEstLossG: number;
+  rows: ShakingTableRow[];
+  totalConcentrate: number;
+}
+
+export interface GoldRecoveryRow {
+  source: string;
+  grossWeightG: number;
+  tareWeightG: number;
+  netWeightG: number;
+  purityPct: number;
+  pureGoldG: number;
+  vaultBoxId: string;
 }
 
 export interface GoldRecoveryHandoverData extends BaseReportData {
-  bagSealNo: string;
-  source: string;
-  wetConc: number;
-  dryConc: number;
-  goldWeight: number;
-  receivedFrom: string;
-  receivedBy: string;
-  handedOverTo: string;
+  recoveryOfficer: string;
+  witness: string;
+  rows: GoldRecoveryRow[];
+  totalNetWeight: number;
+  totalPureGold: number;
   signatures: {
     submitter: string;
     receiver: string;
@@ -121,69 +155,99 @@ export interface GoldRecoveryHandoverData extends BaseReportData {
   };
 }
 
-export interface MaintenanceGreasingData extends BaseReportData {
+export interface MaintenanceRow {
   machineId: string;
-  greasingPointsChecked: number;
-  engineOilLevelChecked: boolean;
-  hydraulicOilLevelChecked: boolean;
-  transmissionOilLevelChecked: boolean;
-  coolantLevelChecked: boolean;
-  filtersCleanedOrReplaced: boolean;
-  mechanicNotes?: string;
+  greasingDone: boolean;
+  filtersChanged: boolean;
+  washingDone: boolean;
+  sparesUsed: string;
+  notes?: string;
+}
+
+export interface MaintenanceGreasingData extends BaseReportData {
+  mechanicName: string;
+  rows: MaintenanceRow[];
 }
 
 export interface GateMovementRecord {
-  time: string;
-  personName: string;
-  itemDescription: string;
-  direction: "IN" | "OUT";
-  vehicleNo?: string;
-  searchConducted: boolean;
+  timeIn: string;
+  timeOut: string;
+  visitorName: string;
+  company: string;
+  vehiclePlate?: string;
+  purpose: string;
+  searchDone: boolean;
+  itemsInOut: string;
 }
 
 export interface GateRegisterData extends BaseReportData {
+  guardName: string;
   records: GateMovementRecord[];
 }
 
 export interface ExpenseRecord {
-  item: string;
+  itemName: string;
+  vendor: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
   category: string;
-  qty: number;
-  unitCost: number;
-  totalCost: number;
-  requestedBy: string;
-  approvedBy: string;
-  receiptUrl?: string;
+  receiptNo: string;
 }
 
 export interface StoresExpensesData extends BaseReportData {
+  purchaserName: string;
   records: ExpenseRecord[];
-  totalExpenses: number;
+  grandTotal: number;
 }
 
 export interface ShiftHandoverData extends BaseReportData {
-  outgoingLeadId: string;
-  incomingLeadId: string;
-  department: string;
-  operationalStatus: string;
-  safetyIssuesDescription?: string;
-  pendingTasksDescription?: string;
-  keyIssuesFaced?: string;
+  outgoingSupervisor: string;
+  incomingSupervisor: string;
+  safetyIncidents: string;
+  productionStatus: string;
+  equipmentStatus: string;
+  pendingTasks: string;
+  handoverApproved: boolean;
 }
 
-export interface PettyCashTransaction {
-  id: string;
-  date: string;
+// TEMPLATE_14: HR Payroll & Leave Record (NEW)
+export interface HRPayrollRow {
+  staffName: string;
+  role: string;
+  daysPresent: number;
+  daysAbsent: number;
+  leaveDays: number;
+  advance: number;
+  salaryDue: number;
+  netPay: number;
+  remarks?: string;
+}
+
+export interface HRPayrollData extends BaseReportData {
+  period: string;
+  hrOfficer: string;
+  rows: HRPayrollRow[];
+  totalAdvances: number;
+  totalSalaries: number;
+  totalNetPay: number;
+}
+
+// TEMPLATE_15: Petty Cash Daily Report (renumbered from old TEMPLATE_14)
+export interface PettyCashRow {
   description: string;
-  category: string;
   amount: number;
-  type: "IN" | "OUT";
+  category: string;
+  receiptNo: string;
+  approvedBy: string;
 }
 
 export interface PettyCashData extends BaseReportData {
+  cashierName: string;
   openingBalance: number;
-  transactions: PettyCashTransaction[];
-  totalIn: number;
-  totalOut: number;
+  rows: PettyCashRow[];
+  totalExpenses: number;
   closingBalance: number;
+  actualBalance: number;
+  variance: number;
 }
