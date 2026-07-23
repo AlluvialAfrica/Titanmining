@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
-import DigitalSignature from '../../components/DigitalSignature';
+import SignatureOrOtp from '../../components/SignatureOrOtp';
 import { SiteDailySummaryData } from '../../types/reports';
 
 export default function SiteDailySummary() {
@@ -247,7 +247,7 @@ export default function SiteDailySummary() {
         {/* Digital Signature */}
         <div className="border-t border-black pt-6">
           <label className="minimal-label mb-2">{t('siteSummary.controllerSignOff')}</label>
-          <DigitalSignature onSign={setSignature} />
+          <SignatureOrOtp onVerified={setSignature} />
         </div>
 
         {/* Submit */}

@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
-import DigitalSignature from '../../components/DigitalSignature';
+import SignatureOrOtp from '../../components/SignatureOrOtp';
 import VarianceAlert from '../../components/VarianceAlert';
 import MultiRowTable, { ColumnDef } from '../../components/MultiRowTable';
 
@@ -696,7 +696,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
         {/* Digital Signature */}
         <div className="border-t border-black pt-6">
           <label className="minimal-label mb-2">{t('reports_form.digitalSignature')}</label>
-          <DigitalSignature onSign={setSignature} />
+          <SignatureOrOtp onVerified={setSignature} />
         </div>
 
         {/* Actions */}

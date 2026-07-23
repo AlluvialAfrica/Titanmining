@@ -3,17 +3,55 @@ import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 const PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
 const OTP_REGEX = /^\d{4,8}$/;
 
-export const handler = async (event: { phone: string; code: string; email?: string }) => {
-  const { phone, code } = event;
+function respond(statusCode: number, body: Record<string, unknown>) {
+  return {
+    statusCode,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST,OPTIONS',
+    },
+    body: JSON.stringify(body),
+  };
+}
+
+export const handler = async (event: any) => {
+  // Handle CORS preflight
+  if (event.requestContext?.http?.method === 'OPTIONS' || event.httpMethod === 'OPTIONS') {
+    return respond(200, {});
+  }
+
+  // Determine input: Function URL (event.body) vs direct Lambda invocation (event.phone)
+  let phone: string;
+  let code: string;
+
+  if (event.body) {
+    // Function URL / API Gateway invocation
+    let parsed: any;
+    try {
+      parsed = JSON.parse(event.body);
+    } catch {
+      return respond(400, { success: false, error: 'Invalid JSON body' });
+    }
+    phone = parsed.phone;
+    code = parsed.code;
+  } else {
+    // Direct Lambda invocation (e.g. Cognito MFA)
+    phone = event.phone;
+    code = event.code;
+  }
 
   // Validate required inputs
   if (!phone || typeof phone !== 'string') {
     console.error('OTP send failed: missing or invalid phone');
-    return { success: false, error: 'Phone number is required' };
+    const err = { success: false, error: 'Phone number is required' };
+    return event.body ? respond(400, err) : err;
   }
   if (!code || typeof code !== 'string' || !OTP_REGEX.test(code)) {
     console.error('OTP send failed: missing or invalid code format');
-    return { success: false, error: 'OTP code must be 4-8 digits' };
+    const err = { success: false, error: 'OTP code must be 4-8 digits' };
+    return event.body ? respond(400, err) : err;
   }
 
   // Normalize phone number (must start with +)
@@ -21,7 +59,8 @@ export const handler = async (event: { phone: string; code: string; email?: stri
 
   if (!PHONE_REGEX.test(normalizedPhone)) {
     console.error(`OTP send failed: invalid phone format ***${normalizedPhone.slice(-4)}`);
-    return { success: false, error: 'Invalid phone number format. Must be international format (e.g. +254...)' };
+    const err = { success: false, error: 'Invalid phone number format. Must be international format (e.g. +254...)' };
+    return event.body ? respond(400, err) : err;
   }
 
   console.log(`Sending OTP to phone ***${normalizedPhone.slice(-4)}...`);
@@ -33,7 +72,8 @@ export const handler = async (event: { phone: string; code: string; email?: stri
 
   if (!twilioSid || !twilioToken || !twilioSender) {
     console.warn('Twilio credentials not fully configured. Falling back to SMS via AWS SNS.');
-    return await sendSnsFallback(normalizedPhone, code);
+    const result = await sendSnsFallback(normalizedPhone, code);
+    return event.body ? respond(result.success ? 200 : 500, result) : result;
   }
 
   try {
@@ -67,17 +107,19 @@ export const handler = async (event: { phone: string; code: string; email?: stri
     }
 
     console.log('WhatsApp OTP sent successfully via Twilio.');
-    return { success: true, method: 'whatsapp' };
+    const result = { success: true, method: 'whatsapp' };
+    return event.body ? respond(200, result) : result;
   } catch (error) {
     console.error('Failed to send OTP via WhatsApp. Falling back to SMS via AWS SNS.', error);
-    return await sendSnsFallback(normalizedPhone, code);
+    const result = await sendSnsFallback(normalizedPhone, code);
+    return event.body ? respond(result.success ? 200 : 500, result) : result;
   }
 };
 
 async function sendSnsFallback(phone: string, code: string) {
   console.log(`Sending SMS fallback via SNS to ***${phone.slice(-4)}...`);
   const sns = new SNSClient({ region: process.env.AWS_REGION || 'eu-north-1' });
-  
+
   try {
     await sns.send(new PublishCommand({
       PhoneNumber: phone,

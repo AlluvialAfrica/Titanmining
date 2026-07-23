@@ -704,6 +704,20 @@
       "varianceMessage": "Petty cash variance detected. Discrepancy: {{variance}} USD. Please explain the cash drawer variance."
     }
   },
+  "otp": {
+    "drawSignature": "Draw Signature",
+    "verifyViaOtp": "Verify via OTP",
+    "sendingTo": "Sending to",
+    "sendOtp": "Send & Enter OTP",
+    "resendOtp": "Resend OTP",
+    "resendIn": "Resend in {{seconds}}s",
+    "sending": "Sending...",
+    "verifyCode": "Verify Code",
+    "verified": "Verified",
+    "invalidCode": "Invalid code. Please try again.",
+    "sendFailed": "Failed to send OTP. Please try again.",
+    "noPhoneNumber": "No phone number on file. Please contact your administrator."
+  },
   "common": {
     "submit": "Submit",
     "saveDraft": "Save Draft",

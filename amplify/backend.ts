@@ -82,6 +82,22 @@ new CfnOutput(backend.stripeCheckout.resources.lambda.stack, 'StripeCheckoutUrl'
   description: 'Stripe Checkout Lambda Function URL',
 });
 
+// Create a function URL for the OTP sender Lambda
+const otpSenderFn = backend.otpSender.resources.lambda as LambdaFunction;
+const otpFnUrl = otpSenderFn.addFunctionUrl({
+  authType: FunctionUrlAuthType.NONE,
+  cors: {
+    allowedOrigins: ['*'],
+    allowedHeaders: ['Content-Type'],
+    allowedMethods: [HttpMethod.POST] as any,
+  },
+});
+
+new CfnOutput(backend.otpSender.resources.lambda.stack, 'OtpSenderUrl', {
+  value: otpFnUrl.url,
+  description: 'OTP Sender Lambda Function URL',
+});
+
 // Configure custom Cognito User Pool attributes using CDK schema overrides
 const cfnUserPool = backend.auth.resources.cfnResources.cfnUserPool;
 cfnUserPool.schema = [

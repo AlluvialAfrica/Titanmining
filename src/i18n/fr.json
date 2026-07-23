@@ -704,6 +704,20 @@
       "varianceMessage": "\u00c9cart de petite caisse d\u00e9tect\u00e9. \u00c9cart : {{variance}} USD. Veuillez expliquer l'\u00e9cart du tiroir-caisse."
     }
   },
+  "otp": {
+    "drawSignature": "Dessiner la Signature",
+    "verifyViaOtp": "V\u00e9rifier par OTP",
+    "sendingTo": "Envoi \u00e0",
+    "sendOtp": "Envoyer & Saisir OTP",
+    "resendOtp": "Renvoyer OTP",
+    "resendIn": "Renvoyer dans {{seconds}}s",
+    "sending": "Envoi...",
+    "verifyCode": "V\u00e9rifier le Code",
+    "verified": "V\u00e9rifi\u00e9",
+    "invalidCode": "Code invalide. Veuillez r\u00e9essayer.",
+    "sendFailed": "\u00c9chec de l'envoi OTP. Veuillez r\u00e9essayer.",
+    "noPhoneNumber": "Aucun num\u00e9ro de t\u00e9l\u00e9phone enregistr\u00e9. Veuillez contacter votre administrateur."
+  },
   "common": {
     "submit": "Soumettre",
     "saveDraft": "Enregistrer le Brouillon",
