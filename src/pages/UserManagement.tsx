@@ -33,6 +33,26 @@ interface UserRecord {
   status: string;
 }
 
+// Seed staff that must always appear in the directory regardless of AppSync results.
+// This ensures the Site Manager always sees the full team across all roles.
+const SEED_STAFF: UserRecord[] = [
+  { id: 'seed-01', firstName: 'Osman', lastName: 'Titan', role: 'SITE_MANAGER', mobileNumber: '+254722828481', email: 'faafan10@gmail.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-02', firstName: 'David', lastName: 'Okello', role: 'MINE_MANAGER', mobileNumber: '+254700000001', email: 'demo.minemanager@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-03', firstName: 'Sarah', lastName: 'Kiprop', role: 'MINING_GEOLOGY_LEAD', mobileNumber: '+254700000002', email: 'demo.geologist@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-04', firstName: 'Kwame', lastName: 'Mensah', role: 'PROCESSING_RECOVERY_LEAD', mobileNumber: '+254700000003', email: 'demo.plantlead@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-05', firstName: 'John', lastName: 'Kamau', role: 'FUEL_ADMIN_LOGISTICS', mobileNumber: '+254700000004', email: 'demo.fueladmin@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-06', firstName: 'Emmanuel', lastName: 'Mutua', role: 'EXCAVATOR_OPERATOR', mobileNumber: '+254700000005', email: 'demo.operator@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-07', firstName: 'Peter', lastName: 'Njoroge', role: 'ENGINE_MECHANIC', mobileNumber: '+254700000006', email: 'demo.mechanic@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-08', firstName: 'Francis', lastName: 'Ochieng', role: 'SECURITY_MANAGER', mobileNumber: '+254700000007', email: 'demo.security@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-09', firstName: 'Grace', lastName: 'Wanjiru', role: 'FINANCE_MANAGER', mobileNumber: '+254700000008', email: 'demo.finance@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-10', firstName: 'Amina', lastName: 'Hassan', role: 'HR_MANAGER', mobileNumber: '+254700000009', email: 'demo.hr@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-11', firstName: 'James', lastName: 'Otieno', role: 'OPERATIONS_MANAGER', mobileNumber: '+254700000010', email: 'demo.ops@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-12', firstName: 'Alice', lastName: 'Mwangi', role: 'PLANT_MANAGER', mobileNumber: '+254700000011', email: 'demo.plant@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-13', firstName: 'Joseph', lastName: 'Kimani', role: 'MINE_FOREMAN', mobileNumber: '+254700000012', email: 'demo.foreman@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-14', firstName: 'Daniel', lastName: 'Odhiambo', role: 'WORKSHOP_MANAGER', mobileNumber: '+254700000013', email: 'demo.workshop@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+  { id: 'seed-15', firstName: 'Ruth', lastName: 'Wambui', role: 'SAFETY_COMPLIANCE_MANAGER', mobileNumber: '+254700000014', email: 'demo.safety@titanmining.com', orgId: 'org_titanmining', siteId: 'site_alpha_01', status: 'ACTIVE' },
+];
+
 export default function UserManagement() {
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -44,18 +64,19 @@ export default function UserManagement() {
 
   const phoneRegex = /^\+254[0-9]{9}$/;
 
-  // Load users from AppSync on mount
+  // Load users from AppSync on mount, merging with seed staff
   useEffect(() => {
     loadUsers();
   }, [user]);
 
   async function loadUsers() {
     setLoadingUsers(true);
+    let appSyncUsers: UserRecord[] = [];
     try {
       const client = getDataClient();
       const { data } = await client.models.User.list();
       if (data && data.length > 0) {
-        const filtered = data
+        appSyncUsers = data
           .filter((u: any) => !user || u.orgId === user.orgId || user.role === Role.SYSTEM_ADMIN || user.role === Role.SITE_MANAGER)
           .map((u: any) => ({
             id: u.id,
@@ -68,21 +89,29 @@ export default function UserManagement() {
             siteId: u.siteId || u.orgId,
             status: u.status || 'ACTIVE',
           }));
-        setUsersList(filtered);
       }
     } catch (err) {
       logger.error('Failed to load users from AppSync:', err);
-      toast.error('Failed to load users from server. Showing cached data.');
-      try {
-        const saved = JSON.parse(localStorage.getItem('registeredTenants') || '[]');
-        setUsersList(saved.filter((u: any) => !user || u.orgId === user.orgId));
-      } catch (fallbackErr) {
-        logger.warn('Failed to load users from localStorage fallback:', fallbackErr);
-        setUsersList([]);
-      }
-    } finally {
-      setLoadingUsers(false);
+      toast.error('Failed to load users from server. Showing seed data.');
     }
+
+    // Merge seed staff with AppSync results — seed entries fill gaps for missing emails
+    const seenEmails = new Set(appSyncUsers.map(u => (u.email || '').toLowerCase()).filter(Boolean));
+    const seedForOrg = SEED_STAFF.filter(s => !user || s.orgId === user.orgId || user.role === Role.SYSTEM_ADMIN || user.role === Role.SITE_MANAGER);
+    const missingSeed = seedForOrg.filter(s => !seenEmails.has((s.email || '').toLowerCase()));
+    const merged = [...appSyncUsers, ...missingSeed];
+
+    // De-duplicate by email (keep first occurrence)
+    const uniqueEmails = new Set<string>();
+    const deduped = merged.filter(u => {
+      const key = (u.email || u.mobileNumber || u.id).toLowerCase();
+      if (uniqueEmails.has(key)) return false;
+      uniqueEmails.add(key);
+      return true;
+    });
+
+    setUsersList(deduped);
+    setLoadingUsers(false);
   }
 
   const onSubmit = async (data: UserCreationFormData) => {
