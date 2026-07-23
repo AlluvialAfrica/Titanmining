@@ -34,7 +34,7 @@ Si vous vous connectez pour la premiere fois, vous serez invite a changer votre 
 Apres avoir entre vos identifiants, cliquez sur le bouton Connexion.
 
 Une fois connecte, vous serez dirige vers votre tableau de bord specifique a votre role.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "profile"],
     sortOrder: 1,
   },
@@ -57,7 +57,7 @@ Entrez votre mot de passe actuel pour verification, puis tapez votre nouveau mot
 Si vous oubliez votre mot de passe, utilisez le lien Mot de passe oublie sur la page de connexion.
 
 Contactez votre controleur de site ou administrateur systeme si vous ne parvenez pas a reinitialiser votre mot de passe.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "settings", "profile"],
     sortOrder: 2,
   },
@@ -80,7 +80,7 @@ L'en-tete superieur affiche votre nom, votre role et le contexte de votre organi
 La zone de contenu principale a droite affiche le module actuellement selectionne. Cliquez sur un lien de la barre laterale pour changer de module.
 
 En bas de la barre laterale, vous pouvez voir votre identifiant d'organisation et identifiant de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "history", "profile"],
     sortOrder: 3,
   },
@@ -103,7 +103,7 @@ Les roles suivent une structure hierarchique. Le controleur de site a l'acces le
 Les roles operationnels ont un acces cible aux modeles specifiques pertinents pour leurs taches quotidiennes.
 
 Contactez votre controleur de site ou responsable RH pour demander un changement de role.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "settings", "profile"],
     sortOrder: 4,
   },
@@ -126,7 +126,7 @@ Remplissez tous les champs obligatoires marques avec un asterisque. Les champs n
 Avant de soumettre, verifiez attentivement toutes les donnees saisies. Une fois que vous cliquez sur Soumettre, le rapport est enregistre et horodate.
 
 Apres la soumission, le rapport apparait dans votre historique des rapports.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 5,
   },
@@ -149,7 +149,7 @@ Les brouillons sont stockes localement sur votre appareil. Lorsque vous revenez 
 La sauvegarde automatique se produit toutes les 30 secondes. Vous pouvez egalement declencher manuellement une sauvegarde.
 
 Notez que les brouillons sont specifiques a l'appareil. Completez et soumettez vos rapports depuis le meme appareil.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 6,
   },
@@ -172,7 +172,7 @@ En mode hors ligne, vous pouvez continuer a remplir et soumettre des rapports. L
 La file d'attente hors ligne est visible dans votre historique des rapports avec un statut EN ATTENTE.
 
 Certaines fonctionnalites necessitent une connexion active, notamment la gestion des utilisateurs et les changements de mot de passe.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history", "profile"],
     sortOrder: 7,
   },
@@ -195,7 +195,7 @@ Lorsqu'une signature est requise, un pavillon de signature apparaitra en bas du 
 La signature numerique est cryptographiquement liee a votre compte utilisateur et aux donnees specifiques du rapport.
 
 Les rapports signes affichent un badge verifie dans l'historique des rapports.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 8,
   },
@@ -218,7 +218,7 @@ Lorsque vous changez de langue, tous les elements d'interface se mettent a jour 
 Les donnees de rapport que vous saisissez sont stockees telles quelles quelle que soit la langue active.
 
 Si vous remarquez des traductions manquantes ou du texte incorrect, veuillez signaler le probleme a votre controleur de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "history", "profile"],
     sortOrder: 9,
   },
@@ -241,7 +241,7 @@ Les articles d'aide sont filtres en fonction de votre role, vous verrez donc pri
 Pour les problemes non couverts dans la documentation, contactez votre controleur de site comme premier point de support.
 
 Pour les problemes techniques urgents, contactez directement l'administrateur systeme.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "help"],
     sortOrder: 10,
   },
@@ -287,7 +287,7 @@ Vous pouvez soumettre et examiner le modele 01 (Resume quotidien du site) et le 
 En tant que directeur de mine, vous avez egalement une visibilite sur les tableaux de bord KPI montrant les metriques de production.
 
 Vous pouvez gerer les utilisateurs au sein de votre departement et avez acces aux parametres du site.`,
-    relatedRoles: ["MINE_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 2,
   },
@@ -310,7 +310,7 @@ Vos formulaires principaux incluent le modele 01 (Resume quotidien du site) et v
 Le tableau de bord du responsable des operations met en evidence les metriques operationnelles cles. Les alertes de variance vous notifieront lorsque les metriques sortent des plages attendues.
 
 Vous travaillez en etroite collaboration avec le controleur de site et le directeur de mine.`,
-    relatedRoles: ["OPERATIONS_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 3,
   },
@@ -333,7 +333,7 @@ Vous avez acces aux modeles 06 a 09 qui couvrent l'ensemble du pipeline de trait
 Votre tableau de bord KPI montre les metriques d'efficacite du traitement, les pourcentages de recuperation et les donnees de performance des equipements.
 
 En tant que responsable usine, vous pouvez gerer les affectations du personnel de traitement et examiner leurs soumissions quotidiennes.`,
-    relatedRoles: ["PLANT_MANAGER"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 4,
   },
@@ -356,7 +356,7 @@ Vous suivez l'etat des equipements, les taches d'entretien programmees et les re
 Votre tableau de bord montre les metriques de sante des equipements, les taux d'achevement de l'entretien et l'etat d'inventaire des pieces.
 
 Coordonnez avec le responsable des operations et le responsable usine pour planifier des fenetres d'entretien.`,
-    relatedRoles: ["WORKSHOP_MANAGER"],
+    relatedRoles: ["ENGINE_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 5,
   },
@@ -379,7 +379,7 @@ Vous etes responsable du suivi des depenses quotidiennes, des bons de commande e
 Votre tableau de bord affiche les KPI financiers, y compris les depenses quotidiennes, l'utilisation du budget et la categorisation des depenses.
 
 En tant que responsable financier, vous examinez et approuvez les soumissions financieres du personnel d'achats.`,
-    relatedRoles: ["FINANCE_MANAGER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 6,
   },
@@ -402,7 +402,7 @@ Vous gerez les comptes utilisateurs du personnel du site, y compris l'integratio
 Votre tableau de bord montre les metriques de dotation en personnel, y compris les taux de presence et la couverture des quarts.
 
 Travaillez avec les responsables de departement pour assurer des niveaux de dotation adequats.`,
-    relatedRoles: ["HR_MANAGER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "users", "history"],
     sortOrder: 7,
   },
@@ -425,7 +425,7 @@ Vous gerez l'equipe de securite du portail et vous assurez que tout le personnel
 Votre tableau de bord montre les metriques de securite, y compris le trafic au portail, les taux de fouille et les rapports d'incidents.
 
 Coordonnez avec le controleur de site sur les protocoles de securite.`,
-    relatedRoles: ["SECURITY_MANAGER"],
+    relatedRoles: ["GATE_SECURITY"],
     relatedPages: ["form", "history"],
     sortOrder: 8,
   },
@@ -448,7 +448,7 @@ Au debut de chaque quart, completez la liste de controle de pre-operation pour c
 Votre formulaire capture les donnees critiques, y compris les heures moteur, le temps d'arret, les heures productives et les volumes de materiaux.
 
 Soumettez votre journal quotidien a la fin de chaque quart.`,
-    relatedRoles: ["EXCAVATOR_OPERATOR"],
+    relatedRoles: ["MINING_GEOLOGY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 9,
   },
@@ -471,7 +471,7 @@ Votre tache principale est d'enregistrer avec precision les donnees qui vous son
 Si vous rencontrez des champs que vous ne comprenez pas, utilisez le bouton d'aide pour acceder a une aide contextuelle.
 
 Soumettez toujours vos formulaires avant la fin de votre quart pour assurer la collecte et le rapport des donnees en temps opportun.`,
-    relatedRoles: ["GENERAL_WORKER"],
+    relatedRoles: ["GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 10,
   },
@@ -655,7 +655,7 @@ Votre formulaire principal est le modele 06 (Journal quotidien des pompes a tamb
 Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement des pompes, la boue traitee en metres cubes et les controles de pression effectues.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["DRUM_PUMP_SUPERVISOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 18,
   },
@@ -678,7 +678,7 @@ Votre formulaire principal est le modele 06 (Journal quotidien des pompes a tamb
 Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement des pompes et les taches d'aide effectuees.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["DRUM_PUMP_ASSISTANT"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 19,
   },
@@ -701,7 +701,7 @@ Votre formulaire principal est le modele 07 (Journal des operations de centrifug
 Votre tableau de bord KPI suit les metriques de traitement, y compris les cycles de centrifugeuse termines, le concentre recupere en grammes et les heures de disponibilite de l'usine.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["CENTRIFUGE_OPERATOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 20,
   },
@@ -724,7 +724,7 @@ Votre formulaire principal est le modele 08 (Journal des operations de table a s
 Votre tableau de bord KPI suit les metriques de traitement, y compris les cycles de table termines, le concentre recupere en grammes et les heures de disponibilite de l'usine.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["SHAKING_TABLE_OPERATOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 21,
   },
@@ -747,7 +747,7 @@ Votre formulaire principal est le modele 14 (Rapport quotidien de petite caisse)
 Votre tableau de bord KPI suit les metriques financieres, y compris les decaissements traites, les recus enregistres et l'ecart de tresorerie en dollars. Maintenir un ecart de tresorerie nul est l'objectif principal.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["SITE_PETTY_CASH_MANAGER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 22,
   },
@@ -793,7 +793,7 @@ Vous creez des entrees pour le modele 02 (Presence du personnel et tableau des q
 Votre tableau de bord KPI suit les metriques de securite, y compris les exercices de securite effectues, les inspections HSE terminees, les rapports de quasi-accidents deposes, les reunions de securite tenues, les conclusions d'audit documentees et les soumissions reglementaires.
 
 Vous disposez de privileges d'exportation de donnees et pouvez consulter les KPI au niveau de l'equipe dans tous les departements. Vous ne disposez pas de capacites de gestion des utilisateurs.`,
-    relatedRoles: ["SAFETY_COMPLIANCE_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 24,
   },
@@ -816,7 +816,7 @@ Vous travaillez avec trois modeles quotidiennement. Le modele 03 (Journal quotid
 Votre tableau de bord KPI suit les metriques de production, y compris les rapports de quart deposes, les affectations de taches distribuees, les incidents de securite enregistres et les reunions de production tenues.
 
 Vous pouvez consulter les KPI au niveau de l'equipe pour l'equipe miniere, saisir vos propres KPI et verifier les soumissions du modele 03. Vous ne disposez pas de privileges de gestion des utilisateurs ou d'exportation de donnees.`,
-    relatedRoles: ["MINE_FOREMAN"],
+    relatedRoles: ["MINING_GEOLOGY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 25,
   },
@@ -839,7 +839,7 @@ Votre formulaire principal est le modele 03 (Journal quotidien d'excavatrice / m
 Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement de la drague, la superficie couverte en metres carres et le sediment traite en metres cubes.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["DREDGE_OPERATOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 26,
   },
@@ -862,7 +862,7 @@ Vous travaillez avec deux modeles. Le modele 07 (Journal des operations de centr
 Votre tableau de bord KPI suit les metriques de traitement, y compris les heures de disponibilite de l'usine, le debit d'alimentation en metres cubes par heure et les nettoyages effectues.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["PROCESS_PLANT_OPERATOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 27,
   },
@@ -885,7 +885,7 @@ Votre formulaire principal est le modele 06 (Journal quotidien des pompes a tamb
 Votre tableau de bord KPI suit les metriques de production, y compris les heures de fonctionnement des pompes, les controles de pression effectues et la boue traitee en metres cubes.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["PUMP_OPERATOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 28,
   },
@@ -908,7 +908,7 @@ Votre formulaire principal est le modele 05 (Feuille quotidienne de geologie min
 Votre tableau de bord KPI suit les metriques geologiques, y compris les echantillons collectes et les heures de fonctionnement. Un objectif de 15 echantillons par quart avec 8 heures de forage assure une couverture adequate.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["DRILLER_SAMPLING_CREW"],
+    relatedRoles: ["MINING_GEOLOGY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 29,
   },
@@ -931,7 +931,7 @@ Vous travaillez avec trois modeles. Le modele 12 (Feuille de magasin, achats et 
 Votre tableau de bord KPI suit les metriques financieres, y compris les factures verifiees, les bons de commande traites et le pourcentage d'ecart budgetaire.
 
 Vous disposez de privileges d'exportation de donnees pour generer des rapports financiers. Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs ou de verification des rapports.`,
-    relatedRoles: ["ACCOUNTANT"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 30,
   },
@@ -954,7 +954,7 @@ Votre formulaire principal est le modele 12 (Feuille de magasin, achats et depen
 Votre tableau de bord KPI suit les metriques financieres, y compris les demandes d'achat traitees, les fournisseurs geres et les economies realisees en dollars.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["PROCUREMENT_OFFICER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 31,
   },
@@ -977,7 +977,7 @@ Votre formulaire principal est le modele 09 (Rapport de recuperation d'or et d'e
 Votre tableau de bord KPI suit les metriques de qualite, y compris les essais termines, les echantillons testes et les rapports prepares.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["ASSAY_LAB_TECHNICIAN"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 32,
   },
@@ -1000,7 +1000,7 @@ Votre formulaire principal est le modele 02 (Presence du personnel et tableau de
 Votre tableau de bord KPI suit les metriques d'administration, y compris les reunions communautaires tenues, les reclamations resolues et les activites d'engagement menees.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["COMMUNITY_RELATIONS_OFFICER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 33,
   },
@@ -1023,7 +1023,7 @@ Vous travaillez avec deux modeles. Le modele 02 (Presence du personnel et tablea
 Votre tableau de bord KPI suit les metriques d'administration, y compris les documents traites, les registres mis a jour et la correspondance traitee.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["ADMIN_CLERK"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 34,
   },
@@ -1046,7 +1046,7 @@ Votre formulaire principal est le modele 11 (Registre de portail, fouille et mou
 Votre tableau de bord KPI suit les metriques de securite, y compris les zones patrouillees, les controles d'acces effectues, les incidents signales et les rondes de patrouille accomplies.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["SECURITY_GUARD"],
+    relatedRoles: ["GATE_SECURITY"],
     relatedPages: ["form", "history"],
     sortOrder: 35,
   },
@@ -1069,7 +1069,7 @@ Votre formulaire principal est le modele 02 (Presence du personnel et tableau de
 Votre tableau de bord KPI suit les metriques d'administration, y compris les consultations medicales effectuees, les cas de premiers soins traites et les depistages sanitaires termines.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["MEDICAL_OFFICER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 36,
   },
@@ -1092,7 +1092,7 @@ Vous travaillez avec deux modeles. Le modele 02 (Presence du personnel et tablea
 Votre tableau de bord KPI suit les metriques d'administration, y compris les repas servis, les controles d'hebergement termines et les inspections d'installations effectuees.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["CAMP_MANAGER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 37,
   },
@@ -1115,7 +1115,7 @@ Vous travaillez avec deux modeles. Le modele 04 (Rapport de consommation et dist
 Votre tableau de bord KPI suit les metriques logistiques, y compris les trajets effectues, les livraisons coordonnees et les controles de flotte effectues.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["LOGISTICS_TRANSPORT_COORDINATOR"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "history"],
     sortOrder: 38,
   },
@@ -1138,7 +1138,7 @@ Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et l
 Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparations effectuees, les pieces utilisees et le pourcentage de disponibilite des machines.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["HEAVY_EQUIPMENT_MECHANIC"],
+    relatedRoles: ["ENGINE_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 39,
   },
@@ -1161,7 +1161,7 @@ Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et l
 Votre tableau de bord KPI suit les metriques d'entretien, y compris les reparations electriques effectuees, les moteurs revises et les reparations de cables realisees.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["AUTO_ELECTRICIAN"],
+    relatedRoles: ["ELECTRICAL_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 40,
   },
@@ -1184,7 +1184,7 @@ Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et l
 Votre tableau de bord KPI suit les metriques d'entretien, y compris les travaux de soudage termines, les reparations effectuees et les pieces utilisees.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["WELDER_FABRICATOR"],
+    relatedRoles: ["ENGINE_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 41,
   },
@@ -1207,7 +1207,7 @@ Votre formulaire principal est le modele 10 (Journal d'entretien, graissage et l
 Votre tableau de bord KPI suit les metriques d'entretien, y compris les vehicules revises, les reparations effectuees et les pieces utilisees.
 
 Vous pouvez consulter et saisir vos propres KPI via le tableau de bord. Vous ne disposez pas de privileges de gestion des utilisateurs, d'exportation de donnees ou de verification des rapports.`,
-    relatedRoles: ["LIGHT_VEHICLE_MECHANIC"],
+    relatedRoles: ["ENGINE_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 42,
   },
@@ -1230,7 +1230,7 @@ Les KPI sont organises par departement et role. Les KPI de production suivent le
 Chaque KPI a une valeur cible definie par la direction. Le systeme compare la performance reelle par rapport a ces objectifs.
 
 Comprendre vos KPI vous aide a vous concentrer sur les metriques les plus importantes pour votre role.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 1,
   },
@@ -1253,7 +1253,7 @@ Assurez-vous d'entrer des valeurs precises dans tous les champs lies aux KPI. Le
 Certains KPI sont calcules automatiquement a partir d'autres champs. Par exemple, le taux de recuperation est calcule a partir des quantites de materiaux d'entree et de sortie.
 
 Vos donnees KPI sont immediatement refletees dans le tableau de bord apres la soumission de votre rapport.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history", "kpiInput", "kpiDashboard"],
     sortOrder: 2,
   },
@@ -1276,7 +1276,7 @@ Les objectifs sont definis par le controleur de site ou le directeur de mine et 
 Trois niveaux de seuil existent: vert (dans la cible), orange (variance mineure) et rouge (variance significative). Le tableau de bord code les KPI par couleur.
 
 Examinez regulierement vos objectifs KPI et discutez de toute preoccupation avec votre responsable.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY"],
     relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard", "settings"],
     sortOrder: 3,
   },
@@ -1299,7 +1299,7 @@ La vue d'ensemble affiche les KPI sous forme de cartes avec les valeurs actuelle
 Les filtres vous permettent de visualiser les KPI par periode de temps, departement ou categorie de metrique specifique.
 
 Le tableau de bord se rafraichit automatiquement a mesure que de nouveaux rapports sont soumis.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY"],
     relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 4,
   },
@@ -1322,7 +1322,7 @@ Utilisez la vue d'equipe pour identifier les meilleurs performeurs et les membre
 Les tableaux de bord d'equipe respectent les controles d'acces bases sur les roles. Vous ne pouvez voir que les KPI des utilisateurs dans votre perimetre de gestion.
 
 Exportez les rapports KPI d'equipe pour inclusion dans les reunions de direction hebdomadaires.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY"],
     relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 5,
   },
@@ -1345,7 +1345,7 @@ L'efficacite de production est calculee comme le ratio des heures productives pa
 Les alertes de variance se declenchent lorsque la production quotidienne tombe en dessous du seuil minimum.
 
 Les donnees KPI de production alimentent le Resume quotidien du site (modele 01) et la Feuille quotidienne de geologie miniere (modele 05).`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "MINING_GEOLOGY_LEAD"],
+    relatedRoles: ["SITE_CONTROLLER", "MINING_GEOLOGY_LEAD"],
     relatedPages: ["form", "kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 6,
   },
@@ -1368,7 +1368,7 @@ Tous les incidents et quasi-accidents doivent etre enregistres rapidement dans l
 Les KPI de conformite securitaire surveillent l'achevement des controles de securite avant le quart, les inspections d'equipements et les sessions de formation obligatoires.
 
 Un objectif zero incident est maintenu. Tout incident de securite declenche un flux de travail de revue automatique.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 7,
   },
@@ -1391,7 +1391,7 @@ Le taux d'achevement de l'entretien planifie mesure le pourcentage de taches d'e
 Le temps d'arret non planifie est suivi en pourcentage des heures totales disponibles.
 
 Les donnees KPI de maintenance proviennent du modele 10 (Journal d'entretien, graissage et lavage).`,
-    relatedRoles: ["SITE_CONTROLLER", "WORKSHOP_MANAGER", "OPERATIONS_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER", "ENGINE_MECHANIC"],
     relatedPages: ["form", "kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 8,
   },
@@ -1414,7 +1414,7 @@ Le suivi des depenses quotidiennes compare les depenses reelles aux montants bud
 Les alertes de variance se declenchent lorsque les depenses quotidiennes depassent les seuils budgetes.
 
 Les donnees KPI financieres proviennent du modele 12 et du modele 14.`,
-    relatedRoles: ["SITE_CONTROLLER", "FINANCE_MANAGER", "MINE_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER", "FUEL_ADMIN_LOGISTICS"],
     relatedPages: ["form", "kpiInput", "kpiDashboard", "teamDashboard"],
     sortOrder: 9,
   },
@@ -1437,7 +1437,7 @@ Le controleur de site voit tous les KPI sur le site. Les responsables de departe
 Les roles operationnels voient les KPI specifiques qu'ils influencent directement par leur travail quotidien.
 
 Les profils KPI peuvent etre personnalises par le controleur de site via la page Parametres du site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["kpiInput", "kpiDashboard", "teamDashboard", "settings"],
     sortOrder: 10,
   },
@@ -1460,7 +1460,7 @@ Le controleur de site et le directeur de mine sont les principaux utilisateurs d
 Les sections cles incluent les volumes de production, l'etat des equipements, les conditions meteorologiques, le journal des visiteurs et les notes de gestion.
 
 Ce modele doit etre complete a la fin de chaque journee operationnelle.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER"],
+    relatedRoles: ["SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 1,
   },
@@ -1483,7 +1483,7 @@ Le responsable RH est le principal utilisateur de ce modele. Enregistrez le stat
 Les affectations de quarts sont enregistrees avec les heures de debut et de fin. Le systeme valide que les niveaux minimaux de dotation sont maintenus.
 
 Les heures supplementaires doivent etre enregistrees et justifiees.`,
-    relatedRoles: ["HR_MANAGER", "SITE_CONTROLLER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS", "SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 2,
   },
@@ -1506,7 +1506,7 @@ Les champs cles incluent les heures de demarrage/arret du moteur, le carburant c
 La liste de controle de pre-operation doit etre completee avant de commencer le travail. Cette liste couvre les elements de securite, les niveaux de fluides et les inspections visuelles.
 
 Les donnees de performance de la machine alimentent les KPI de production et la planification de l'entretien.`,
-    relatedRoles: ["EXCAVATOR_OPERATOR", "OPERATIONS_MANAGER", "WORKSHOP_MANAGER"],
+    relatedRoles: ["MINING_GEOLOGY_LEAD", "SITE_CONTROLLER", "ENGINE_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 3,
   },
@@ -1529,7 +1529,7 @@ Enregistrez chaque distribution de carburant avec l'equipement ou vehicule desti
 La reconciliation quotidienne compare le stock d'ouverture, le carburant recu, le carburant distribue et le stock de fermeture. Tout ecart declenche une alerte pour enquete.
 
 Ce modele implemente des controles de separation des taches necessitant differents utilisateurs pour enregistrer les distributions et effectuer la reconciliation.`,
-    relatedRoles: ["FUEL_ADMIN_LOGISTICS", "SITE_CONTROLLER", "FINANCE_MANAGER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS", "SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 4,
   },
@@ -1552,7 +1552,7 @@ Enregistrez l'emplacement du front de travail, la formation geologique observee,
 Les mesures de profondeur de fosse, les observations de la nappe phreatique et les conditions du sol sont suivies pour soutenir les decisions de methode d'exploitation.
 
 Ce modele est utilise par le responsable geologie miniere et examine par le directeur de mine.`,
-    relatedRoles: ["MINING_GEOLOGY_LEAD", "MINE_MANAGER", "SITE_CONTROLLER"],
+    relatedRoles: ["MINING_GEOLOGY_LEAD", "SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 5,
   },
@@ -1575,7 +1575,7 @@ T06 enregistre les heures de fonctionnement des pompes, le debit de materiaux et
 Chaque modele inclut des points de controle de qualite et des evaluations de l'etat des equipements.
 
 Le responsable usine supervise les trois modeles. Les operateurs de traitement soumettent leurs formulaires respectifs.`,
-    relatedRoles: ["PLANT_MANAGER", "PROCESSING_RECOVERY_LEAD", "DRUM_PUMP_SUPERVISOR"],
+    relatedRoles: ["PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 6,
   },
@@ -1598,7 +1598,7 @@ Chaque evenement de recuperation d'or doit etre temoin et co-signe. Le modele im
 Enregistrez le processus source, le poids de recuperation (brut et net), l'estimation de purete et le destinataire de la remise.
 
 Ce modele a une journalisation d'audit amelioree. Chaque acces, modification et soumission est enregistre avec des horodatages.`,
-    relatedRoles: ["SITE_CONTROLLER", "PLANT_MANAGER", "PROCESSING_RECOVERY_LEAD"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD"],
     relatedPages: ["form", "history"],
     sortOrder: 7,
   },
@@ -1621,7 +1621,7 @@ Pour chaque tache d'entretien, enregistrez l'identifiant d'equipement, la tache 
 Les calendriers de graissage sont automatiquement generes en fonction des heures de fonctionnement des equipements. Le modele met en evidence les taches de graissage en retard.
 
 Les journaux de lavage capturent l'utilisation d'eau et les procedures de nettoyage des equipements.`,
-    relatedRoles: ["WORKSHOP_MANAGER", "ENGINE_MECHANIC", "ELECTRICAL_MECHANIC"],
+    relatedRoles: ["ENGINE_MECHANIC", "ELECTRICAL_MECHANIC"],
     relatedPages: ["form", "history"],
     sortOrder: 8,
   },
@@ -1644,7 +1644,7 @@ Le personnel de securite du portail doit enregistrer chaque entree et sortie ave
 Le suivi des mouvements d'articles assure la responsabilite des materiaux, equipements et effets personnels entrant ou sortant du site.
 
 Le responsable securite examine les journaux quotidiens du portail pour les anomalies.`,
-    relatedRoles: ["GATE_SECURITY", "SECURITY_MANAGER", "SITE_CONTROLLER"],
+    relatedRoles: ["GATE_SECURITY", "SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 9,
   },
@@ -1667,7 +1667,7 @@ T12 enregistre toutes les activites d'approvisionnement, les sorties de magasin 
 T14 suit les transactions de petite caisse avec le solde d'ouverture, les decaissements, les recus et le solde de fermeture. La reconciliation quotidienne est obligatoire.
 
 Ces modeles implementent des controles stricts de separation des taches.`,
-    relatedRoles: ["FINANCE_MANAGER", "SITE_CONTROLLER"],
+    relatedRoles: ["FUEL_ADMIN_LOGISTICS", "SITE_CONTROLLER"],
     relatedPages: ["form", "history"],
     sortOrder: 10,
   },
@@ -1690,7 +1690,7 @@ Assurez-vous que toutes les valeurs numeriques sont dans des plages acceptables.
 Verifiez votre connexion Internet. Si vous etes hors ligne, le rapport sera mis en file d'attente pour soumission ulterieure.
 
 Si le probleme persiste, essayez de rafraichir la page et de re-saisir les donnees. Contactez votre controleur de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 1,
   },
@@ -1713,7 +1713,7 @@ Premierement, verifiez que votre connexion Internet est stable. Le systeme neces
 Verifiez la file d'attente hors ligne dans l'historique des rapports. Si les rapports affichent un statut ECHOUE, ils devront peut-etre etre re-soumis.
 
 Si la file d'attente semble bloquee, essayez de fermer et rouvrir votre navigateur. Contactez votre controleur de site si les problemes persistent.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 2,
   },
@@ -1736,7 +1736,7 @@ Sur les appareils a ecran tactile, assurez-vous que le calibrage tactile est pre
 Si la signature apparait deformee ou ne s'enregistre pas, essayez de vider le cache de votre navigateur et de recharger la page.
 
 Pour les problemes de signature persistants, vous pouvez demander une derogation temporaire a votre controleur de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 3,
   },
@@ -1759,7 +1759,7 @@ Les violations SoD courantes incluent: enregistrer et approuver la meme transact
 Si vous recevez une alerte de violation SoD, vous devez faire completer l'action conflictuelle par un autre utilisateur autorise. Le systeme ne vous permettra pas de contourner les controles SoD.
 
 Contactez votre controleur de site si vous pensez que la configuration SoD est incorrecte.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 4,
   },
@@ -1782,7 +1782,7 @@ Les alertes d'avertissement (orange) indiquent des variances mineures qui peuven
 Pour resoudre une alerte de variance, verifiez que la valeur saisie est correcte. Si la valeur est precise malgre la variance, ajoutez une note expliquant la raison de la deviation.
 
 Les seuils de variance sont configures par le controleur de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 5,
   },
@@ -1805,7 +1805,7 @@ Effacez le cache et les cookies de votre navigateur pour le site. Les donnees en
 Assurez-vous que votre navigateur est a jour. L'application necessite un navigateur moderne avec JavaScript active.
 
 Si des champs specifiques manquent, votre role peut ne pas avoir la permission de voir ces champs. Contactez votre controleur de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 6,
   },
@@ -1828,7 +1828,7 @@ Apres cinq tentatives de connexion echouees, votre compte sera temporairement ve
 Si vous avez oublie votre mot de passe, utilisez le lien Mot de passe oublie sur la page de connexion. Verifiez votre boite de reception et le dossier spam.
 
 Si vous etes un nouvel utilisateur et n'avez pas recu vos identifiants, contactez votre responsable RH ou controleur de site.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "profile"],
     sortOrder: 7,
   },
@@ -1851,7 +1851,7 @@ Assurez-vous d'utiliser la meme adresse e-mail enregistree pour votre compte. Re
 Les liens de reinitialisation expirent apres 24 heures. Si votre lien a expire, demandez-en un nouveau depuis la page de connexion.
 
 Si les problemes persistent, votre controleur de site ou administrateur systeme peut reinitialiser manuellement votre mot de passe.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "settings", "profile"],
     sortOrder: 8,
   },
@@ -1874,7 +1874,7 @@ Assurez-vous que les deux appareils ont une connexion Internet active. Rafraichi
 Les rapports brouillons sont stockes localement et ne se synchronisent pas entre les appareils. Seuls les rapports soumis sont disponibles sur tous les appareils.
 
 Si les rapports soumis n'apparaissent pas sur un autre appareil, verifiez que vous etes connecte avec le meme compte.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER"],
     relatedPages: ["form", "history"],
     sortOrder: 9,
   },
@@ -1897,7 +1897,7 @@ Niveau 1: Contactez votre superviseur direct ou responsable de departement. Ils 
 Niveau 2: Contactez votre controleur de site. Il a acces aux outils administratifs, a la gestion des utilisateurs et peut resoudre la plupart des problemes de configuration.
 
 Niveau 3: Pour les problemes au niveau du systeme, la corruption de donnees ou les incidents de securite, le controleur de site escalade a l'administrateur systeme.`,
-    relatedRoles: ["SITE_CONTROLLER", "MINE_MANAGER", "OPERATIONS_MANAGER", "PLANT_MANAGER", "WORKSHOP_MANAGER", "FINANCE_MANAGER", "HR_MANAGER", "SECURITY_MANAGER", "EXCAVATOR_OPERATOR", "GENERAL_WORKER", "SYSTEM_ADMIN"],
+    relatedRoles: ["SITE_CONTROLLER", "PROCESSING_RECOVERY_LEAD", "ENGINE_MECHANIC", "FUEL_ADMIN_LOGISTICS", "GATE_SECURITY", "MINING_GEOLOGY_LEAD", "GREASING_WASHING_HELPER", "SYSTEM_ADMIN"],
     relatedPages: ["form", "help"],
     sortOrder: 10,
   },

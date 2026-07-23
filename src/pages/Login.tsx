@@ -254,20 +254,14 @@ export default function Login() {
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {[
-                { label: 'Site Manager (Osman)', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
-                { label: 'Fuel Manager', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'HR Manager', email: 'demo.hr@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Finance Manager', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Geology & Mining Lead', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Site Controller (Osman)', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
+                { label: 'Mining & Geology Lead', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Processing & Recovery Lead', email: 'demo.plantlead@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Excavator Operator', email: 'demo.operator@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Fuel, Admin & Logistics', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Engine Mechanic', email: 'demo.mechanic@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Security Manager', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Operations Manager', email: 'demo.ops@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Plant Manager', email: 'demo.plant@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Mine Foreman', email: 'demo.foreman@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Workshop Manager', email: 'demo.workshop@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Safety & Compliance', email: 'demo.safety@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Electrical Mechanic', email: 'demo.electrical@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Greasing & Washing Helper', email: 'demo.helper@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Gate Security', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
               ].map((demo) => (
                 <button
                   key={demo.email}

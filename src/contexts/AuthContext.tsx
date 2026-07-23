@@ -52,10 +52,10 @@ const AuthContext = createContext<AuthContextType>({
 
 /**
  * Build our app User object from Cognito user attributes.
- * Maps legacy roles (SITE_CONTROLLER, MINE_MANAGER, SYSTEM_ADMIN) to SITE_MANAGER.
+ * Maps legacy Cognito roles to one of the 8 lean roles via mapLegacyRole().
  */
 function buildUserFromAttributes(attrs: Record<string, string | undefined>, sub: string): User {
-  const rawRole = attrs['custom:role'] || Role.SITE_MANAGER;
+  const rawRole = attrs['custom:role'] || Role.SITE_CONTROLLER;
   const mappedRole = mapLegacyRole(rawRole);
 
   return {

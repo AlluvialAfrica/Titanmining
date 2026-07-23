@@ -59,7 +59,7 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  const permissions = ROLE_PERMISSIONS[user.role] || ROLE_PERMISSIONS[Role.SITE_MANAGER];
+  const permissions = ROLE_PERMISSIONS[user.role] || ROLE_PERMISSIONS[Role.SITE_CONTROLLER];
   const isAdmin = hasAdminAccess(user.role);
 
   const renderForm = (templateId: string) => {
@@ -77,11 +77,8 @@ export default function Dashboard() {
 
   /** Roles that can see all 15 templates in the dropdown. */
   const isFullAccessRole =
-    user.role === Role.SITE_MANAGER ||
     user.role === Role.SITE_CONTROLLER ||
-    user.role === Role.MINE_MANAGER ||
-    user.role === Role.SYSTEM_ADMIN ||
-    user.role === Role.OPERATIONS_MANAGER;
+    user.role === Role.SYSTEM_ADMIN;
 
   // Auto-correct selectedControllerForm when it doesn't match the role's allowed templates
   useEffect(() => {

@@ -1,21 +1,18 @@
 {
   "auth": {
-    "user_pool_id": "eu-north-1_AUmaZlQ7a",
+    "user_pool_id": "eu-north-1_UvepVlAOv",
     "aws_region": "eu-north-1",
-    "user_pool_client_id": "5sp1hhrmjg6i7hm30fmbqe0d1c",
-    "identity_pool_id": "eu-north-1:1e318d3b-31c4-45fa-93fa-beb3de62bc2f",
+    "user_pool_client_id": "76qhso3q43dk7283rhkkh0fad5",
+    "identity_pool_id": "eu-north-1:ef1d9a82-6c24-404c-a294-cbcbdc15d4e5",
     "mfa_methods": [],
     "standard_required_attributes": [
-      "email",
-      "phone_number"
+      "email"
     ],
     "username_attributes": [
-      "email",
-      "phone_number"
+      "email"
     ],
     "user_verification_types": [
-      "email",
-      "phone_number"
+      "email"
     ],
     "groups": [
       {
@@ -388,6 +385,23 @@
                     "groups": [
                       "SiteControllers"
                     ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "read"
+                    ],
+                    "groups": [
+                      "DepartmentLeads",
+                      "Management",
+                      "Operators",
+                      "Maintenance",
+                      "Security",
+                      "Finance",
+                      "HRAdmin"
+                    ]
                   }
                 ]
               }
@@ -540,6 +554,7 @@
                     "ownerField": "owner",
                     "allow": "owner",
                     "operations": [
+                      "create",
                       "read",
                       "update"
                     ],
@@ -550,10 +565,31 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "operations": [
-                      "read"
+                      "create",
+                      "read",
+                      "update",
+                      "delete"
                     ],
                     "groups": [
                       "SiteControllers"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "create",
+                      "read"
+                    ],
+                    "groups": [
+                      "DepartmentLeads",
+                      "Management",
+                      "Operators",
+                      "Maintenance",
+                      "Security",
+                      "Finance",
+                      "HRAdmin"
                     ]
                   }
                 ]
@@ -858,10 +894,25 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "operations": [
-                      "read"
+                      "create",
+                      "read",
+                      "update"
                     ],
                     "groups": [
                       "SiteControllers"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "read"
+                    ],
+                    "groups": [
+                      "DepartmentLeads",
+                      "Management",
+                      "Finance"
                     ]
                   }
                 ]
@@ -991,10 +1042,26 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "operations": [
-                      "read"
+                      "create",
+                      "read",
+                      "update"
                     ],
                     "groups": [
                       "SiteControllers"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "create",
+                      "read"
+                    ],
+                    "groups": [
+                      "DepartmentLeads",
+                      "Management",
+                      "HRAdmin"
                     ]
                   }
                 ]
@@ -1144,11 +1211,26 @@
                     "provider": "userPools",
                     "allow": "groups",
                     "operations": [
+                      "create",
                       "read",
                       "update"
                     ],
                     "groups": [
                       "SiteControllers"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "create",
+                      "read"
+                    ],
+                    "groups": [
+                      "DepartmentLeads",
+                      "Management",
+                      "Finance"
                     ]
                   }
                 ]
@@ -1290,6 +1372,23 @@
                     "groups": [
                       "SiteControllers",
                       "Management"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "create",
+                      "read"
+                    ],
+                    "groups": [
+                      "DepartmentLeads",
+                      "Operators",
+                      "Maintenance",
+                      "Security",
+                      "Finance",
+                      "HRAdmin"
                     ]
                   }
                 ]

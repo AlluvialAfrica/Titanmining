@@ -12,15 +12,15 @@ export const SOD_RULES = [
     name: "Controller cannot handle gold",
     description: "Site Controller cannot be listed as 'Received From' or 'Handed Over To' in Gold Recovery",
     check: (report: any, userRole: Role, userId: string) =>
-      (userRole === Role.SITE_CONTROLLER || userRole === Role.SITE_MANAGER) &&
+      (userRole === Role.SITE_CONTROLLER || userRole === Role.SYSTEM_ADMIN) &&
       (report.receivedFrom === userId || report.handedOverTo === userId),
-    violation: "Site Manager cannot physically handle gold recovery",
+    violation: "Site Controller cannot physically handle gold recovery",
   },
   {
     id: "SOD_02",
     name: "Controller cannot issue fuel alone",
     description: "Fuel issue requires dual signature (issuer + receiver must be different)",
-    check: (report: any) => 
+    check: (report: any) =>
       report.issuedBy && report.receivedBy && report.issuedBy === report.receivedBy,
     violation: "Fuel issue requires different issuer and receiver",
   },
@@ -28,7 +28,7 @@ export const SOD_RULES = [
     id: "SOD_03",
     name: "Recovery Lead cannot store gold",
     description: "Gold handover requires third-party (Controller) sign-off",
-    check: (report: any) => 
+    check: (report: any) =>
       report.receivedBy && report.handedOverTo && report.receivedBy === report.handedOverTo,
     violation: "Gold handover requires independent verifier",
   },
@@ -36,28 +36,19 @@ export const SOD_RULES = [
     id: "SOD_04",
     name: "Gate Security isolation",
     description: "Gate Security cannot access Processing, Recovery, or Fuel forms",
-    check: (reportType: string, userRole: Role) => 
-      userRole === Role.GATE_SECURITY && 
+    check: (reportType: string, userRole: Role) =>
+      userRole === Role.GATE_SECURITY &&
       ["TEMPLATE_04", "TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"].includes(reportType),
     violation: "Gate Security cannot access operational forms",
   },
   {
     id: "SOD_05",
-    name: "Security Guard isolation",
-    description: "Security Guard cannot access processing forms",
+    name: "Greasing/Washing Helper isolation",
+    description: "Greasing, Washing & Mechanic Helper cannot access forms outside maintenance",
     check: (reportType: string, userRole: Role) =>
-      userRole === Role.SECURITY_GUARD &&
-      ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"].includes(reportType),
-    violation: "Security Guard cannot access processing forms",
-  },
-  {
-    id: "SOD_06",
-    name: "General Worker financial isolation",
-    description: "General Worker cannot access any financial forms",
-    check: (reportType: string, userRole: Role) =>
-      userRole === Role.GENERAL_WORKER &&
-      ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"].includes(reportType),
-    violation: "General Worker cannot access financial forms",
+      userRole === Role.GREASING_WASHING_HELPER &&
+      ["TEMPLATE_04", "TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"].includes(reportType),
+    violation: "Greasing/Washing Helper cannot access non-maintenance forms",
   },
 ];
 
@@ -71,31 +62,22 @@ export function checkSoD(reportType: string, reportData: any, userRole: Role, us
     };
   }
 
-  // Security Guard Isolation - cannot access processing forms
-  if (userRole === Role.SECURITY_GUARD && ["TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"].includes(reportType)) {
+  // Greasing/Washing Helper Isolation
+  if (userRole === Role.GREASING_WASHING_HELPER && ["TEMPLATE_04", "TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"].includes(reportType)) {
     return {
       ruleId: "SOD_05",
-      name: "Security Guard isolation",
-      violation: "Security Guard cannot access processing forms",
-    };
-  }
-
-  // General Worker Financial Isolation - cannot access financial forms
-  if (userRole === Role.GENERAL_WORKER && ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"].includes(reportType)) {
-    return {
-      ruleId: "SOD_06",
-      name: "General Worker financial isolation",
-      violation: "General Worker cannot access financial forms",
+      name: "Greasing/Washing Helper isolation",
+      violation: "Greasing/Washing Helper cannot access non-maintenance forms",
     };
   }
 
   // Gold Recovery checks
   if (reportType === "TEMPLATE_09") {
-    if ((userRole === Role.SITE_CONTROLLER || userRole === Role.SITE_MANAGER) && (reportData.receivedFrom === userId || reportData.handedOverTo === userId)) {
+    if ((userRole === Role.SITE_CONTROLLER || userRole === Role.SYSTEM_ADMIN) && (reportData.receivedFrom === userId || reportData.handedOverTo === userId)) {
       return {
         ruleId: "SOD_01",
-        name: "Site Manager cannot handle gold",
-        violation: "Site Manager cannot physically handle gold recovery",
+        name: "Site Controller cannot handle gold",
+        violation: "Site Controller cannot physically handle gold recovery",
       };
     }
     if (reportData.receivedBy && reportData.handedOverTo && reportData.receivedBy === reportData.handedOverTo) {
