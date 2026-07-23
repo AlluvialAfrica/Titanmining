@@ -41,6 +41,7 @@ const schema = a.schema({
   }).authorization((allow) => [
     allow.owner().to(['read', 'update']),
     allow.groups(['SiteControllers']).to(['create', 'read', 'update', 'delete']),
+    allow.groups(['DepartmentLeads', 'Management', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin']).to(['read']),
   ]),
 
   DailyReport: a.model({
@@ -59,8 +60,9 @@ const schema = a.schema({
     verifiedAt: a.datetime(),
     source: a.string().default('WEB'),
   }).authorization((allow) => [
-    allow.owner().to(['read', 'update']),
-    allow.groups(['SiteControllers']).to(['read']),
+    allow.owner().to(['create', 'read', 'update']),
+    allow.groups(['SiteControllers']).to(['create', 'read', 'update', 'delete']),
+    allow.groups(['DepartmentLeads', 'Management', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin']).to(['create', 'read']),
   ]),
 
   GoldRecovery: a.model({
@@ -96,7 +98,8 @@ const schema = a.schema({
     varianceReason: a.string(),
   }).authorization((allow) => [
     allow.owner().to(['create', 'read', 'update']),
-    allow.groups(['SiteControllers']).to(['read']),
+    allow.groups(['SiteControllers']).to(['create', 'read', 'update']),
+    allow.groups(['DepartmentLeads', 'Management', 'Finance']).to(['read']),
   ]),
 
   Attendance: a.model({
@@ -111,7 +114,8 @@ const schema = a.schema({
     totalCasuals: a.integer(),
   }).authorization((allow) => [
     allow.owner().to(['create', 'read', 'update']),
-    allow.groups(['SiteControllers']).to(['read']),
+    allow.groups(['SiteControllers']).to(['create', 'read', 'update']),
+    allow.groups(['DepartmentLeads', 'Management', 'HRAdmin']).to(['create', 'read']),
   ]),
 
   Expense: a.model({
@@ -129,7 +133,8 @@ const schema = a.schema({
     receiptUrl: a.string(),
   }).authorization((allow) => [
     allow.owner().to(['create', 'read']),
-    allow.groups(['SiteControllers']).to(['read', 'update']),
+    allow.groups(['SiteControllers']).to(['create', 'read', 'update']),
+    allow.groups(['DepartmentLeads', 'Management', 'Finance']).to(['create', 'read']),
   ]),
 
   KPIEntry: a.model({
@@ -146,6 +151,7 @@ const schema = a.schema({
   }).authorization((allow) => [
     allow.owner().to(['create', 'read', 'update']),
     allow.groups(['SiteControllers', 'Management']).to(['read']),
+    allow.groups(['DepartmentLeads', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin']).to(['create', 'read']),
   ]),
 
   KPITarget: a.model({

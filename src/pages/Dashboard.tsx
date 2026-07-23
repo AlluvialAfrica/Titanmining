@@ -59,7 +59,7 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  const permissions = ROLE_PERMISSIONS[user.role];
+  const permissions = ROLE_PERMISSIONS[user.role] || ROLE_PERMISSIONS[Role.SITE_MANAGER];
   const isAdmin = hasAdminAccess(user.role);
 
   const renderForm = (templateId: string) => {
@@ -73,7 +73,7 @@ export default function Dashboard() {
     }
   };
 
-  const creatableReports = permissions.canCreate;
+  const creatableReports = permissions?.canCreate || [];
 
   /** Roles that can see all 15 templates in the dropdown. */
   const isFullAccessRole =
