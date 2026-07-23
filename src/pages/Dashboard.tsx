@@ -69,7 +69,7 @@ export default function Dashboard() {
       case 'TEMPLATE_04':
         return <FuelReconciliation />;
       default:
-        return <GenericReportForm templateId={templateId} />;
+        return <GenericReportForm key={templateId} templateId={templateId} />;
     }
   };
 

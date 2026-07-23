@@ -31,6 +31,11 @@ interface FormSpec {
   calculateSummary?: (rows: Record<string, any>[], setValue: any) => void;
   validate?: (values: any) => string | null;
   getVarianceMessage?: (values: any) => string | null;
+  secondaryTableTitle?: string;
+  secondaryTableColumns?: ColumnDef[];
+  secondarySummaryFields?: FieldSpec[];
+  secondaryCalculateRow?: (row: Record<string, any>, index: number) => Record<string, any>;
+  secondaryCalculateSummary?: (rows: Record<string, any>[], setValue: any) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -77,7 +82,7 @@ const formSpecs: Record<string, FormSpec> = {
     ],
     fields: [],
     tableColumns: [
-      { name: 'machineId', label: 'Machine ID', type: 'select', options: [{ value: 'CAT_1', label: 'CAT 1' }, { value: 'CAT_2', label: 'CAT 2' }, { value: 'SANY_1', label: 'SANY 1' }, { value: 'SANY_2', label: 'SANY 2' }] },
+      { name: 'machineId', label: 'Machine ID', type: 'text' },
       { name: 'operator', label: 'Operator', type: 'text', required: true },
       { name: 'openingHours', label: 'Opening Hrs', type: 'number', required: true },
       { name: 'closingHours', label: 'Closing Hrs', type: 'number', required: true },
@@ -244,15 +249,25 @@ const formSpecs: Record<string, FormSpec> = {
     ],
     fields: [],
     tableColumns: [
-      { name: 'machineId', label: 'Machine ID', type: 'select', options: [{ value: 'CAT_1', label: 'CAT 1' }, { value: 'CAT_2', label: 'CAT 2' }, { value: 'SANY_1', label: 'SANY 1' }, { value: 'SANY_2', label: 'SANY 2' }] },
+      { name: 'machine', label: 'Machine / Equipment', type: 'text' },
       { name: 'greasingDone', label: 'Greasing', type: 'checkbox' },
-      { name: 'filtersChanged', label: 'Filters', type: 'checkbox' },
-      { name: 'washingDone', label: 'Washing', type: 'checkbox' },
-      { name: 'sparesUsed', label: 'Spares Used', type: 'text' },
-      { name: 'notes', label: 'Notes', type: 'text' },
+      { name: 'oilLevelChecked', label: 'Oil Level', type: 'checkbox' },
+      { name: 'filtersChecked', label: 'Filters', type: 'checkbox' },
+      { name: 'beltsHosesChecked', label: 'Belts & Hoses', type: 'checkbox' },
+      { name: 'sparesUsed', label: 'Spares / Parts Used', type: 'text' },
+      { name: 'remarks', label: 'Condition / Remarks', type: 'text' },
     ],
     summaryFields: [
       { name: 'mechanicRemarks', label: 'Mechanic Remarks', type: 'textarea' },
+    ],
+    secondaryTableTitle: 'Daily Wash Log',
+    secondaryTableColumns: [
+      { name: 'machine', label: 'Machine / Equipment', type: 'text' },
+      { name: 'washed', label: 'Washed', type: 'checkbox' },
+      { name: 'washTime', label: 'Time', type: 'text' },
+      { name: 'washedBy', label: 'Washed By', type: 'text' },
+      { name: 'supervisorApproval', label: 'Supervisor', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'text' },
     ],
   },
 
@@ -287,24 +302,44 @@ const formSpecs: Record<string, FormSpec> = {
     ],
     fields: [],
     tableColumns: [
-      { name: 'itemName', label: 'Item Name', type: 'text', required: true },
-      { name: 'vendor', label: 'Vendor', type: 'text' },
-      { name: 'quantity', label: 'Qty', type: 'number', required: true },
+      { name: 'itemDescription', label: 'Item Description', type: 'text', required: true },
+      { name: 'supplier', label: 'Supplier / Vendor', type: 'text' },
+      { name: 'qty', label: 'Qty', type: 'number', required: true },
+      { name: 'unit', label: 'Unit', type: 'text' },
       { name: 'unitPrice', label: 'Unit Price (USD)', type: 'number', required: true },
-      { name: 'total', label: 'Total (USD)', type: 'number', disabled: true },
-      { name: 'category', label: 'Category', type: 'text' },
+      { name: 'totalAmount', label: 'Total (USD)', type: 'number', disabled: true },
+      { name: 'paymentMode', label: 'Payment Mode', type: 'text' },
       { name: 'receiptNo', label: 'Receipt No.', type: 'text' },
+      { name: 'requestedBy', label: 'Requested By', type: 'text' },
+      { name: 'approvedBy', label: 'Approved By', type: 'text' },
     ],
     calculateRow: (row) => {
-      const qty = Number(row.quantity || 0);
+      const qty = Number(row.qty || 0);
       const price = Number(row.unitPrice || 0);
-      return { ...row, total: parseFloat((qty * price).toFixed(2)) };
+      return { ...row, totalAmount: parseFloat((qty * price).toFixed(2)) };
     },
     summaryFields: [
-      { name: 'grandTotal', label: 'Grand Total (USD)', type: 'number', disabled: true },
+      { name: 'purchasesTotal', label: 'Purchases Total (USD)', type: 'number', disabled: true },
     ],
     calculateSummary: (rows, setValue) => {
-      setValue('grandTotal', parseFloat(rows.reduce((s, r) => s + Number(r.total || 0), 0).toFixed(2)));
+      setValue('purchasesTotal', parseFloat(rows.reduce((s, r) => s + Number(r.totalAmount || 0), 0).toFixed(2)));
+    },
+    secondaryTableTitle: 'Expenses',
+    secondaryTableColumns: [
+      { name: 'description', label: 'Description', type: 'text', required: true },
+      { name: 'amount', label: 'Amount (USD)', type: 'number', required: true },
+      { name: 'category', label: 'Category', type: 'text' },
+      { name: 'paymentMode', label: 'Payment Mode', type: 'text' },
+      { name: 'receiptNo', label: 'Receipt No.', type: 'text' },
+      { name: 'approvedBy', label: 'Approved By', type: 'text' },
+    ],
+    secondarySummaryFields: [
+      { name: 'expensesTotal', label: 'Expenses Total (USD)', type: 'number', disabled: true },
+      { name: 'combinedTotal', label: 'Combined Total (USD)', type: 'number', disabled: true },
+    ],
+    secondaryCalculateSummary: (rows, setValue) => {
+      const expTotal = parseFloat(rows.reduce((s, r) => s + Number(r.amount || 0), 0).toFixed(2));
+      setValue('expensesTotal', expTotal);
     },
   },
 
@@ -430,6 +465,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
   const [signature, setSignature] = useState<string>('');
   const [varianceMessage, setVarianceMessage] = useState<string | null>(null);
   const [tableRows, setTableRows] = useState<Record<string, any>[]>([{}]);
+  const [secondaryTableRows, setSecondaryTableRows] = useState<Record<string, any>[]>([{}]);
 
   const spec = formSpecs[templateId];
 
@@ -444,6 +480,9 @@ export default function GenericReportForm({ templateId }: { templateId: string }
     const draft = loadDraft(templateId);
     if (draft?.rows && Array.isArray(draft.rows)) {
       setTableRows(draft.rows);
+    }
+    if (draft?.secondaryRows && Array.isArray(draft.secondaryRows)) {
+      setSecondaryTableRows(draft.secondaryRows);
     }
   }, [templateId]);
 
@@ -466,13 +505,28 @@ export default function GenericReportForm({ templateId }: { templateId: string }
     }
   }, [tableRows, spec, setValue]);
 
+  // Run secondary summary calculations when secondary rows change
+  useEffect(() => {
+    if (spec?.secondaryCalculateSummary) {
+      spec.secondaryCalculateSummary(secondaryTableRows, setValue);
+    }
+    // Calculate combinedTotal if both primary and secondary totals exist
+    if (spec?.secondaryTableColumns) {
+      const purchasesTotal = Number(formValues.purchasesTotal || formValues.grandTotal || 0);
+      const expensesTotal = Number(formValues.expensesTotal || 0);
+      if (purchasesTotal || expensesTotal) {
+        setValue('combinedTotal', parseFloat((purchasesTotal + expensesTotal).toFixed(2)));
+      }
+    }
+  }, [secondaryTableRows, spec, setValue, formValues.purchasesTotal, formValues.grandTotal, formValues.expensesTotal]);
+
   // Auto-save draft every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      saveDraft(templateId, { ...formValues, rows: tableRows });
+      saveDraft(templateId, { ...formValues, rows: tableRows, secondaryRows: secondaryTableRows });
     }, 30000);
     return () => clearInterval(interval);
-  }, [formValues, tableRows, templateId, saveDraft]);
+  }, [formValues, tableRows, secondaryTableRows, templateId, saveDraft]);
 
   if (!spec) {
     return (
@@ -486,6 +540,10 @@ export default function GenericReportForm({ templateId }: { templateId: string }
 
   const handleRowsChange = (rows: Record<string, any>[]) => {
     setTableRows(rows);
+  };
+
+  const handleSecondaryRowsChange = (rows: Record<string, any>[]) => {
+    setSecondaryTableRows(rows);
   };
 
   const onSubmit = async (data: any) => {
@@ -506,6 +564,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
       await submitReport(templateId, {
         ...data,
         ...(isTableForm ? { rows: tableRows } : {}),
+        ...(spec.secondaryTableColumns ? { secondaryRows: secondaryTableRows } : {}),
         signature,
       });
       alert(`${spec.title} ${t('reports_form.submittedSuccess')}`);
@@ -596,6 +655,28 @@ export default function GenericReportForm({ templateId }: { templateId: string }
                 {spec.summaryFields.map(renderField)}
               </div>
             )}
+
+            {/* Secondary table */}
+            {spec.secondaryTableColumns && (
+              <>
+                <h3 className="text-sm uppercase tracking-widest font-semibold text-zinc-600 mt-10 mb-4 border-b border-zinc-300 pb-2">
+                  {spec.secondaryTableTitle || 'Additional Records'}
+                </h3>
+                <MultiRowTable
+                  columns={spec.secondaryTableColumns}
+                  rows={secondaryTableRows}
+                  onRowsChange={handleSecondaryRowsChange}
+                  onCalculateRow={spec.secondaryCalculateRow}
+                  minRows={1}
+                  showRowNumbers={true}
+                />
+                {spec.secondarySummaryFields && spec.secondarySummaryFields.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 bg-zinc-50 p-4 border border-zinc-200">
+                    {spec.secondarySummaryFields.map(renderField)}
+                  </div>
+                )}
+              </>
+            )}
           </>
         ) : (
           /* --- Flat field layout (backward compat) --- */
@@ -626,7 +707,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
           <button
             type="button"
             onClick={() => {
-              saveDraft(templateId, { ...formValues, rows: tableRows });
+              saveDraft(templateId, { ...formValues, rows: tableRows, secondaryRows: secondaryTableRows });
               alert(t('reports_form.draftSaved'));
             }}
             className="minimal-btn-secondary"

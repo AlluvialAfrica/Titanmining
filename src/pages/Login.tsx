@@ -263,6 +263,11 @@ export default function Login() {
                 { label: 'Excavator Operator', email: 'demo.operator@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Engine Mechanic', email: 'demo.mechanic@titanmining.com', pass: 'TitanMining2026!' },
                 { label: 'Security Manager', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Operations Manager', email: 'demo.ops@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Plant Manager', email: 'demo.plant@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Mine Foreman', email: 'demo.foreman@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Workshop Manager', email: 'demo.workshop@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Safety & Compliance', email: 'demo.safety@titanmining.com', pass: 'TitanMining2026!' },
               ].map((demo) => (
                 <button
                   key={demo.email}
