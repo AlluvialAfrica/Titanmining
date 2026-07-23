@@ -103,6 +103,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (mobileNumber: string, emailOrUsername: string, password: string) => {
     setLoading(true);
     try {
+      // Clear any stale Cognito session before signing in (e.g. demo role switching)
+      try { await signOut(); } catch (_) { /* no active session — expected */ }
+
       // Determine username: prefer email, fall back to phone number
       const username = emailOrUsername || mobileNumber;
 

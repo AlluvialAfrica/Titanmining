@@ -83,6 +83,13 @@ export default function Dashboard() {
     user.role === Role.SYSTEM_ADMIN ||
     user.role === Role.OPERATIONS_MANAGER;
 
+  // Auto-correct selectedControllerForm when it doesn't match the role's allowed templates
+  useEffect(() => {
+    if (!isFullAccessRole && creatableReports.length > 0 && !creatableReports.includes(selectedControllerForm)) {
+      setSelectedControllerForm(creatableReports[0]);
+    }
+  }, [creatableReports, selectedControllerForm, isFullAccessRole]);
+
   const navButton = (tab: TabType, label: string, show: boolean = true) => {
     if (!show) return null;
     return (
