@@ -4,14 +4,13 @@ backend:
     build:
       commands:
         - nvm install 20 && nvm use 20
+        - rm -rf node_modules
         - npm install
-        - npm install @parcel/watcher-linux-x64-glibc --no-save || true
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
     build:
       commands:
-        - npm install --prefer-offline
         - npm run build
         - node scripts/upload-logo.js
   artifacts:
@@ -21,4 +20,3 @@ frontend:
   cache:
     paths:
       - .npm/**/*
-      - node_modules/**/*
