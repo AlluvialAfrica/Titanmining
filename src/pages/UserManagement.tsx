@@ -231,11 +231,11 @@ Please change your password on first login.`}
       )}
 
       {showAddForm && (
-        <div className="border border-black p-8 max-w-xl bg-white mb-8">
+        <div className="border border-black p-4 sm:p-6 md:p-8 max-w-xl bg-white mb-8">
           <h3 className="font-serif italic text-lg mb-6 text-black border-b border-zinc-150 pb-2">{t('users.createAccount')}</h3>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="minimal-label">{t('users.firstName')}</label>
                 <Controller
@@ -317,7 +317,7 @@ Please change your password on first login.`}
 
             <div className="border-t border-zinc-100 pt-6">
               <h4 className="font-serif italic text-sm mb-4 text-black">{t('users.nokDetails')}</h4>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="minimal-label">{t('users.firstName')}</label>
                   <Controller
@@ -373,6 +373,7 @@ Please change your password on first login.`}
       {loadingUsers ? (
         <div className="text-center py-12 font-serif italic text-zinc-400">Loading users...</div>
       ) : (
+        <div className="overflow-x-auto">
         <table className="editorial-table">
           <thead>
             <tr>
@@ -401,6 +402,7 @@ Please change your password on first login.`}
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

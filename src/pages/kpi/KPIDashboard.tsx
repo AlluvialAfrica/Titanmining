@@ -66,7 +66,7 @@ export default function KPIDashboard() {
   }
 
   return (
-    <div className="py-4 space-y-12">
+    <div className="py-4 space-y-6 md:space-y-12">
       {/* Header */}
       <div>
         <h1 className="editorial-title text-3xl font-light mb-2 text-black">

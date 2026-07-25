@@ -91,7 +91,7 @@ export default function Login() {
   if (forcePasswordChange) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white px-6">
-        <div className="max-w-md w-full border border-black p-8">
+        <div className="max-w-md w-full border border-black p-4 sm:p-8">
           <div className="text-center mb-8">
             <img src="/atlas.png" alt="Atlas Logo" className="h-12 mx-auto mb-4 object-contain invert" />
             <h2 className="editorial-title text-2xl font-light">{t('login.newPasswordRequired')}</h2>
@@ -125,7 +125,7 @@ export default function Login() {
   if (otpPending) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white px-6">
-        <div className="max-w-md w-full border border-black p-8">
+        <div className="max-w-md w-full border border-black p-4 sm:p-8">
           <div className="text-center mb-8">
             <img src="/atlas.png" alt="Atlas Logo" className="h-12 mx-auto mb-4 object-contain invert" />
             <h2 className="editorial-title text-2xl font-light">{t('login.enterSecurityCode')}</h2>
@@ -160,13 +160,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white">
-      <div className="md:w-1/2 bg-zinc-50 border-r border-black p-12 flex flex-col justify-between">
+      <div className="md:w-1/2 bg-zinc-50 border-r border-black p-6 md:p-12 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between">
             <img src="/atlas.png" alt="Atlas Logo" className="h-12 object-contain" />
             <LanguageToggle />
           </div>
-          <h1 className="editorial-title text-4xl lg:text-5xl font-light tracking-tight mt-12 mb-6">
+          <h1 className="editorial-title text-2xl sm:text-3xl lg:text-5xl font-light tracking-tight mt-12 mb-6">
             {t('login.brandTitle')} <br />{t('login.brandSubtitle')}
           </h1>
           <p className="font-serif italic text-zinc-600 text-lg leading-relaxed max-w-md">
@@ -174,7 +174,7 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono mt-12">
+        <div className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono mt-6 md:mt-12">
           {t('login.poweredBy').replace('ChatWorks.', '').replace('ChatWorks', '')}
           <a
             href="https://www.chatworks.chat"
@@ -187,7 +187,7 @@ export default function Login() {
         </div>
       </div>
 
-      <div className="md:w-1/2 flex flex-col justify-between p-12">
+      <div className="md:w-1/2 flex flex-col justify-between p-6 md:p-12">
         <div />
 
         <div className="max-w-md w-full mx-auto my-auto">
@@ -252,7 +252,7 @@ export default function Login() {
             <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold mb-3">
               Fast Role Switch & Demo Logins (Click to Sign In):
             </p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {[
                 { label: 'Site Manager (Osman)', purpose: 'Daily report to Owner/Director + shift handover', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
                 { label: 'HR Manager', purpose: 'Attendance, shift presence & payroll', email: 'demo.hr@titanmining.com', pass: 'TitanMining2026!' },
@@ -292,7 +292,7 @@ export default function Login() {
           </div>
         </div>
 
-        <footer className="border-t border-zinc-100 pt-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">
+        <footer className="border-t border-zinc-100 pt-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-6 md:mt-12 bg-white flex justify-center gap-6">
           <button onClick={() => setActiveModal('terms')} className="hover:text-black transition-colors font-semibold">
             {t('footer.termsOfService')}
           </button>

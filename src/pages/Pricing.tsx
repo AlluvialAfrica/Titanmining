@@ -11,7 +11,7 @@ export default function Pricing({ onRegisterClick, onBackClick }: PricingProps) 
   const { t } = useLanguage();
 
   return (
-    <div className="max-w-4xl mx-auto p-12 bg-white text-black border border-black my-8 relative">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-12 bg-white text-black border border-black my-8 relative">
       <button 
         onClick={onBackClick}
         className="absolute top-6 right-6 text-xs uppercase tracking-widest text-zinc-400 hover:text-black font-semibold"
@@ -19,7 +19,7 @@ export default function Pricing({ onRegisterClick, onBackClick }: PricingProps) 
         [{t('pricing.back')}]
       </button>
 
-      <div className="text-center mb-12">
+      <div className="text-center mb-6 md:mb-12">
         <img src="/atlas.png" alt="Atlas Logo" className="h-10 mx-auto mb-6 object-contain" />
         <h1 className="editorial-title text-4xl font-light mb-4 text-black">{t('pricing.title')}</h1>
         <p className="font-serif italic text-zinc-600 text-sm max-w-md mx-auto">
@@ -42,7 +42,7 @@ export default function Pricing({ onRegisterClick, onBackClick }: PricingProps) 
       </div>
 
       {/* Pricing Cards */}
-      <div className="grid md:grid-cols-2 gap-8 mb-12">
+      <div className="grid md:grid-cols-2 gap-4 sm:gap-8 mb-6 md:mb-12">
         {/* Tier Card */}
         <div className="border border-black p-8 bg-white flex flex-col justify-between">
           <div>

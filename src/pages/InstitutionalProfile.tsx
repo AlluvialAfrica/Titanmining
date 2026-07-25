@@ -61,7 +61,7 @@ export default function InstitutionalProfile() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="minimal-label">{t('profile.currency')}</label>
             <Controller
@@ -92,7 +92,7 @@ export default function InstitutionalProfile() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="minimal-label">{t('profile.businessClose')}</label>
             <Controller

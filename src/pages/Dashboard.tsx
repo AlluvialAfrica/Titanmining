@@ -109,7 +109,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-white text-black flex flex-col">
       <OfflineBanner />
 
-      <header className="border-b border-black py-6 px-12 flex justify-between items-center bg-white sticky top-0 z-40">
+      <header className="border-b border-black py-4 md:py-6 px-4 sm:px-6 md:px-12 flex justify-between items-center bg-white sticky top-0 z-40">
         <div className="flex items-center gap-6">
           <img src="/atlas.png" alt="Atlas Logo" className="h-8 object-contain" />
           <span className="text-xs uppercase tracking-widest font-mono text-zinc-400">{t('app.name')}</span>
@@ -130,9 +130,9 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-12 py-12">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12">
         <Suspense fallback={suspenseFallback}>
-          <div className="flex flex-col md:flex-row gap-12">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-12">
             <aside className="md:w-64 flex flex-col gap-2">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xs uppercase tracking-widest text-zinc-400 font-semibold">{t('nav.workspace')}</h2>
@@ -151,14 +151,14 @@ export default function Dashboard() {
               {navButton('admin', 'Admin Dashboard', isAdmin)}
               {navButton('help', t('nav.help'))}
 
-              <div className="mt-auto pt-12 border-t border-zinc-100">
+              <div className="mt-auto pt-6 md:pt-12 border-t border-zinc-100">
                 <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">{t('nav.orgContext')}</p>
                 <p className="text-xs font-semibold mt-1">{user.orgId}</p>
                 <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{t('nav.siteId')}: {user.siteId}</p>
               </div>
             </aside>
 
-            <section className="flex-1 border-l border-zinc-100 pl-12 min-h-[60vh]">
+            <section className="flex-1 border-l border-zinc-100 pl-4 sm:pl-6 md:pl-12 min-h-[60vh]">
               {activeTab === 'form' && (
                 <div>
                   {isFullAccessRole ? (
@@ -167,7 +167,7 @@ export default function Dashboard() {
                       <select
                         value={selectedControllerForm}
                         onChange={e => setSelectedControllerForm(e.target.value)}
-                        className="minimal-select text-lg font-serif italic max-w-md"
+                        className="minimal-select text-base md:text-lg font-serif italic max-w-full md:max-w-md"
                       >
                         {Array.from({ length: 15 }, (_, i) => {
                           const tid = `TEMPLATE_${String(i + 1).padStart(2, '0')}`;
@@ -185,7 +185,7 @@ export default function Dashboard() {
                       <select
                         value={creatableReports.includes(selectedControllerForm) ? selectedControllerForm : creatableReports[0]}
                         onChange={e => setSelectedControllerForm(e.target.value)}
-                        className="minimal-select text-lg font-serif italic max-w-md"
+                        className="minimal-select text-base md:text-lg font-serif italic max-w-full md:max-w-md"
                       >
                         {creatableReports.map((tid) => (
                           <option key={tid} value={tid}>
@@ -248,6 +248,7 @@ export default function Dashboard() {
                       {t('history.noReports')}
                     </div>
                   ) : (
+                    <div className="overflow-x-auto">
                     <table className="editorial-table">
                       <thead>
                         <tr>
@@ -278,6 +279,7 @@ export default function Dashboard() {
                         ))}
                       </tbody>
                     </table>
+                    </div>
                   )}
                 </div>
               )}
@@ -296,7 +298,7 @@ export default function Dashboard() {
         </Suspense>
       </main>
 
-      <footer className="border-t border-zinc-100 py-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-12 bg-white flex justify-center gap-6">
+      <footer className="border-t border-zinc-100 py-6 text-center text-[10px] text-zinc-400 uppercase tracking-widest mt-6 md:mt-12 bg-white flex justify-center gap-6">
         <span>{t('footer.copyright')}</span>
         <span>&bull;</span>
         <button onClick={() => setActiveModal('terms')} className="hover:text-black transition-colors font-semibold">

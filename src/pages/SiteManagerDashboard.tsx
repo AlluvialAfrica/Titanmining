@@ -101,7 +101,7 @@ export default function SiteManagerDashboard() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       <div>
         <h1 className="editorial-title text-2xl font-light">{t('siteManagerDashboard.title')}</h1>
         <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mt-1">
@@ -110,7 +110,7 @@ export default function SiteManagerDashboard() {
       </div>
 
       {/* Key Metrics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <div className="border border-black p-4">
           <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">{t('siteManagerDashboard.totalGold')}</p>
           <p className="text-2xl font-serif italic mt-1">{totalGold.toFixed(2)}g</p>
@@ -134,7 +134,7 @@ export default function SiteManagerDashboard() {
         <h2 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
           {t('siteManagerDashboard.completionStatus')} ({completedCount}/13)
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {completionStatus.map((s) => (
             <div
               key={s.templateId}
@@ -182,6 +182,7 @@ export default function SiteManagerDashboard() {
             {t('siteManagerDashboard.noReports')}
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="editorial-table">
             <thead>
               <tr>
@@ -215,6 +216,7 @@ export default function SiteManagerDashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

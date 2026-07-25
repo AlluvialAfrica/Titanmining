@@ -109,7 +109,7 @@ export default function HelpViewer({ contextFilter, onClose }: HelpViewerProps) 
         />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8">
         {/* Category Sidebar */}
         <aside className="md:w-56 flex flex-col gap-1">
           <h3 className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-3">
@@ -134,7 +134,7 @@ export default function HelpViewer({ contextFilter, onClose }: HelpViewerProps) 
         </aside>
 
         {/* Content Area */}
-        <section className="flex-1 border-l border-zinc-100 pl-8">
+        <section className="flex-1 border-l border-zinc-100 pl-4 md:pl-8">
           {selectedArticle ? (
             renderArticleContent(selectedArticle)
           ) : (

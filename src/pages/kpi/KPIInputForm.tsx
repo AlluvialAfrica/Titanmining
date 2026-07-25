@@ -87,7 +87,7 @@ export default function KPIInputForm() {
   }
 
   return (
-    <div className="py-4 space-y-12">
+    <div className="py-4 space-y-6 md:space-y-12">
       {/* Header */}
       <div>
         <h1 className="editorial-title text-3xl font-light mb-2 text-black">
@@ -100,7 +100,7 @@ export default function KPIInputForm() {
 
       <form onSubmit={handleSubmit} className="space-y-10">
         {/* Date & Shift */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           <div>
             <label className="minimal-label">{t('kpi.input.entryDate')}</label>
             <input

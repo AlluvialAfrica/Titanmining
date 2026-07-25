@@ -13,13 +13,13 @@ export default function KPICard({ label, value, target, unit }: KPICardProps) {
 
   return (
     <div
-      className={`border border-black p-6 bg-white ${
+      className={`border border-black p-4 md:p-6 bg-white ${
         met ? 'border-b-4 border-b-emerald-600' : 'border-b-4 border-b-red-500'
       }`}
     >
       <p className="minimal-label">{label}</p>
 
-      <p className="font-serif italic text-3xl font-light text-black mt-2">
+      <p className="font-serif italic text-xl sm:text-2xl md:text-3xl font-light text-black mt-2">
         {value.toLocaleString()}
         {unit ? (
           <span className="text-base font-sans not-italic text-zinc-400 ml-1">{unit}</span>

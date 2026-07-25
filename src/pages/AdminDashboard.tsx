@@ -77,7 +77,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="py-4 space-y-12">
+    <div className="py-4 space-y-6 md:space-y-12">
       <div>
         <h1 className="editorial-title text-3xl font-light mb-2 text-black">{t('admin.title')}</h1>
         <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold border-b border-black pb-4">
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="border border-black p-6 bg-white">
           <p className="minimal-label">{t('admin.mrr')}</p>
           <p className="font-serif italic text-3xl font-light text-black mt-2">
@@ -125,6 +125,7 @@ export default function AdminDashboard() {
         ) : tenants.length === 0 ? (
           <div className="text-center py-8 font-serif italic text-zinc-400">No tenants registered yet</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="editorial-table">
             <thead>
               <tr>
@@ -166,13 +167,14 @@ export default function AdminDashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
       {/* System Performance */}
       <div className="border-t border-black pt-8">
         <h3 className="font-serif italic text-lg mb-4 text-black">{t('admin.systemPerformance')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs font-mono">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 text-xs font-mono">
           <div className="space-y-2 border border-zinc-200 p-4 bg-white">
             <h4 className="font-bold text-black uppercase text-[10px] tracking-wider mb-2">{t('admin.cronExecutions')}</h4>
             <div className="flex justify-between border-b border-zinc-100 py-1">

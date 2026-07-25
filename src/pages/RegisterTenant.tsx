@@ -213,10 +213,10 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white text-black">
-      <div className="md:w-1/2 bg-zinc-50 border-r border-black p-12 flex flex-col justify-between">
+      <div className="md:w-1/2 bg-zinc-50 border-r border-black p-6 md:p-12 flex flex-col justify-between">
         <div>
           <img src="/atlas.png" alt="Atlas Logo" className="h-12 mb-8 object-contain" />
-          <h1 className="editorial-title text-4xl font-light tracking-tight mt-6 mb-6">
+          <h1 className="editorial-title text-2xl sm:text-3xl md:text-4xl font-light tracking-tight mt-6 mb-6">
             {t('register.title')} <br />{t('register.titleBr')}
           </h1>
           <p className="font-serif italic text-zinc-600 text-sm leading-relaxed max-w-md">
@@ -261,7 +261,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
         </button>
       </div>
 
-      <div className="md:w-1/2 flex flex-col justify-center p-12">
+      <div className="md:w-1/2 flex flex-col justify-center p-6 md:p-12">
         <div className="max-w-md w-full mx-auto">
 
           {step === 1 && (
@@ -285,7 +285,7 @@ export default function RegisterTenant({ onBackToLogin, selectedPlan, setSelecte
                     placeholder={t('register.orgPlaceholder')}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="minimal-label">{t('register.firstName')}</label>
                     <input

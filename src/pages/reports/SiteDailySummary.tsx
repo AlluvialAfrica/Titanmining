@@ -125,7 +125,7 @@ export default function SiteDailySummary() {
         {/* Production totals */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.productionDetails')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {numField('materialMinedM3', t('siteSummary.materialMined'), { required: true, className: 'font-semibold' })}
             {numField('materialProcessedM3', t('siteSummary.materialProcessed'), { required: true, className: 'font-semibold' })}
             {textField('pitAreaWorked', t('siteSummary.pitAreaWorked'), { required: true })}
@@ -135,7 +135,7 @@ export default function SiteDailySummary() {
         {/* Gold recovery */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.goldRecovery')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
             {numField('centrifugeRecoveryG', t('siteSummary.centrifugeRecovery'), { required: true, step: '0.01' })}
             {numField('shakingTableRecoveryG', t('siteSummary.shakingTableRecovery'), { required: true, step: '0.01' })}
             {numField('sluiceCleanupG', t('siteSummary.sluiceCleanup'), { required: true, step: '0.01' })}
@@ -156,13 +156,13 @@ export default function SiteDailySummary() {
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.fuelInventory')}</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {numField('fuelOpeningStockL', t('siteSummary.openingStock'), { required: true })}
             {numField('fuelReceivedL', t('siteSummary.receivedStock'), { required: true })}
             {numField('fuelIssuedL', t('siteSummary.issuedStock'), { required: true })}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-6">
             {numField('fuelClosingStockL', t('siteSummary.closingStock'), { required: true })}
             <div>
               <label className="minimal-label">{t('siteSummary.variance')}</label>
@@ -180,7 +180,7 @@ export default function SiteDailySummary() {
         {/* Machines Section */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.machinesSection')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
             {numField('machineWorkingHours', t('siteSummary.machineWorkingHours'))}
             {numField('machineDowntime', t('siteSummary.machineDowntime'))}
             {numField('machinesDown', t('siteSummary.machinesDown'))}
@@ -193,7 +193,7 @@ export default function SiteDailySummary() {
         {/* Staff Section */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.staffSection')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
             {numField('totalPresent', t('siteSummary.totalPresent'))}
             {numField('totalAbsent', t('siteSummary.totalAbsent'))}
             {numField('visitors', t('siteSummary.visitors'))}
@@ -204,11 +204,11 @@ export default function SiteDailySummary() {
         {/* Security/Gate Section */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.securitySection')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             {numField('searchesDone', t('siteSummary.searchesDone'))}
             {numField('vehicleMovements', t('siteSummary.vehicleMovements'))}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4">
             {textField('securityItemsInOut', t('siteSummary.securityItemsInOut'), { textarea: true, placeholder: 'Items in/out...' })}
             {textField('securityIncidents', t('siteSummary.securityIncidents'), { textarea: true, placeholder: 'Incidents...' })}
           </div>
@@ -217,7 +217,7 @@ export default function SiteDailySummary() {
         {/* Expenses Section */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.expensesSection')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             {numField('cashUsed', t('siteSummary.cashUsed'), { step: '0.01' })}
             {numField('purchasesTotal', t('siteSummary.purchasesTotal'), { step: '0.01' })}
           </div>
@@ -229,7 +229,7 @@ export default function SiteDailySummary() {
         {/* Tomorrow Plan Section */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.tomorrowPlanSection')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             {textField('pitToMine', t('siteSummary.pitToMine'))}
             {textField('plantTarget', t('siteSummary.plantTarget'))}
             {textField('repairPriority', t('siteSummary.repairPriority'))}
