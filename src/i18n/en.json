@@ -560,6 +560,7 @@
     "PUMP_SUPERVISOR": "Pump Supervisor",
     "LAB_MANAGER": "Lab Manager",
     "FINANCE_MANAGER": "Finance Manager",
+    "ENTERPRISE_MANAGER": "Enterprise Manager",
     "SITE_MANAGER": "Site Controller",
     "MINE_MANAGER": "Site Controller",
     "OPERATIONS_MANAGER": "Site Controller",

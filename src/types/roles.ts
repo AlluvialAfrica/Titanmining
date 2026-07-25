@@ -13,6 +13,7 @@ export enum Role {
   PUMP_SUPERVISOR = "PUMP_SUPERVISOR",
   LAB_MANAGER = "LAB_MANAGER",
   FINANCE_MANAGER = "FINANCE_MANAGER",
+  ENTERPRISE_MANAGER = "ENTERPRISE_MANAGER",
 }
 
 /** All template IDs used across the system. */
@@ -194,6 +195,18 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canViewTeamKPI: false,
   },
 
+  [Role.ENTERPRISE_MANAGER]: {
+    canCreate: [],
+    canRead: ["ALL"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: true,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: false,
+    canViewTeamKPI: true,
+  },
+
   [Role.SYSTEM_ADMIN]: { ...SITE_CONTROLLER_PERMISSIONS },
 };
 
@@ -288,6 +301,10 @@ export function mapLegacyRole(role: string): Role {
     case Role.GREASING_WASHING_HELPER:
       return Role.GREASING_WASHING_HELPER;
 
+    // Enterprise Manager → ENTERPRISE_MANAGER
+    case Role.ENTERPRISE_MANAGER:
+      return Role.ENTERPRISE_MANAGER;
+
     // System Admin stays
     case Role.SYSTEM_ADMIN:
       return Role.SYSTEM_ADMIN;
@@ -301,5 +318,5 @@ export function mapLegacyRole(role: string): Role {
  * Checks whether the given role should have admin dashboard access.
  */
 export function hasAdminAccess(role: Role): boolean {
-  return role === Role.SITE_CONTROLLER || role === Role.SYSTEM_ADMIN;
+  return role === Role.SITE_CONTROLLER || role === Role.SYSTEM_ADMIN || role === Role.ENTERPRISE_MANAGER;
 }

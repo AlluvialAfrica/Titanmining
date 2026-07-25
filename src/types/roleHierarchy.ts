@@ -82,6 +82,12 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
   [Role.SYSTEM_ADMIN]: {
     role: Role.SYSTEM_ADMIN,
     department: "System Administration",
+    directReports: [Role.SITE_CONTROLLER, Role.ENTERPRISE_MANAGER],
+  },
+
+  [Role.ENTERPRISE_MANAGER]: {
+    role: Role.ENTERPRISE_MANAGER,
+    department: "Enterprise Management",
     directReports: [],
   },
 

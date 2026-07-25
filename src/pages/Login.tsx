@@ -254,14 +254,16 @@ export default function Login() {
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {[
-                { label: 'Site Controller (Osman)', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
-                { label: 'Mining & Geology Lead', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Processing & Recovery Lead', email: 'demo.plantlead@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Fuel, Admin & Logistics', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Engine Mechanic', email: 'demo.mechanic@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Electrical Mechanic', email: 'demo.electrical@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Greasing & Washing Helper', email: 'demo.helper@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Gate Security', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Site Manager (Osman)', purpose: 'Daily report to Owner/Director + shift handover', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
+                { label: 'HR Manager', purpose: 'Attendance, shift presence & payroll', email: 'demo.hr@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Maintenance Manager', purpose: 'Machines, shifts, hours & preventive maintenance', email: 'demo.maintenance@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Fuel Manager', purpose: 'Fuel stock, issue & abnormal usage', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Lead Geologist', purpose: 'Pay gravel, sampling, pit direction & dilution', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Pump Supervisor', purpose: 'Wash plant, water, downtime & assistants', email: 'demo.pumpsupervisor@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Lab Manager', purpose: 'Concentrate, cleanup & recovery accountability', email: 'demo.labmanager@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Gate Security', purpose: 'People, vehicles, items in/out & searches', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Finance Manager', purpose: 'Daily purchases, stores issue & costs', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
+                { label: 'Enterprise Manager', purpose: 'Commercial overview of the enterprise', email: 'demo.enterprise@titanmining.com', pass: 'TitanMining2026!' },
               ].map((demo) => (
                 <button
                   key={demo.email}
@@ -282,6 +284,7 @@ export default function Login() {
                   className="p-2 border border-zinc-200 hover:border-black text-left bg-zinc-50 hover:bg-white transition-all text-[11px]"
                 >
                   <span className="font-serif italic font-semibold text-black block truncate">{demo.label}</span>
+                  <span className="text-[9px] text-zinc-500 block truncate">{demo.purpose}</span>
                   <span className="text-[9px] text-zinc-400 font-mono block truncate">{demo.email}</span>
                 </button>
               ))}
