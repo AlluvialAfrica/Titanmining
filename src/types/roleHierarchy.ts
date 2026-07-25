@@ -27,6 +27,11 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
       Role.ENGINE_MECHANIC,
       Role.ELECTRICAL_MECHANIC,
       Role.GATE_SECURITY,
+      Role.HR_MANAGER,
+      Role.MAINTENANCE_MANAGER,
+      Role.PUMP_SUPERVISOR,
+      Role.LAB_MANAGER,
+      Role.FINANCE_MANAGER,
     ],
   },
 
@@ -77,6 +82,36 @@ export const ROLE_HIERARCHY: Record<Role, RoleHierarchyNode> = {
   [Role.SYSTEM_ADMIN]: {
     role: Role.SYSTEM_ADMIN,
     department: "System Administration",
+    directReports: [],
+  },
+
+  [Role.HR_MANAGER]: {
+    role: Role.HR_MANAGER,
+    department: "Human Resources",
+    directReports: [],
+  },
+
+  [Role.MAINTENANCE_MANAGER]: {
+    role: Role.MAINTENANCE_MANAGER,
+    department: "Maintenance Management",
+    directReports: [Role.ENGINE_MECHANIC, Role.ELECTRICAL_MECHANIC],
+  },
+
+  [Role.PUMP_SUPERVISOR]: {
+    role: Role.PUMP_SUPERVISOR,
+    department: "Processing & Recovery",
+    directReports: [],
+  },
+
+  [Role.LAB_MANAGER]: {
+    role: Role.LAB_MANAGER,
+    department: "Laboratory",
+    directReports: [],
+  },
+
+  [Role.FINANCE_MANAGER]: {
+    role: Role.FINANCE_MANAGER,
+    department: "Finance",
     directReports: [],
   },
 };

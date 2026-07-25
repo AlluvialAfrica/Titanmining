@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SignatureOrOtp from '../../components/SignatureOrOtp';
+import MultiSignatureFooter, { SignatorySlot } from '../../components/MultiSignatureFooter';
 import VarianceAlert from '../../components/VarianceAlert';
 import MultiRowTable, { ColumnDef } from '../../components/MultiRowTable';
 
@@ -36,7 +37,76 @@ interface FormSpec {
   secondarySummaryFields?: FieldSpec[];
   secondaryCalculateRow?: (row: Record<string, any>, index: number) => Record<string, any>;
   secondaryCalculateSummary?: (rows: Record<string, any>[], setValue: any) => void;
+  footerSignatories?: SignatorySlot[];
 }
+
+// ---------------------------------------------------------------------------
+// Footer configs per template
+// ---------------------------------------------------------------------------
+
+const templateFooters: Record<string, SignatorySlot[]> = {
+  TEMPLATE_02: [
+    { role: 'hrManager', label: 'HR Manager', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_03: [
+    { role: 'miningGeologyLead', label: 'Mining & Geology Lead', required: true },
+    { role: 'mechFuelLead', label: 'Mechanical / Fuel Lead', required: false },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_05: [
+    { role: 'geologist', label: 'Geologist', required: true },
+    { role: 'miningGeologyLead', label: 'Mining & Geology Lead', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_06: [
+    { role: 'pumpSupervisor', label: 'Drum / Sand Pump Supervisor', required: true },
+    { role: 'processingRecoveryLead', label: 'Processing & Recovery Lead', required: true },
+  ],
+  TEMPLATE_07: [
+    { role: 'centrifugeOperator', label: 'Centrifuge Operator', required: true },
+    { role: 'processingRecoveryLead', label: 'Processing & Recovery Lead', required: true },
+    { role: 'siteController', label: 'Site Controller', required: false },
+  ],
+  TEMPLATE_08: [
+    { role: 'shakingTableOperator', label: 'Shaking Table Operator', required: true },
+    { role: 'processingRecoveryLead', label: 'Processing & Recovery Lead', required: true },
+    { role: 'siteController', label: 'Site Controller', required: false },
+  ],
+  TEMPLATE_09: [
+    { role: 'processingRecoveryLead', label: 'Processing & Recovery Lead', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+    { role: 'ownerDirector', label: 'Owner / Director Receiving', required: false },
+  ],
+  TEMPLATE_10: [
+    { role: 'engineMechanic', label: 'Engine Mechanic', required: true },
+    { role: 'electricalMechanic', label: 'Electrical Mechanic', required: false },
+    { role: 'greasingMan', label: 'Greasing Man', required: false },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_11: [
+    { role: 'gateOfficer', label: 'Gate Officer', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_12: [
+    { role: 'adminController', label: 'Admin & Camp Controller', required: true },
+    { role: 'mechFuelLead', label: 'Mechanical / Fuel Lead', required: false },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_13: [
+    { role: 'outgoingShiftLead', label: 'Outgoing Shift Lead', required: true },
+    { role: 'incomingShiftLead', label: 'Incoming Shift Lead', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_14: [
+    { role: 'hrManager', label: 'HR Manager', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+  TEMPLATE_15: [
+    { role: 'financeManager', label: 'Finance Manager', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
+};
 
 // ---------------------------------------------------------------------------
 // Template Specs
@@ -57,6 +127,9 @@ const formSpecs: Record<string, FormSpec> = {
       { name: 'staffName', label: 'Staff Name', type: 'text', required: true },
       { name: 'role', label: 'Role / Designation', type: 'text' },
       { name: 'status', label: 'Status', type: 'select', required: true, options: [{ value: 'PRESENT', label: 'Present' }, { value: 'ABSENT', label: 'Absent' }, { value: 'LEAVE', label: 'Leave' }] },
+      { name: 'timeIn', label: 'Time In', type: 'time' },
+      { name: 'timeOut', label: 'Time Out', type: 'time' },
+      { name: 'leaveType', label: 'Leave Type', type: 'select', options: [{ value: 'NORMAL', label: 'Normal' }, { value: 'SICK', label: 'Sick' }, { value: 'COMPASSIONATE', label: 'Compassionate' }] },
       { name: 'remarks', label: 'Remarks', type: 'text' },
     ],
     summaryFields: [
@@ -83,6 +156,8 @@ const formSpecs: Record<string, FormSpec> = {
     fields: [],
     tableColumns: [
       { name: 'machineId', label: 'Machine ID', type: 'text' },
+      { name: 'shift', label: 'Row Shift', type: 'select', options: [{ value: 'SHIFT_1', label: 'Shift 1' }, { value: 'SHIFT_2', label: 'Shift 2' }, { value: 'SHIFT_3', label: 'Shift 3' }] },
+      { name: 'brand', label: 'Brand', type: 'text', disabled: true },
       { name: 'operator', label: 'Operator', type: 'text', required: true },
       { name: 'openingHours', label: 'Opening Hrs', type: 'number', required: true },
       { name: 'closingHours', label: 'Closing Hrs', type: 'number', required: true },
@@ -94,7 +169,11 @@ const formSpecs: Record<string, FormSpec> = {
     calculateRow: (row) => {
       const opening = Number(row.openingHours || 0);
       const closing = Number(row.closingHours || 0);
-      return { ...row, hoursWorked: closing >= opening ? parseFloat((closing - opening).toFixed(1)) : 0 };
+      const machineId = String(row.machineId || '').toUpperCase();
+      let brand = '';
+      if (machineId.includes('CAT')) brand = 'Caterpillar';
+      else if (machineId.includes('SANY')) brand = 'Sany';
+      return { ...row, hoursWorked: closing >= opening ? parseFloat((closing - opening).toFixed(1)) : 0, brand };
     },
   },
 
@@ -114,6 +193,10 @@ const formSpecs: Record<string, FormSpec> = {
       { name: 'volumeMinedM3', label: 'Volume (m\u00B3)', type: 'number', required: true },
       { name: 'estGradeGPerTon', label: 'Grade (g/ton)', type: 'number' },
       { name: 'excavatorId', label: 'Excavator ID', type: 'text' },
+      { name: 'sampleRef', label: 'Sample Ref', type: 'text' },
+      { name: 'gravelThickness', label: 'Gravel Thickness (m)', type: 'number' },
+      { name: 'overburden', label: 'Overburden (m)', type: 'number' },
+      { name: 'decision', label: 'Decision', type: 'select', options: [{ value: 'MINE', label: 'Mine' }, { value: 'STOP', label: 'Stop' }, { value: 'TEST', label: 'Test' }] },
       { name: 'remarks', label: 'Remarks', type: 'text' },
     ],
     summaryFields: [
@@ -126,6 +209,13 @@ const formSpecs: Record<string, FormSpec> = {
       const weighted = rows.reduce((s, r) => s + Number(r.volumeMinedM3 || 0) * Number(r.estGradeGPerTon || 0), 0);
       setValue('avgGrade', totalVol > 0 ? parseFloat((weighted / totalVol).toFixed(2)) : 0);
     },
+    secondaryTableTitle: 'Tomorrow Mining Direction',
+    secondaryTableColumns: [
+      { name: 'direction', label: 'Direction', type: 'text', required: true },
+      { name: 'reason', label: 'Reason', type: 'text', required: true },
+      { name: 'riskCaution', label: 'Risk / Caution', type: 'text' },
+      { name: 'approvedBy', label: 'Approved By', type: 'text' },
+    ],
   },
 
   // ---- TEMPLATE_06: Drum & Sand Pump Shift Log ----
@@ -138,13 +228,20 @@ const formSpecs: Record<string, FormSpec> = {
     ],
     fields: [],
     tableColumns: [
-      { name: 'pumpUnit', label: 'Pump Unit', type: 'select', options: [{ value: 'PUMP_01', label: 'Sand Pump 1' }, { value: 'PUMP_02', label: 'Sand Pump 2' }] },
-      { name: 'operator', label: 'Operator', type: 'text', required: true },
-      { name: 'inletPressure', label: 'Inlet Press.', type: 'number' },
-      { name: 'outletPressure', label: 'Outlet Press.', type: 'number' },
-      { name: 'slurryDensity', label: 'Slurry Density', type: 'number' },
-      { name: 'operatingHours', label: 'Op. Hours', type: 'number' },
-      { name: 'remarks', label: 'Remarks', type: 'text' },
+      { name: 'timeBlock', label: 'Time Block', type: 'text' },
+      { name: 'drumRunning', label: 'Drum Running?', type: 'checkbox' },
+      { name: 'pumpRunning', label: 'Pump Running?', type: 'checkbox' },
+      { name: 'feedCondition', label: 'Feed Condition', type: 'text' },
+      { name: 'waterPressureFlow', label: 'Water Pressure/Flow', type: 'text' },
+      { name: 'assistantOnDuty', label: 'Assistant on Duty', type: 'text' },
+      { name: 'downtimeReason', label: 'Downtime Reason', type: 'text' },
+      { name: 'actionTaken', label: 'Action Taken', type: 'text' },
+    ],
+    secondaryTableTitle: 'Team Duties',
+    secondaryTableColumns: [
+      { name: 'teamMember', label: 'Team Member', type: 'text', required: true },
+      { name: 'assignedDuty', label: 'Assigned Duty', type: 'text', required: true },
+      { name: 'confirmedDone', label: 'Confirmed Done?', type: 'checkbox' },
     ],
   },
 
@@ -158,10 +255,17 @@ const formSpecs: Record<string, FormSpec> = {
     fields: [],
     tableColumns: [
       { name: 'centrifugeId', label: 'Centrifuge ID', type: 'select', options: [{ value: 'CENT_1', label: 'Centrifuge 1' }, { value: 'CENT_2', label: 'Centrifuge 2' }] },
+      { name: 'startTime', label: 'Start Time', type: 'time' },
+      { name: 'stopTime', label: 'Stop Time', type: 'time' },
+      { name: 'feedSource', label: 'Feed Source', type: 'text' },
       { name: 'feedRateM3Hr', label: 'Feed Rate (m\u00B3/Hr)', type: 'number' },
       { name: 'operatingHours', label: 'Op. Hours', type: 'number' },
+      { name: 'waterPressure', label: 'Water Pressure', type: 'number' },
+      { name: 'bowlSpeedOk', label: 'Bowl/Speed OK?', type: 'checkbox' },
       { name: 'concentrateWeightG', label: 'Concentrate (g)', type: 'number' },
+      { name: 'cleanupTime', label: 'Cleanup Time', type: 'time' },
       { name: 'cleanupOperator', label: 'Cleanup Operator', type: 'text' },
+      { name: 'verifier', label: 'Verifier', type: 'text' },
       { name: 'remarks', label: 'Remarks', type: 'text' },
     ],
     summaryFields: [
@@ -182,10 +286,17 @@ const formSpecs: Record<string, FormSpec> = {
     fields: [],
     tableColumns: [
       { name: 'tableId', label: 'Table ID', type: 'select', options: [{ value: 'TABLE_1', label: 'Shaking Table 1' }, { value: 'TABLE_2', label: 'Shaking Table 2' }] },
+      { name: 'batchNo', label: 'Batch No.', type: 'text' },
+      { name: 'concentrateReceived', label: 'Concentrate Received (g)', type: 'number' },
+      { name: 'startTime', label: 'Start Time', type: 'time' },
+      { name: 'endTime', label: 'End Time', type: 'time' },
       { name: 'feedRateM3Hr', label: 'Feed Rate (m\u00B3/Hr)', type: 'number' },
       { name: 'operatingHours', label: 'Op. Hours', type: 'number' },
-      { name: 'concentrateWeightG', label: 'Concentrate (g)', type: 'number' },
+      { name: 'tableSettings', label: 'Table Settings / Water', type: 'text' },
+      { name: 'concentrateWeightG', label: 'Concentrate Output (g)', type: 'number' },
+      { name: 'tailingsKept', label: 'Tailings Kept?', type: 'checkbox' },
       { name: 'operator', label: 'Operator', type: 'text' },
+      { name: 'verifier', label: 'Verifier', type: 'text' },
       { name: 'remarks', label: 'Remarks', type: 'text' },
     ],
     summaryFields: [
@@ -207,13 +318,19 @@ const formSpecs: Record<string, FormSpec> = {
     ],
     fields: [],
     tableColumns: [
+      { name: 'time', label: 'Time', type: 'time' },
       { name: 'source', label: 'Source', type: 'text', required: true },
+      { name: 'wetConc', label: 'Wet Conc. (g)', type: 'number' },
+      { name: 'dryConc', label: 'Dry Conc. (g)', type: 'number' },
       { name: 'grossWeightG', label: 'Gross (g)', type: 'number', required: true },
       { name: 'tareWeightG', label: 'Tare (g)', type: 'number', required: true },
       { name: 'netWeightG', label: 'Net (g)', type: 'number', disabled: true },
       { name: 'purityPct', label: 'Purity (%)', type: 'number' },
       { name: 'pureGoldG', label: 'Pure Gold (g)', type: 'number', disabled: true },
-      { name: 'vaultBoxId', label: 'Vault Box ID', type: 'text' },
+      { name: 'vaultBoxId', label: 'Bag/Seal No.', type: 'text' },
+      { name: 'receivedFrom', label: 'Received From', type: 'text' },
+      { name: 'receivedBy', label: 'Received By', type: 'text' },
+      { name: 'handoverTo', label: 'Handover To', type: 'text' },
     ],
     calculateRow: (row) => {
       const gross = Number(row.grossWeightG || 0);
@@ -249,24 +366,25 @@ const formSpecs: Record<string, FormSpec> = {
     ],
     fields: [],
     tableColumns: [
-      { name: 'machine', label: 'Machine / Equipment', type: 'text' },
-      { name: 'greasingDone', label: 'Greasing', type: 'checkbox' },
-      { name: 'oilLevelChecked', label: 'Oil Level', type: 'checkbox' },
-      { name: 'filtersChecked', label: 'Filters', type: 'checkbox' },
-      { name: 'beltsHosesChecked', label: 'Belts & Hoses', type: 'checkbox' },
-      { name: 'sparesUsed', label: 'Spares / Parts Used', type: 'text' },
-      { name: 'remarks', label: 'Condition / Remarks', type: 'text' },
+      { name: 'machine', label: 'Machine / Equipment', type: 'text', required: true },
+      { name: 'reportedFault', label: 'Reported Fault', type: 'text' },
+      { name: 'personResponsible', label: 'Person Responsible', type: 'text' },
+      { name: 'startTime', label: 'Start Time', type: 'time' },
+      { name: 'endTime', label: 'End Time', type: 'time' },
+      { name: 'partsUsed', label: 'Parts Used', type: 'text' },
+      { name: 'machineStatus', label: 'Machine Status', type: 'select', options: [{ value: 'RUNNING', label: 'Running' }, { value: 'DOWN', label: 'Down' }, { value: 'NEEDS_PARTS', label: 'Needs Parts' }] },
+      { name: 'nextAction', label: 'Next Action', type: 'text' },
     ],
     summaryFields: [
       { name: 'mechanicRemarks', label: 'Mechanic Remarks', type: 'textarea' },
     ],
-    secondaryTableTitle: 'Daily Wash Log',
+    secondaryTableTitle: 'Preventive Maintenance Checklist',
     secondaryTableColumns: [
-      { name: 'machine', label: 'Machine / Equipment', type: 'text' },
-      { name: 'washed', label: 'Washed', type: 'checkbox' },
-      { name: 'washTime', label: 'Time', type: 'text' },
-      { name: 'washedBy', label: 'Washed By', type: 'text' },
-      { name: 'supervisorApproval', label: 'Supervisor', type: 'text' },
+      { name: 'task', label: 'Preventive Task', type: 'text', required: true },
+      { name: 'cat1', label: 'CAT 1', type: 'checkbox' },
+      { name: 'cat2', label: 'CAT 2', type: 'checkbox' },
+      { name: 'sany1', label: 'SANY 1', type: 'checkbox' },
+      { name: 'sany2', label: 'SANY 2', type: 'checkbox' },
       { name: 'remarks', label: 'Remarks', type: 'text' },
     ],
   },
@@ -287,8 +405,10 @@ const formSpecs: Record<string, FormSpec> = {
       { name: 'company', label: 'Company', type: 'text' },
       { name: 'vehiclePlate', label: 'Vehicle Plate', type: 'text' },
       { name: 'purpose', label: 'Purpose', type: 'text', required: true },
+      { name: 'direction', label: 'Direction', type: 'select', options: [{ value: 'IN', label: 'In' }, { value: 'OUT', label: 'Out' }] },
       { name: 'searchDone', label: 'Search', type: 'checkbox', required: true },
-      { name: 'itemsInOut', label: 'Items In/Out', type: 'text' },
+      { name: 'itemsIn', label: 'Items In', type: 'text' },
+      { name: 'itemsOut', label: 'Items Out', type: 'text' },
     ],
   },
 
@@ -303,6 +423,7 @@ const formSpecs: Record<string, FormSpec> = {
     fields: [],
     tableColumns: [
       { name: 'itemDescription', label: 'Item Description', type: 'text', required: true },
+      { name: 'department', label: 'Department', type: 'text' },
       { name: 'supplier', label: 'Supplier / Vendor', type: 'text' },
       { name: 'qty', label: 'Qty', type: 'number', required: true },
       { name: 'unit', label: 'Unit', type: 'text' },
@@ -320,9 +441,29 @@ const formSpecs: Record<string, FormSpec> = {
     },
     summaryFields: [
       { name: 'purchasesTotal', label: 'Purchases Total (USD)', type: 'number', disabled: true },
+      { name: 'cashOpening', label: 'Cash Opening (USD)', type: 'number' },
+      { name: 'cashReceived', label: 'Cash Received (USD)', type: 'number' },
+      { name: 'cashTotalAvailable', label: 'Total Available (USD)', type: 'number', disabled: true },
+      { name: 'cashTotalSpent', label: 'Total Spent (USD)', type: 'number', disabled: true },
+      { name: 'cashClosing', label: 'Cash Closing (USD)', type: 'number' },
+      { name: 'cashVariance', label: 'Variance (USD)', type: 'number', disabled: true },
+      { name: 'cashExplanation', label: 'Variance Explanation', type: 'textarea' },
     ],
     calculateSummary: (rows, setValue) => {
       setValue('purchasesTotal', parseFloat(rows.reduce((s, r) => s + Number(r.totalAmount || 0), 0).toFixed(2)));
+    },
+    calculate: (values, setValue) => {
+      const cashOpening = Number(values.cashOpening || 0);
+      const cashReceived = Number(values.cashReceived || 0);
+      const available = parseFloat((cashOpening + cashReceived).toFixed(2));
+      setValue('cashTotalAvailable', available);
+      const purchasesTotal = Number(values.purchasesTotal || 0);
+      const expensesTotal = Number(values.expensesTotal || 0);
+      const totalSpent = parseFloat((purchasesTotal + expensesTotal).toFixed(2));
+      setValue('cashTotalSpent', totalSpent);
+      const cashClosing = Number(values.cashClosing || 0);
+      const variance = parseFloat((cashClosing - (available - totalSpent)).toFixed(2));
+      setValue('cashVariance', variance);
     },
     secondaryTableTitle: 'Expenses',
     secondaryTableColumns: [
@@ -343,16 +484,21 @@ const formSpecs: Record<string, FormSpec> = {
     },
   },
 
-  // ---- TEMPLATE_13: Shift Handover Certificate (flat form) ----
+  // ---- TEMPLATE_13: Shift Handover Certificate ----
   TEMPLATE_13: {
     title: 'Template 13: Shift Handover Certificate',
-    fields: [
+    headerFields: [
       { name: 'outgoingSupervisor', label: 'Outgoing Shift Supervisor', type: 'text', required: true },
       { name: 'incomingSupervisor', label: 'Incoming Shift Supervisor', type: 'text', required: true },
-      { name: 'safetyIncidents', label: 'Safety / Security Incidents', type: 'textarea', required: true },
-      { name: 'productionStatus', label: 'Production Status & Bench Handover', type: 'textarea', required: true },
-      { name: 'equipmentStatus', label: 'Equipment Status', type: 'textarea', required: true },
-      { name: 'pendingTasks', label: 'Pending Tasks', type: 'textarea', required: true },
+    ],
+    fields: [],
+    tableColumns: [
+      { name: 'handoverItem', label: 'Handover Item', type: 'text', disabled: true },
+      { name: 'statusEndOfShift', label: 'Status at End of Shift', type: 'text', required: true },
+      { name: 'issueRisk', label: 'Issue / Risk', type: 'text' },
+      { name: 'actionRequired', label: 'Action Required', type: 'text' },
+    ],
+    summaryFields: [
       { name: 'handoverApproved', label: 'Handover Confirmed & Approved', type: 'checkbox', required: true },
     ],
     validate: (values) => {
@@ -366,7 +512,7 @@ const formSpecs: Record<string, FormSpec> = {
     },
   },
 
-  // ---- TEMPLATE_14: HR Payroll & Leave Record (NEW) ----
+  // ---- TEMPLATE_14: HR Payroll & Leave Record ----
   TEMPLATE_14: {
     title: 'Template 14: HR Payroll & Leave Record',
     headerFields: [
@@ -404,7 +550,7 @@ const formSpecs: Record<string, FormSpec> = {
     },
   },
 
-  // ---- TEMPLATE_15: Petty Cash Daily Report (renumbered from old 14) ----
+  // ---- TEMPLATE_15: Petty Cash Daily Report ----
   TEMPLATE_15: {
     title: 'Template 15: Petty Cash Daily Report',
     headerFields: [
@@ -453,6 +599,20 @@ const formSpecs: Record<string, FormSpec> = {
   },
 };
 
+// Pre-populate handover items for TEMPLATE_13
+const HANDOVER_ITEMS = [
+  'Machines condition',
+  'Fuel balance',
+  'Plant / drum / pump',
+  'Centrifuge',
+  'Shaking table',
+  'Gold / concentrate',
+  'Staff issues',
+  'Security / gate',
+  'Pending repairs',
+  'Urgent supplies',
+];
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -463,11 +623,13 @@ export default function GenericReportForm({ templateId }: { templateId: string }
   const { saveDraft, submitReport, loadDraft } = useReport();
 
   const [signature, setSignature] = useState<string>('');
+  const [multiSignatures, setMultiSignatures] = useState<Record<string, string>>({});
   const [varianceMessage, setVarianceMessage] = useState<string | null>(null);
   const [tableRows, setTableRows] = useState<Record<string, any>[]>([{}]);
   const [secondaryTableRows, setSecondaryTableRows] = useState<Record<string, any>[]>([{}]);
 
   const spec = formSpecs[templateId];
+  const footerConfig = templateFooters[templateId];
 
   const { control, watch, setValue, handleSubmit, formState: { errors } } = useForm<any>({
     defaultValues: loadDraft(templateId) || {},
@@ -475,8 +637,21 @@ export default function GenericReportForm({ templateId }: { templateId: string }
 
   const formValues = watch();
 
+  // Pre-populate handover items for TEMPLATE_13
+  useEffect(() => {
+    if (templateId === 'TEMPLATE_13') {
+      const draft = loadDraft(templateId);
+      if (draft?.rows && Array.isArray(draft.rows) && draft.rows.length > 0) {
+        setTableRows(draft.rows);
+      } else {
+        setTableRows(HANDOVER_ITEMS.map(item => ({ handoverItem: item, statusEndOfShift: '', issueRisk: '', actionRequired: '' })));
+      }
+    }
+  }, [templateId]);
+
   // Load saved rows from draft
   useEffect(() => {
+    if (templateId === 'TEMPLATE_13') return; // handled above
     const draft = loadDraft(templateId);
     if (draft?.rows && Array.isArray(draft.rows)) {
       setTableRows(draft.rows);
@@ -537,6 +712,7 @@ export default function GenericReportForm({ templateId }: { templateId: string }
   }
 
   const isTableForm = !!spec.tableColumns;
+  const hasMultiSignature = !!footerConfig;
 
   const handleRowsChange = (rows: Record<string, any>[]) => {
     setTableRows(rows);
@@ -547,7 +723,13 @@ export default function GenericReportForm({ templateId }: { templateId: string }
   };
 
   const onSubmit = async (data: any) => {
-    if (!signature) {
+    if (hasMultiSignature) {
+      const requiredMissing = footerConfig.filter(s => s.required && !multiSignatures[s.role]);
+      if (requiredMissing.length > 0) {
+        alert(`Missing required signatures: ${requiredMissing.map(s => s.label).join(', ')}`);
+        return;
+      }
+    } else if (!signature) {
       alert(t('reports_form.signatureRequired'));
       return;
     }
@@ -565,10 +747,11 @@ export default function GenericReportForm({ templateId }: { templateId: string }
         ...data,
         ...(isTableForm ? { rows: tableRows } : {}),
         ...(spec.secondaryTableColumns ? { secondaryRows: secondaryTableRows } : {}),
-        signature,
+        ...(hasMultiSignature ? { signatures: multiSignatures } : { signature }),
       });
       alert(`${spec.title} ${t('reports_form.submittedSuccess')}`);
       setSignature('');
+      setMultiSignatures({});
     } catch (err: any) {
       alert(err.message || t('reports_form.submissionFailed'));
     }
@@ -693,11 +876,18 @@ export default function GenericReportForm({ templateId }: { templateId: string }
           </>
         )}
 
-        {/* Digital Signature */}
-        <div className="border-t border-black pt-6">
-          <label className="minimal-label mb-2">{t('reports_form.digitalSignature')}</label>
-          <SignatureOrOtp onVerified={setSignature} />
-        </div>
+        {/* Digital Signature / Multi-Signature Footer */}
+        {hasMultiSignature ? (
+          <MultiSignatureFooter
+            signatories={footerConfig}
+            onSignaturesChange={setMultiSignatures}
+          />
+        ) : (
+          <div className="border-t border-black pt-6">
+            <label className="minimal-label mb-2">{t('reports_form.digitalSignature')}</label>
+            <SignatureOrOtp onVerified={setSignature} />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-4 pt-6">

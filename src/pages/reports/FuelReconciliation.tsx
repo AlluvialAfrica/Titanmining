@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
-import SignatureOrOtp from '../../components/SignatureOrOtp';
+import MultiSignatureFooter from '../../components/MultiSignatureFooter';
 import VarianceAlert from '../../components/VarianceAlert';
 
 interface FuelFormData {
@@ -42,7 +42,7 @@ export default function FuelReconciliation() {
   });
 
   const [showVarianceAlert, setShowVarianceAlert] = useState(false);
-  const [signature, setSignature] = useState<string>('');
+  const [multiSignatures, setMultiSignatures] = useState<Record<string, string>>({});
 
   const machineId = watch('machineId');
   const openingMeter = watch('openingMeter');
@@ -106,7 +106,9 @@ export default function FuelReconciliation() {
   }, [machineId, openingMeter, closingMeter, fuelIssued, openingStock, received, totalIssued, closingStock, variance, saveDraft]);
 
   const onSubmit = async (data: FuelFormData) => {
-    if (!signature) {
+    const requiredSigs = ['mechFuelLead', 'siteController'];
+    const missing = requiredSigs.filter(r => !multiSignatures[r]);
+    if (missing.length > 0) {
       alert(t('fuelRecon.signatureRequired'));
       return;
     }
@@ -124,17 +126,13 @@ export default function FuelReconciliation() {
     try {
       await submitReport('TEMPLATE_04', {
         ...data,
-        signature,
+        signatures: multiSignatures,
       });
       alert(t('fuelRecon.submitSuccess'));
-      clearSignature();
+      setMultiSignatures({});
     } catch (err: any) {
       alert(err.message || t('reports_form.submissionFailed'));
     }
-  };
-
-  const clearSignature = () => {
-    setSignature('');
   };
 
   return (
@@ -366,11 +364,14 @@ export default function FuelReconciliation() {
           </div>
         </div>
 
-        {/* Digital Signature */}
-        <div className="border-t border-black pt-6">
-          <label className="minimal-label mb-2">{t('fuelRecon.submitterSignature')}</label>
-          <SignatureOrOtp onVerified={setSignature} />
-        </div>
+        {/* Multi-Signature Footer */}
+        <MultiSignatureFooter
+          signatories={[
+            { role: 'mechFuelLead', label: t('fuelRecon.mechFuelLeadSignOff') || 'Mechanical / Fuel Lead', required: true },
+            { role: 'siteController', label: t('fuelRecon.siteControllerSignOff') || 'Site Controller', required: true },
+          ]}
+          onSignaturesChange={setMultiSignatures}
+        />
 
         {/* Actions */}
         <div className="flex gap-4 pt-6">

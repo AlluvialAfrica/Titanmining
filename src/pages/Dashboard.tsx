@@ -7,6 +7,7 @@ import { logger } from '../utils/logger';
 import LanguageToggle from '../components/LanguageToggle';
 import OfflineBanner from '../components/OfflineBanner';
 import HelpButton from '../components/HelpButton';
+import ReportExportMenu from '../components/ReportExportMenu';
 import { useReport } from '../hooks/useReport';
 
 // Lazy-loaded page components for code-splitting
@@ -23,8 +24,9 @@ const HelpViewer = lazy(() => import('./help/HelpViewer'));
 const TermsOfService = lazy(() => import('./TermsOfService'));
 const Disclaimer = lazy(() => import('./Disclaimer'));
 const AdminDashboard = lazy(() => import('./AdminDashboard'));
+const SiteManagerDashboard = lazy(() => import('./SiteManagerDashboard'));
 
-type TabType = 'form' | 'history' | 'users' | 'settings' | 'admin' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help';
+type TabType = 'form' | 'history' | 'users' | 'settings' | 'admin' | 'siteManagerDashboard' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -137,6 +139,7 @@ export default function Dashboard() {
                 <HelpButton contextPage={activeTab} onOpenHelp={() => setActiveTab('help')} />
               </div>
 
+              {navButton('siteManagerDashboard', t('nav.siteManagerDashboard'), isFullAccessRole)}
               {navButton('form', t('nav.dailyReporting'))}
               {navButton('history', `${t('nav.reportHistory')} (${history.length})`)}
               {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
@@ -269,59 +272,7 @@ export default function Dashboard() {
                             </td>
                             <td>{h.source || 'WEB'}</td>
                             <td>
-                              <button
-                                onClick={() => {
-                                  const win = window.open('', '_blank');
-                                  if (!win) return;
-                                  let parsedData: any = {};
-                                  try {
-                                    parsedData = typeof h.data === 'string' ? JSON.parse(h.data) : (h.data || {});
-                                  } catch {
-                                    parsedData = { raw: h.data };
-                                  }
-                                  const dataRows = Object.entries(parsedData)
-                                    .map(([k, v]) => `<tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${typeof v === 'object' ? JSON.stringify(v) : v}</td></tr>`)
-                                    .join('');
-                                  win.document.write(`
-                                    <html>
-                                      <head>
-                                        <title>Report - ${h.reportType}</title>
-                                        <style>
-                                          body { font-family: 'Georgia', serif; padding: 40px; color: #111; }
-                                          h1 { font-weight: normal; border-bottom: 2px solid #000; padding-bottom: 10px; }
-                                          .meta { margin-bottom: 20px; font-family: sans-serif; font-size: 13px; color: #444; }
-                                          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                                          .print-btn { background: #000; color: #fff; border: none; padding: 10px 20px; cursor: pointer; margin-bottom: 20px; }
-                                          @media print { .print-btn { display: none; } }
-                                        </style>
-                                      </head>
-                                      <body>
-                                        <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
-                                        <h1>TITAN MINING - OFFICIAL REPORT</h1>
-                                        <div class="meta">
-                                          <p><strong>Report Type:</strong> ${h.reportType}</p>
-                                          <p><strong>Organization:</strong> ${h.orgId}</p>
-                                          <p><strong>Site:</strong> ${h.siteId || 'N/A'}</p>
-                                          <p><strong>Submitted By:</strong> ${h.userId}</p>
-                                          <p><strong>Date:</strong> ${new Date(h.submittedAt).toLocaleString()}</p>
-                                          <p><strong>Status:</strong> ${h.status}</p>
-                                        </div>
-                                        <h2>Report Data Payload</h2>
-                                        <table>
-                                          <thead>
-                                            <tr style="background:#f4f4f4;"><th style="padding:8px;border:1px solid #ddd;text-align:left;">Metric / Field</th><th style="padding:8px;border:1px solid #ddd;text-align:left;">Value</th></tr>
-                                          </thead>
-                                          <tbody>${dataRows}</tbody>
-                                        </table>
-                                      </body>
-                                    </html>
-                                  `);
-                                  win.document.close();
-                                }}
-                                className="text-xs font-mono underline hover:text-blue-600"
-                              >
-                                Print / PDF
-                              </button>
+                              <ReportExportMenu report={h} />
                             </td>
                           </tr>
                         ))}
@@ -331,6 +282,7 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {activeTab === 'siteManagerDashboard' && isFullAccessRole && <SiteManagerDashboard />}
               {activeTab === 'kpiInput' && permissions.canInputKPI && <KPIInputForm />}
               {activeTab === 'kpiDashboard' && permissions.canViewKPI && <KPIDashboard />}
               {activeTab === 'teamDashboard' && permissions.canViewTeamKPI && <TeamKPIDashboard />}

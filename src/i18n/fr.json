@@ -17,7 +17,8 @@
     "help": "Centre d'Aide",
     "logOut": "D\u00e9connexion",
     "orgContext": "Contexte Org",
-    "siteId": "ID du Site"
+    "siteId": "ID du Site",
+    "siteManagerDashboard": "Tableau de Bord Directeur de Site"
   },
   "login": {
     "portalAccess": "Acc\u00e8s au Portail",
@@ -172,9 +173,35 @@
     "remarksPlaceholder": "Ajouter des commentaires ici...",
     "controllerSignOff": "Signature de V\u00e9rification du Contr\u00f4leur",
     "verifyApprove": "V\u00e9rifier et Approuver le R\u00e9sum\u00e9 Quotidien du Site",
-    "signatureRequired": "La signature num\u00e9rique est obligatoire pour v\u00e9rifier et signer le r\u00e9sum\u00e9 quotidien du site.",
+    "signatureRequired": "Les signatures requises sont manquantes. Veuillez compl\u00e9ter toutes les signatures obligatoires.",
     "submitSuccess": "R\u00e9sum\u00e9 quotidien du site v\u00e9rifi\u00e9 et sign\u00e9 avec succ\u00e8s.",
-    "verificationFailed": "La v\u00e9rification a \u00e9chou\u00e9."
+    "verificationFailed": "La v\u00e9rification a \u00e9chou\u00e9.",
+    "siteControllerSignOff": "Contr\u00f4leur de Site",
+    "ownerDirectorReview": "Revue Propri\u00e9taire / Directeur",
+    "machinesSection": "R\u00e9sum\u00e9 des Machines",
+    "machineWorkingHours": "Heures de Travail des Machines",
+    "machineDowntime": "Temps d'Arr\u00eat Machines (hrs)",
+    "machinesDown": "Machines en Panne",
+    "downtimeReason": "Raison du Temps d'Arr\u00eat",
+    "staffSection": "R\u00e9sum\u00e9 du Personnel",
+    "totalPresent": "Total Pr\u00e9sent",
+    "totalAbsent": "Total Absent",
+    "visitors": "Visiteurs",
+    "casualsUsed": "Journaliers Utilis\u00e9s",
+    "securitySection": "R\u00e9sum\u00e9 S\u00e9curit\u00e9 / Porte",
+    "securityItemsInOut": "Articles Entr\u00e9e / Sortie",
+    "searchesDone": "Fouilles Effectu\u00e9es",
+    "securityIncidents": "Incidents",
+    "vehicleMovements": "Mouvements de V\u00e9hicules",
+    "expensesSection": "R\u00e9sum\u00e9 des D\u00e9penses",
+    "cashUsed": "Esp\u00e8ces Utilis\u00e9es (USD)",
+    "purchasesTotal": "Total des Achats (USD)",
+    "pendingRequirements": "Besoins en Attente",
+    "tomorrowPlanSection": "Plan pour Demain",
+    "pitToMine": "Fosse \u00e0 Exploiter",
+    "plantTarget": "Objectif de l'Usine",
+    "repairPriority": "Priorit\u00e9 de R\u00e9paration",
+    "suppliesNeeded": "Fournitures N\u00e9cessaires"
   },
   "fuelRecon": {
     "varianceWarning": "\u00c9cart \u00e9lev\u00e9 de consommation de carburant d\u00e9tect\u00e9. V\u00e9rifiez les relev\u00e9s de compteur et les registres de stock. Explication obligatoire.",
@@ -211,7 +238,9 @@
     "closingRequired": "Le relev\u00e9 de cl\u00f4ture est obligatoire",
     "fuelRequired": "Le volume de carburant d\u00e9livr\u00e9 est obligatoire",
     "issuerRequired": "Le nom de l'\u00e9metteur est obligatoire",
-    "receiverRequired": "Le nom du r\u00e9cepteur est obligatoire"
+    "receiverRequired": "Le nom du r\u00e9cepteur est obligatoire",
+    "mechFuelLeadSignOff": "Chef M\u00e9canique / Carburant",
+    "siteControllerSignOff": "Contr\u00f4leur de Site"
   },
   "pricing": {
     "title": "Tarification Simple et Transparente",
@@ -526,6 +555,11 @@
     "GREASING_WASHING_HELPER": "Aide Graissage, Lavage et M\u00e9canique",
     "GATE_SECURITY": "S\u00e9curit\u00e9 Porte / Contr\u00f4le d'Entr\u00e9e",
     "SYSTEM_ADMIN": "Administrateur Syst\u00e8me",
+    "HR_MANAGER": "Responsable RH",
+    "MAINTENANCE_MANAGER": "Responsable Maintenance",
+    "PUMP_SUPERVISOR": "Superviseur Pompe",
+    "LAB_MANAGER": "Responsable Laboratoire",
+    "FINANCE_MANAGER": "Responsable Financier",
     "SITE_MANAGER": "Contr\u00f4leur de Site",
     "MINE_MANAGER": "Contr\u00f4leur de Site",
     "OPERATIONS_MANAGER": "Contr\u00f4leur de Site",
@@ -744,5 +778,39 @@
     "warning": "Avertissement",
     "info": "Info",
     "noData": "Aucune donn\u00e9e disponible"
+  },
+  "multiSignature": {
+    "title": "V\u00e9rification de Signature",
+    "signed": "Sign\u00e9",
+    "signNow": "Signer",
+    "collapse": "R\u00e9duire"
+  },
+  "siteManagerDashboard": {
+    "title": "Tableau de Bord Directeur de Site",
+    "subtitle": "Vue d'ensemble consolid\u00e9e de toutes les op\u00e9rations quotidiennes",
+    "totalGold": "R\u00e9cup\u00e9ration d'Or Totale",
+    "fuelVariance": "\u00c9cart Carburant",
+    "staffPresent": "Personnel Pr\u00e9sent",
+    "cashUsed": "Esp\u00e8ces Utilis\u00e9es",
+    "completionStatus": "Statut de Compl\u00e9tion des Rapports",
+    "recentReports": "Rapports R\u00e9cents",
+    "today": "Aujourd'hui",
+    "week": "Cette Semaine",
+    "month": "Ce Mois",
+    "noReports": "Aucun rapport trouv\u00e9 pour la p\u00e9riode s\u00e9lectionn\u00e9e.",
+    "actions": "Actions",
+    "exportPdf": "Exporter PDF"
+  },
+  "export": {
+    "pdf": "PDF",
+    "email": "Email",
+    "emailReport": "Envoyer le Rapport par Email",
+    "recipientEmail": "Email du Destinataire",
+    "optionalMessage": "Message (Optionnel)",
+    "send": "Envoyer l'Email",
+    "sending": "Envoi en cours...",
+    "emailSent": "Rapport envoy\u00e9 par email avec succ\u00e8s.",
+    "emailFailed": "\u00c9chec de l'envoi de l'email.",
+    "emailRequired": "L'email du destinataire est obligatoire."
   }
 }

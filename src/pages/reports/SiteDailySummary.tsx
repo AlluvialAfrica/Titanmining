@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
-import SignatureOrOtp from '../../components/SignatureOrOtp';
+import MultiSignatureFooter from '../../components/MultiSignatureFooter';
 import { SiteDailySummaryData } from '../../types/reports';
 
 export default function SiteDailySummary() {
@@ -27,7 +27,7 @@ export default function SiteDailySummary() {
     },
   });
 
-  const [signature, setSignature] = useState<string>('');
+  const [multiSignatures, setMultiSignatures] = useState<Record<string, string>>({});
 
   const centrifuge = watch('centrifugeRecoveryG');
   const shakingTable = watch('shakingTableRecoveryG');
@@ -51,7 +51,9 @@ export default function SiteDailySummary() {
   }, [fOpening, fReceived, fIssued, fClosing, setValue]);
 
   const onSubmit = async (data: SiteDailySummaryData) => {
-    if (!signature) {
+    const requiredSigs = ['siteController'];
+    const missing = requiredSigs.filter(r => !multiSignatures[r]);
+    if (missing.length > 0) {
       alert(t('siteSummary.signatureRequired'));
       return;
     }
@@ -59,7 +61,7 @@ export default function SiteDailySummary() {
     try {
       await submitReport('TEMPLATE_01', {
         ...data,
-        signature,
+        signatures: multiSignatures,
       });
       alert(t('siteSummary.submitSuccess'));
     } catch (err: any) {
@@ -67,53 +69,66 @@ export default function SiteDailySummary() {
     }
   };
 
+  const numField = (name: keyof SiteDailySummaryData, label: string, opts?: { required?: boolean; disabled?: boolean; step?: string; className?: string }) => (
+    <div>
+      <label className="minimal-label">{label}</label>
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required: opts?.required }}
+        render={({ field }) => (
+          <input
+            type="number"
+            step={opts?.step || '1'}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            name={field.name}
+            ref={field.ref}
+            value={typeof field.value === 'object' ? '' : (field.value ?? '')}
+            disabled={opts?.disabled}
+            className={`minimal-input ${opts?.className || ''}`}
+          />
+        )}
+      />
+    </div>
+  );
+
+  const textField = (name: keyof SiteDailySummaryData, label: string, opts?: { required?: boolean; placeholder?: string; textarea?: boolean }) => (
+    <div>
+      <label className="minimal-label">{label}</label>
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required: opts?.required }}
+        render={({ field }) => {
+          const val = typeof field.value === 'object' ? '' : (field.value as string || '');
+          return opts?.textarea ? (
+            <textarea onChange={field.onChange} onBlur={field.onBlur} name={field.name} ref={field.ref} rows={3} className="minimal-input w-full font-serif italic" placeholder={opts?.placeholder} value={val} />
+          ) : (
+            <input type="text" onChange={field.onChange} onBlur={field.onBlur} name={field.name} ref={field.ref} className="minimal-input font-semibold" value={val} />
+          );
+        }}
+      />
+    </div>
+  );
+
   return (
     <div className="max-w-3xl py-4">
 
-      
+
       <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-6">
         {t('siteSummary.subtitle')}
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        
+
         {/* Production totals */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.productionDetails')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <label className="minimal-label">{t('siteSummary.materialMined')}</label>
-              <Controller
-                name="materialMinedM3"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input font-semibold" />
-                )}
-              />
-            </div>
-            <div>
-              <label className="minimal-label">{t('siteSummary.materialProcessed')}</label>
-              <Controller
-                name="materialProcessedM3"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input font-semibold" />
-                )}
-              />
-            </div>
-            <div>
-              <label className="minimal-label">{t('siteSummary.pitAreaWorked')}</label>
-              <Controller
-                name="pitAreaWorked"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="text" {...field} className="minimal-input font-semibold" />
-                )}
-              />
-            </div>
+            {numField('materialMinedM3', t('siteSummary.materialMined'), { required: true, className: 'font-semibold' })}
+            {numField('materialProcessedM3', t('siteSummary.materialProcessed'), { required: true, className: 'font-semibold' })}
+            {textField('pitAreaWorked', t('siteSummary.pitAreaWorked'), { required: true })}
           </div>
         </div>
 
@@ -121,39 +136,9 @@ export default function SiteDailySummary() {
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.goldRecovery')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <label className="minimal-label">{t('siteSummary.centrifugeRecovery')}</label>
-              <Controller
-                name="centrifugeRecoveryG"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" step="0.01" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
-            <div>
-              <label className="minimal-label">{t('siteSummary.shakingTableRecovery')}</label>
-              <Controller
-                name="shakingTableRecoveryG"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" step="0.01" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
-            <div>
-              <label className="minimal-label">{t('siteSummary.sluiceCleanup')}</label>
-              <Controller
-                name="sluiceCleanupG"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" step="0.01" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
+            {numField('centrifugeRecoveryG', t('siteSummary.centrifugeRecovery'), { required: true, step: '0.01' })}
+            {numField('shakingTableRecoveryG', t('siteSummary.shakingTableRecovery'), { required: true, step: '0.01' })}
+            {numField('sluiceCleanupG', t('siteSummary.sluiceCleanup'), { required: true, step: '0.01' })}
             <div>
               <label className="minimal-label font-bold text-black">{t('siteSummary.totalGold')}</label>
               <Controller
@@ -170,55 +155,15 @@ export default function SiteDailySummary() {
         {/* Fuel reconciliation summary */}
         <div>
           <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.fuelInventory')}</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <label className="minimal-label">{t('siteSummary.openingStock')}</label>
-              <Controller
-                name="fuelOpeningStockL"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
-            <div>
-              <label className="minimal-label">{t('siteSummary.receivedStock')}</label>
-              <Controller
-                name="fuelReceivedL"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
-            <div>
-              <label className="minimal-label">{t('siteSummary.issuedStock')}</label>
-              <Controller
-                name="fuelIssuedL"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
+            {numField('fuelOpeningStockL', t('siteSummary.openingStock'), { required: true })}
+            {numField('fuelReceivedL', t('siteSummary.receivedStock'), { required: true })}
+            {numField('fuelIssuedL', t('siteSummary.issuedStock'), { required: true })}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-            <div>
-              <label className="minimal-label">{t('siteSummary.closingStock')}</label>
-              <Controller
-                name="fuelClosingStockL"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" />
-                )}
-              />
-            </div>
+            {numField('fuelClosingStockL', t('siteSummary.closingStock'), { required: true })}
             <div>
               <label className="minimal-label">{t('siteSummary.variance')}</label>
               <Controller
@@ -229,6 +174,68 @@ export default function SiteDailySummary() {
                 )}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Machines Section */}
+        <div>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.machinesSection')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {numField('machineWorkingHours', t('siteSummary.machineWorkingHours'))}
+            {numField('machineDowntime', t('siteSummary.machineDowntime'))}
+            {numField('machinesDown', t('siteSummary.machinesDown'))}
+          </div>
+          <div className="mt-4">
+            {textField('downtimeReason', t('siteSummary.downtimeReason'), { textarea: true, placeholder: 'Reason for downtime...' })}
+          </div>
+        </div>
+
+        {/* Staff Section */}
+        <div>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.staffSection')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {numField('totalPresent', t('siteSummary.totalPresent'))}
+            {numField('totalAbsent', t('siteSummary.totalAbsent'))}
+            {numField('visitors', t('siteSummary.visitors'))}
+            {numField('casualsUsed', t('siteSummary.casualsUsed'))}
+          </div>
+        </div>
+
+        {/* Security/Gate Section */}
+        <div>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.securitySection')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {numField('searchesDone', t('siteSummary.searchesDone'))}
+            {numField('vehicleMovements', t('siteSummary.vehicleMovements'))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+            {textField('securityItemsInOut', t('siteSummary.securityItemsInOut'), { textarea: true, placeholder: 'Items in/out...' })}
+            {textField('securityIncidents', t('siteSummary.securityIncidents'), { textarea: true, placeholder: 'Incidents...' })}
+          </div>
+        </div>
+
+        {/* Expenses Section */}
+        <div>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.expensesSection')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {numField('cashUsed', t('siteSummary.cashUsed'), { step: '0.01' })}
+            {numField('purchasesTotal', t('siteSummary.purchasesTotal'), { step: '0.01' })}
+          </div>
+          <div className="mt-4">
+            {textField('pendingRequirements', t('siteSummary.pendingRequirements'), { textarea: true, placeholder: 'Pending requirements...' })}
+          </div>
+        </div>
+
+        {/* Tomorrow Plan Section */}
+        <div>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.tomorrowPlanSection')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {textField('pitToMine', t('siteSummary.pitToMine'))}
+            {textField('plantTarget', t('siteSummary.plantTarget'))}
+            {textField('repairPriority', t('siteSummary.repairPriority'))}
+          </div>
+          <div className="mt-4">
+            {textField('suppliesNeeded', t('siteSummary.suppliesNeeded'), { textarea: true, placeholder: 'Supplies needed...' })}
           </div>
         </div>
 
@@ -244,11 +251,14 @@ export default function SiteDailySummary() {
           />
         </div>
 
-        {/* Digital Signature */}
-        <div className="border-t border-black pt-6">
-          <label className="minimal-label mb-2">{t('siteSummary.controllerSignOff')}</label>
-          <SignatureOrOtp onVerified={setSignature} />
-        </div>
+        {/* Multi-Signature Footer */}
+        <MultiSignatureFooter
+          signatories={[
+            { role: 'siteController', label: t('siteSummary.siteControllerSignOff') || 'Site Controller', required: true },
+            { role: 'ownerDirector', label: t('siteSummary.ownerDirectorReview') || 'Owner / Director Review', required: false },
+          ]}
+          onSignaturesChange={setMultiSignatures}
+        />
 
         {/* Submit */}
         <div className="flex gap-4 pt-6">

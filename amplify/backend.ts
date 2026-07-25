@@ -6,6 +6,7 @@ import { reportAggregator } from './functions/report-aggregator/resource';
 import { otpSender } from './functions/otp-sender/resource';
 import { whatsappWebhook } from './functions/whatsapp-webhook/resource';
 import { stripeCheckout } from './functions/stripe-checkout/resource';
+import { emailReport } from './functions/email-report/resource';
 import { PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam';
 import { Function as LambdaFunction } from 'aws-cdk-lib/aws-lambda';
 import { FunctionUrlAuthType, HttpMethod } from 'aws-cdk-lib/aws-lambda';
@@ -19,6 +20,7 @@ const backend = defineBackend({
   otpSender,
   whatsappWebhook,
   stripeCheckout,
+  emailReport,
 });
 
 // Grant Lambda functions access to DynamoDB tables
@@ -96,6 +98,29 @@ const otpFnUrl = otpSenderFn.addFunctionUrl({
 new CfnOutput(backend.otpSender.resources.lambda.stack, 'OtpSenderUrl', {
   value: otpFnUrl.url,
   description: 'OTP Sender Lambda Function URL',
+});
+
+// Create a function URL for the Email Report Lambda
+const emailReportFn = backend.emailReport.resources.lambda as LambdaFunction;
+emailReportFn.addToRolePolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+    resources: ['*'],
+  })
+);
+const emailFnUrl = emailReportFn.addFunctionUrl({
+  authType: FunctionUrlAuthType.NONE,
+  cors: {
+    allowedOrigins: ['*'],
+    allowedHeaders: ['Content-Type'],
+    allowedMethods: [HttpMethod.POST] as any,
+  },
+});
+
+new CfnOutput(backend.emailReport.resources.lambda.stack, 'EmailReportUrl', {
+  value: emailFnUrl.url,
+  description: 'Email Report Lambda Function URL',
 });
 
 // Configure custom Cognito User Pool attributes using CDK schema overrides

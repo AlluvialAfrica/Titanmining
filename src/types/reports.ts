@@ -18,12 +18,41 @@ export interface SiteDailySummaryData extends BaseReportData {
   fuelIssuedL: number;
   fuelClosingStockL: number;
   fuelVarianceL: number;
+  // Machines section
+  machineWorkingHours?: number;
+  machineDowntime?: number;
+  machinesDown?: number;
+  downtimeReason?: string;
+  // Staff section
+  totalPresent?: number;
+  totalAbsent?: number;
+  visitors?: number;
+  casualsUsed?: number;
+  // Security/Gate section
+  securityItemsInOut?: string;
+  searchesDone?: number;
+  securityIncidents?: string;
+  vehicleMovements?: number;
+  // Expenses section
+  cashUsed?: number;
+  purchasesTotal?: number;
+  pendingRequirements?: string;
+  // Tomorrow Plan section
+  pitToMine?: string;
+  plantTarget?: string;
+  repairPriority?: string;
+  suppliesNeeded?: string;
+  // Multi-signature
+  signatures?: Record<string, string>;
 }
 
 export interface AttendanceRecord {
   staffName: string;
   role: string;
   status: "PRESENT" | "ABSENT" | "LEAVE";
+  timeIn?: string;
+  timeOut?: string;
+  leaveType?: "NORMAL" | "SICK" | "COMPASSIONATE";
   remarks?: string;
 }
 
@@ -40,6 +69,8 @@ export interface StaffAttendanceData extends BaseReportData {
 export interface MachineLogRow {
   machineId: string;
   operator: string;
+  shift?: string;
+  brand?: string;
   openingHours: number;
   closingHours: number;
   hoursWorked: number;
@@ -79,7 +110,18 @@ export interface GeologyRow {
   volumeMinedM3: number;
   estGradeGPerTon: number;
   excavatorId: string;
+  sampleRef?: string;
+  gravelThickness?: number;
+  overburden?: number;
+  decision?: "MINE" | "STOP" | "TEST";
   remarks?: string;
+}
+
+export interface TomorrowMiningDirection {
+  direction: string;
+  reason: string;
+  riskCaution: string;
+  approvedBy: string;
 }
 
 export interface MiningGeologyData extends BaseReportData {
@@ -87,29 +129,45 @@ export interface MiningGeologyData extends BaseReportData {
   rows: GeologyRow[];
   totalVolume: number;
   avgGrade: number;
+  tomorrowDirections?: TomorrowMiningDirection[];
 }
 
 export interface DrumPumpRow {
-  pumpUnit: string;
-  operator: string;
-  inletPressure: number;
-  outletPressure: number;
-  slurryDensity: number;
-  operatingHours: number;
-  remarks?: string;
+  timeBlock: string;
+  drumRunning: boolean;
+  pumpRunning: boolean;
+  feedCondition: string;
+  waterPressureFlow: string;
+  assistantOnDuty: string;
+  downtimeReason: string;
+  actionTaken: string;
+}
+
+export interface DrumPumpDutyRow {
+  teamMember: string;
+  assignedDuty: string;
+  confirmedDone: boolean;
 }
 
 export interface DrumSandPumpData extends BaseReportData {
   shift: string;
   rows: DrumPumpRow[];
+  dutyRows?: DrumPumpDutyRow[];
 }
 
 export interface CentrifugeRow {
   centrifugeId: string;
+  startTime?: string;
+  stopTime?: string;
+  feedSource?: string;
   feedRateM3Hr: number;
   operatingHours: number;
+  waterPressure?: number;
+  bowlSpeedOk?: boolean;
   concentrateWeightG: number;
+  cleanupTime?: string;
   cleanupOperator: string;
+  verifier?: string;
   remarks?: string;
 }
 
@@ -120,10 +178,17 @@ export interface CentrifugeCleanupData extends BaseReportData {
 
 export interface ShakingTableRow {
   tableId: string;
+  batchNo?: string;
+  concentrateReceived?: number;
+  startTime?: string;
+  endTime?: string;
   feedRateM3Hr: number;
   operatingHours: number;
+  tableSettings?: string;
   concentrateWeightG: number;
+  tailingsKept?: boolean;
   operator: string;
+  verifier?: string;
   remarks?: string;
 }
 
@@ -133,13 +198,19 @@ export interface ShakingTableData extends BaseReportData {
 }
 
 export interface GoldRecoveryRow {
+  time?: string;
   source: string;
+  wetConc?: number;
+  dryConc?: number;
   grossWeightG: number;
   tareWeightG: number;
   netWeightG: number;
   purityPct: number;
   pureGoldG: number;
   vaultBoxId: string;
+  receivedFrom?: string;
+  receivedBy?: string;
+  handoverTo?: string;
 }
 
 export interface GoldRecoveryHandoverData extends BaseReportData {
@@ -156,17 +227,29 @@ export interface GoldRecoveryHandoverData extends BaseReportData {
 }
 
 export interface MaintenanceRow {
-  machineId: string;
-  greasingDone: boolean;
-  filtersChanged: boolean;
-  washingDone: boolean;
-  sparesUsed: string;
-  notes?: string;
+  machine: string;
+  reportedFault: string;
+  personResponsible: string;
+  startTime?: string;
+  endTime?: string;
+  partsUsed: string;
+  machineStatus: "RUNNING" | "DOWN" | "NEEDS_PARTS";
+  nextAction: string;
+}
+
+export interface PreventiveMaintenanceRow {
+  task: string;
+  cat1?: boolean;
+  cat2?: boolean;
+  sany1?: boolean;
+  sany2?: boolean;
+  remarks?: string;
 }
 
 export interface MaintenanceGreasingData extends BaseReportData {
   mechanicName: string;
   rows: MaintenanceRow[];
+  preventiveRows?: PreventiveMaintenanceRow[];
 }
 
 export interface GateMovementRecord {
@@ -176,8 +259,10 @@ export interface GateMovementRecord {
   company: string;
   vehiclePlate?: string;
   purpose: string;
+  direction: "IN" | "OUT";
   searchDone: boolean;
-  itemsInOut: string;
+  itemsIn: string;
+  itemsOut: string;
 }
 
 export interface GateRegisterData extends BaseReportData {
@@ -188,6 +273,7 @@ export interface GateRegisterData extends BaseReportData {
 export interface ExpenseRecord {
   itemName: string;
   vendor: string;
+  department: string;
   quantity: number;
   unitPrice: number;
   total: number;
@@ -199,15 +285,27 @@ export interface StoresExpensesData extends BaseReportData {
   purchaserName: string;
   records: ExpenseRecord[];
   grandTotal: number;
+  // Cash reconciliation
+  cashOpening?: number;
+  cashReceived?: number;
+  cashTotalAvailable?: number;
+  cashTotalSpent?: number;
+  cashClosing?: number;
+  cashVariance?: number;
+  cashExplanation?: string;
+}
+
+export interface HandoverItem {
+  handoverItem: string;
+  statusEndOfShift: string;
+  issueRisk: string;
+  actionRequired: string;
 }
 
 export interface ShiftHandoverData extends BaseReportData {
   outgoingSupervisor: string;
   incomingSupervisor: string;
-  safetyIncidents: string;
-  productionStatus: string;
-  equipmentStatus: string;
-  pendingTasks: string;
+  handoverItems: HandoverItem[];
   handoverApproved: boolean;
 }
 

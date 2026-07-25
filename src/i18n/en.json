@@ -17,7 +17,8 @@
     "help": "Help Center",
     "logOut": "Log Out",
     "orgContext": "Org context",
-    "siteId": "Site ID"
+    "siteId": "Site ID",
+    "siteManagerDashboard": "Site Manager Dashboard"
   },
   "login": {
     "portalAccess": "Portal Access",
@@ -172,9 +173,35 @@
     "remarksPlaceholder": "Add comments here...",
     "controllerSignOff": "Controller Sign-Off Verification Signature",
     "verifyApprove": "Verify & Approve Daily Site Summary",
-    "signatureRequired": "Digital signature is required to verify and sign off the site daily summary.",
+    "signatureRequired": "Required signatures are missing. Please complete all required sign-offs.",
     "submitSuccess": "Site Daily Summary verified and signed off successfully.",
-    "verificationFailed": "Verification failed."
+    "verificationFailed": "Verification failed.",
+    "siteControllerSignOff": "Site Controller",
+    "ownerDirectorReview": "Owner / Director Review",
+    "machinesSection": "Machines Summary",
+    "machineWorkingHours": "Machine Working Hours",
+    "machineDowntime": "Machine Downtime (hrs)",
+    "machinesDown": "Machines Down",
+    "downtimeReason": "Downtime Reason",
+    "staffSection": "Staff Summary",
+    "totalPresent": "Total Present",
+    "totalAbsent": "Total Absent",
+    "visitors": "Visitors",
+    "casualsUsed": "Casuals Used",
+    "securitySection": "Security / Gate Summary",
+    "securityItemsInOut": "Items In / Out",
+    "searchesDone": "Searches Done",
+    "securityIncidents": "Incidents",
+    "vehicleMovements": "Vehicle Movements",
+    "expensesSection": "Expenses Summary",
+    "cashUsed": "Cash Used (USD)",
+    "purchasesTotal": "Purchases Total (USD)",
+    "pendingRequirements": "Pending Requirements",
+    "tomorrowPlanSection": "Tomorrow Plan",
+    "pitToMine": "Pit to Mine",
+    "plantTarget": "Plant Target",
+    "repairPriority": "Repair Priority",
+    "suppliesNeeded": "Supplies Needed"
   },
   "fuelRecon": {
     "varianceWarning": "High fuel consumption variance detected. Verify meter readings and stock records. Explanation is mandatory.",
@@ -211,7 +238,9 @@
     "closingRequired": "Closing meter reading is required",
     "fuelRequired": "Fuel volume issued is required",
     "issuerRequired": "Issuer name is required",
-    "receiverRequired": "Receiver name is required"
+    "receiverRequired": "Receiver name is required",
+    "mechFuelLeadSignOff": "Mechanical / Fuel Lead",
+    "siteControllerSignOff": "Site Controller"
   },
   "pricing": {
     "title": "Simple, Transparent Pricing",
@@ -526,6 +555,11 @@
     "GREASING_WASHING_HELPER": "Greasing, Washing & Mechanic Helper",
     "GATE_SECURITY": "Gate Security / Entry Control",
     "SYSTEM_ADMIN": "System Administrator",
+    "HR_MANAGER": "HR Manager",
+    "MAINTENANCE_MANAGER": "Maintenance Manager",
+    "PUMP_SUPERVISOR": "Pump Supervisor",
+    "LAB_MANAGER": "Lab Manager",
+    "FINANCE_MANAGER": "Finance Manager",
     "SITE_MANAGER": "Site Controller",
     "MINE_MANAGER": "Site Controller",
     "OPERATIONS_MANAGER": "Site Controller",
@@ -744,5 +778,39 @@
     "warning": "Warning",
     "info": "Info",
     "noData": "No data available"
+  },
+  "multiSignature": {
+    "title": "Sign-Off Verification",
+    "signed": "Signed",
+    "signNow": "Sign Now",
+    "collapse": "Collapse"
+  },
+  "siteManagerDashboard": {
+    "title": "Site Manager Dashboard",
+    "subtitle": "Consolidated overview of all daily operations",
+    "totalGold": "Total Gold Recovery",
+    "fuelVariance": "Fuel Variance",
+    "staffPresent": "Staff Present",
+    "cashUsed": "Cash Used Today",
+    "completionStatus": "Report Completion Status",
+    "recentReports": "Recent Reports",
+    "today": "Today",
+    "week": "This Week",
+    "month": "This Month",
+    "noReports": "No reports found for the selected period.",
+    "actions": "Actions",
+    "exportPdf": "Export PDF"
+  },
+  "export": {
+    "pdf": "PDF",
+    "email": "Email",
+    "emailReport": "Email Report",
+    "recipientEmail": "Recipient Email",
+    "optionalMessage": "Message (Optional)",
+    "send": "Send Email",
+    "sending": "Sending...",
+    "emailSent": "Report emailed successfully.",
+    "emailFailed": "Failed to send email.",
+    "emailRequired": "Recipient email is required."
   }
 }

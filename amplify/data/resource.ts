@@ -41,7 +41,7 @@ const schema = a.schema({
   }).authorization((allow) => [
     allow.owner().to(['read', 'update']),
     allow.groups(['SiteControllers']).to(['create', 'read', 'update', 'delete']),
-    allow.groups(['DepartmentLeads', 'Management', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin']).to(['read']),
+    allow.groups(['DepartmentLeads', 'Management', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin', 'HRManagers', 'MaintenanceManagers', 'PumpSupervisors', 'LabManagers', 'FinanceManagers']).to(['read']),
   ]),
 
   DailyReport: a.model({
@@ -62,7 +62,7 @@ const schema = a.schema({
   }).authorization((allow) => [
     allow.owner().to(['create', 'read', 'update']),
     allow.groups(['SiteControllers']).to(['create', 'read', 'update', 'delete']),
-    allow.groups(['DepartmentLeads', 'Management', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin']).to(['create', 'read']),
+    allow.groups(['DepartmentLeads', 'Management', 'Operators', 'Maintenance', 'Security', 'Finance', 'HRAdmin', 'HRManagers', 'MaintenanceManagers', 'PumpSupervisors', 'LabManagers', 'FinanceManagers']).to(['create', 'read']),
   ]),
 
   GoldRecovery: a.model({

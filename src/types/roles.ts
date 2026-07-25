@@ -8,6 +8,11 @@ export enum Role {
   GREASING_WASHING_HELPER = "GREASING_WASHING_HELPER",
   GATE_SECURITY = "GATE_SECURITY",
   SYSTEM_ADMIN = "SYSTEM_ADMIN",
+  HR_MANAGER = "HR_MANAGER",
+  MAINTENANCE_MANAGER = "MAINTENANCE_MANAGER",
+  PUMP_SUPERVISOR = "PUMP_SUPERVISOR",
+  LAB_MANAGER = "LAB_MANAGER",
+  FINANCE_MANAGER = "FINANCE_MANAGER",
 }
 
 /** All template IDs used across the system. */
@@ -129,6 +134,66 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canViewTeamKPI: false,
   },
 
+  [Role.HR_MANAGER]: {
+    canCreate: ["TEMPLATE_02", "TEMPLATE_14"],
+    canRead: ["TEMPLATE_02", "TEMPLATE_14"],
+    canVerify: ["TEMPLATE_02"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  [Role.MAINTENANCE_MANAGER]: {
+    canCreate: ["TEMPLATE_03", "TEMPLATE_10"],
+    canRead: ["TEMPLATE_03", "TEMPLATE_10"],
+    canVerify: ["TEMPLATE_03", "TEMPLATE_10"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+
+  [Role.PUMP_SUPERVISOR]: {
+    canCreate: ["TEMPLATE_06"],
+    canRead: ["TEMPLATE_06"],
+    canVerify: [],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: false,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
+  [Role.LAB_MANAGER]: {
+    canCreate: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
+    canRead: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
+    canVerify: ["TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: true,
+  },
+
+  [Role.FINANCE_MANAGER]: {
+    canCreate: ["TEMPLATE_12", "TEMPLATE_15"],
+    canRead: ["TEMPLATE_12", "TEMPLATE_15"],
+    canVerify: ["TEMPLATE_12", "TEMPLATE_15"],
+    canManageUsers: false,
+    canEditProfile: false,
+    canExport: true,
+    canViewKPI: true,
+    canInputKPI: true,
+    canViewTeamKPI: false,
+  },
+
   [Role.SYSTEM_ADMIN]: { ...SITE_CONTROLLER_PERMISSIONS },
 };
 
@@ -155,34 +220,52 @@ export function mapLegacyRole(role: string): Role {
 
     // Processing → PROCESSING_RECOVERY_LEAD
     case "PLANT_MANAGER":
-    case "DRUM_PUMP_SUPERVISOR":
     case "DRUM_PUMP_ASSISTANT":
     case "CENTRIFUGE_OPERATOR":
     case "SHAKING_TABLE_OPERATOR":
     case "DREDGE_OPERATOR":
     case "PROCESS_PLANT_OPERATOR":
     case "PUMP_OPERATOR":
-    case "ASSAY_LAB_TECHNICIAN":
     case Role.PROCESSING_RECOVERY_LEAD:
       return Role.PROCESSING_RECOVERY_LEAD;
 
+    // HR → HR_MANAGER
+    case Role.HR_MANAGER:
+      return Role.HR_MANAGER;
+
+    // Maintenance Manager → MAINTENANCE_MANAGER
+    case "WORKSHOP_MANAGER":
+    case Role.MAINTENANCE_MANAGER:
+      return Role.MAINTENANCE_MANAGER;
+
+    // Pump Supervisor → PUMP_SUPERVISOR
+    case "DRUM_PUMP_SUPERVISOR":
+    case Role.PUMP_SUPERVISOR:
+      return Role.PUMP_SUPERVISOR;
+
+    // Lab Manager → LAB_MANAGER
+    case "ASSAY_LAB_TECHNICIAN":
+    case Role.LAB_MANAGER:
+      return Role.LAB_MANAGER;
+
+    // Finance → FINANCE_MANAGER
+    case "ACCOUNTANT":
+    case "SITE_PETTY_CASH_MANAGER":
+    case Role.FINANCE_MANAGER:
+      return Role.FINANCE_MANAGER;
+
     // Admin/Logistics → FUEL_ADMIN_LOGISTICS
     case "FUEL_MANAGER":
-    case "FINANCE_MANAGER":
-    case "HR_MANAGER":
-    case "ACCOUNTANT":
     case "PROCUREMENT_OFFICER":
     case "COMMUNITY_RELATIONS_OFFICER":
     case "ADMIN_CLERK":
     case "MEDICAL_OFFICER":
     case "CAMP_MANAGER":
     case "LOGISTICS_TRANSPORT_COORDINATOR":
-    case "SITE_PETTY_CASH_MANAGER":
     case Role.FUEL_ADMIN_LOGISTICS:
       return Role.FUEL_ADMIN_LOGISTICS;
 
     // Maintenance → ENGINE_MECHANIC
-    case "WORKSHOP_MANAGER":
     case "HEAVY_EQUIPMENT_MECHANIC":
     case "WELDER_FABRICATOR":
     case "LIGHT_VEHICLE_MECHANIC":
