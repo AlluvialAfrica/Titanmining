@@ -13,6 +13,7 @@ export default function Login() {
 
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [error, setError] = useState('');
@@ -200,27 +201,36 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="minimal-label">{t('login.mobileNumber')}</label>
+              <label className="minimal-label">{t('login.mobileNumber') || 'Mobile Number / Email'}</label>
               <input
                 type="text"
                 required
                 value={mobileNumber}
                 onChange={e => setMobileNumber(e.target.value)}
                 className="minimal-input"
-                placeholder="email@example.com or +254..."
+                placeholder="+254xxxxxxxxx or email@example.com"
               />
             </div>
 
             <div>
               <label className="minimal-label">{t('login.password')}</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="minimal-input"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="minimal-input pr-12 font-mono"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2.5 text-[9px] uppercase tracking-widest text-zinc-400 hover:text-black font-semibold"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
             </div>
 
             <div className="flex justify-between items-center text-xs">

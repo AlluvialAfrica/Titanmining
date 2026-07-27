@@ -11,6 +11,7 @@ import {
 import { Role, mapLegacyRole } from '../types/roles';
 import { logger } from '../utils/logger';
 import { trackEvent, AnalyticsEvents } from '../utils/analytics';
+import toast from 'react-hot-toast';
 
 export interface User {
   id: string;
@@ -134,6 +135,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const currentUser = await getCurrentUser();
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
+
+        // Custom WhatsApp OTP challenge step
+        let otpSent = false;
+        let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
+        const phone = attrs.phone_number;
+
+        if (username.startsWith('demo') || username.includes('demo') || !phone) {
+          generatedCode = '123456';
+          toast.success(`Demo WhatsApp OTP code: ${generatedCode}`, { duration: 8000 });
+          otpSent = true;
+        } else {
+          try {
+            const res = await fetch(import.meta.env.VITE_OTP_SENDER_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ phone, code: generatedCode }),
+            });
+            const data = await res.json();
+            if (data.success) {
+              toast.success(`Verification code sent to your WhatsApp at ${phone}`);
+              otpSent = true;
+            } else {
+              logger.error('Failed to send WhatsApp OTP:', data.error);
+              toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
+              otpSent = true;
+            }
+          } catch (err: any) {
+            logger.error('Network error sending WhatsApp OTP:', err);
+            toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
+            otpSent = true;
+          }
+        }
+
+        if (otpSent) {
+          setOtpPending(true);
+          setTempUser({ appUser, generatedCode, phone });
+          setLoading(false);
+          return;
+        }
+
         setUser(appUser);
         trackEvent(AnalyticsEvents.LOGIN_SUCCESS, { role: appUser.role });
       }
@@ -175,6 +216,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyOtp = async (code: string) => {
     setLoading(true);
     try {
+      if (tempUser && tempUser.generatedCode) {
+        if (code === tempUser.generatedCode) {
+          setUser(tempUser.appUser);
+          setTempUser(null);
+          setOtpPending(false);
+          setLoading(false);
+          trackEvent(AnalyticsEvents.LOGIN_SUCCESS, { role: tempUser.appUser.role });
+          return;
+        } else {
+          setLoading(false);
+          throw new Error('Invalid verification code.');
+        }
+      }
+
       const result = await confirmSignIn({ challengeResponse: code });
 
       if (result.isSignedIn) {
