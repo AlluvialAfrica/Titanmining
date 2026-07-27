@@ -136,10 +136,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
 
+        // Verify that the mobile number typed by the user matches the registered phone_number
+        const phone = attrs.phone_number;
+        if (!username.startsWith('demo') && !username.includes('demo') && phone) {
+          const formattedTyped = mobileNumber.replace(/[\s\-\(\)]/g, '');
+          const formattedReg = phone.replace(/[\s\-\(\)]/g, '');
+          if (formattedTyped !== formattedReg) {
+            throw new Error(`The entered mobile number (${mobileNumber}) does not match the registered phone number for this account.`);
+          }
+        }
+
         // Custom WhatsApp OTP challenge step
         let otpSent = false;
         let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
-        const phone = attrs.phone_number;
 
         if (username.startsWith('demo') || username.includes('demo') || !phone) {
           generatedCode = '123456';

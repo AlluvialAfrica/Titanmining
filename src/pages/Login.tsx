@@ -11,6 +11,7 @@ export default function Login() {
   const { login, forcePasswordChange, changePassword, otpPending, verifyOtp } = useAuth();
   const { t } = useLanguage();
 
+  const [email, setEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +29,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await login(mobileNumber, mobileNumber, password);
+      await login(mobileNumber, email, password);
     } catch (err: any) {
       setError(err.message || t('login.loginFailed'));
     } finally {
@@ -201,14 +202,26 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="minimal-label">{t('login.mobileNumber') || 'Mobile Number / Email'}</label>
+              <label className="minimal-label">Email Address</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="minimal-input"
+                placeholder="email@example.com"
+              />
+            </div>
+
+            <div>
+              <label className="minimal-label">Mobile Number</label>
               <input
                 type="text"
                 required
                 value={mobileNumber}
                 onChange={e => setMobileNumber(e.target.value)}
-                className="minimal-input"
-                placeholder="+254xxxxxxxxx or email@example.com"
+                className="minimal-input font-mono"
+                placeholder="+254xxxxxxxxx"
               />
             </div>
 
@@ -279,12 +292,17 @@ export default function Login() {
                   key={demo.email}
                   type="button"
                   onClick={async () => {
-                    setMobileNumber(demo.email);
+                    setEmail(demo.email);
+                    const mockPhone = demo.email === 'faafan10@gmail.com' ? '+254700000001' : 
+                                      demo.email === 'ahmerim@yahoo.com' ? '+254700000020' :
+                                      demo.email === 'amo.gombe@gmail.com' ? '+254700000021' :
+                                      demo.email === 'amoroso.gombe@chatworks.chat' ? '+254700000022' : '+254700000000';
+                    setMobileNumber(mockPhone);
                     setPassword(demo.pass);
                     setError('');
                     setLoading(true);
                     try {
-                      await login(demo.email, demo.email, demo.pass);
+                      await login(mockPhone, demo.email, demo.pass);
                     } catch (err: any) {
                       setError(err.message || 'Demo login failed.');
                     } finally {
