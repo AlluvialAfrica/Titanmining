@@ -183,32 +183,20 @@ const formSpecs: Record<string, FormSpec> = {
     headerFields: [
       { name: 'reportDate', label: 'Date', type: 'text', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
+      { name: 'shift', label: 'Shift', type: 'select', required: true, options: [{ value: 'DAY', label: 'Day Shift' }, { value: 'NIGHT', label: 'Night Shift' }] },
       { name: 'geologist', label: 'Geologist Name', type: 'text', required: true },
     ],
     fields: [],
     tableColumns: [
-      { name: 'pitBlock', label: 'Pit / Block', type: 'text', required: true },
-      { name: 'benchLevel', label: 'Bench Level', type: 'number' },
-      { name: 'materialType', label: 'Material Type', type: 'select', options: [{ value: 'ALLUVIAL', label: 'Alluvial' }, { value: 'OVERBURDEN', label: 'Overburden' }, { value: 'CLAY', label: 'Clay' }] },
-      { name: 'volumeMinedM3', label: 'Volume (m\u00B3)', type: 'number', required: true },
-      { name: 'estGradeGPerTon', label: 'Grade (g/ton)', type: 'number' },
-      { name: 'excavatorId', label: 'Excavator ID', type: 'text' },
+      { name: 'pitArea', label: 'Pit / Area', type: 'text', required: true },
       { name: 'sampleRef', label: 'Sample Ref', type: 'text' },
       { name: 'gravelThickness', label: 'Gravel Thickness (m)', type: 'number' },
       { name: 'overburden', label: 'Overburden (m)', type: 'number' },
+      { name: 'visualGradeRemarks', label: 'Visual Grade / Remarks', type: 'text' },
       { name: 'decision', label: 'Decision', type: 'select', options: [{ value: 'MINE', label: 'Mine' }, { value: 'STOP', label: 'Stop' }, { value: 'TEST', label: 'Test' }] },
-      { name: 'remarks', label: 'Remarks', type: 'text' },
+      { name: 'machineAssigned', label: 'Machine Assigned', type: 'text' },
+      { name: 'geologistInitials', label: 'Geologist Initials', type: 'text' },
     ],
-    summaryFields: [
-      { name: 'totalVolume', label: 'Total Volume (m\u00B3)', type: 'number', disabled: true },
-      { name: 'avgGrade', label: 'Avg Grade (g/ton)', type: 'number', disabled: true },
-    ],
-    calculateSummary: (rows, setValue) => {
-      const totalVol = rows.reduce((s, r) => s + Number(r.volumeMinedM3 || 0), 0);
-      setValue('totalVolume', parseFloat(totalVol.toFixed(2)));
-      const weighted = rows.reduce((s, r) => s + Number(r.volumeMinedM3 || 0) * Number(r.estGradeGPerTon || 0), 0);
-      setValue('avgGrade', totalVol > 0 ? parseFloat((weighted / totalVol).toFixed(2)) : 0);
-    },
     secondaryTableTitle: 'Tomorrow Mining Direction',
     secondaryTableColumns: [
       { name: 'direction', label: 'Direction', type: 'text', required: true },

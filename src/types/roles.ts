@@ -76,9 +76,9 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
   },
 
   [Role.FUEL_ADMIN_LOGISTICS]: {
-    canCreate: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"],
-    canRead: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_14", "TEMPLATE_15"],
-    canVerify: ["TEMPLATE_02", "TEMPLATE_04", "TEMPLATE_12"],
+    canCreate: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
+    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
+    canVerify: ["TEMPLATE_04", "TEMPLATE_12"],
     canManageUsers: false,
     canEditProfile: false,
     canExport: true,
