@@ -610,7 +610,8 @@
     "TEMPLATE_12": "Stores, Purchases & Expense Sheet",
     "TEMPLATE_13": "Shift Handover Certificate",
     "TEMPLATE_14": "HR Payroll & Leave Record",
-    "TEMPLATE_15": "Petty Cash Daily Report"
+    "TEMPLATE_15": "Petty Cash Daily Report",
+    "TEMPLATE_16": "Purchase Requisition"
   },
   "templates": {
     "TEMPLATE_02": {
@@ -735,6 +736,24 @@
       "calculatedBalance": "Calculated Drawer Balance (USD)",
       "cashVariance": "Actual Drawer Balance Variance",
       "varianceMessage": "Petty cash variance detected. Discrepancy: {{variance}} USD. Please explain the cash drawer variance."
+    },
+    "TEMPLATE_16": {
+      "title": "Purchase Requisition",
+      "requisitionNo": "Requisition Number",
+      "requestedBy": "Requested By",
+      "department": "Department",
+      "itemDescription": "Item Description",
+      "specifications": "Specifications / Details",
+      "qty": "Quantity",
+      "unit": "Unit",
+      "estimatedUnitPrice": "Est. Unit Price (USD)",
+      "estimatedTotal": "Est. Total (USD)",
+      "preferredSupplier": "Preferred Supplier",
+      "urgency": "Urgency",
+      "justification": "Justification / Purpose",
+      "grandTotal": "Grand Total (USD)",
+      "budgetCode": "Budget Code / Account",
+      "approvalNotes": "Approval Notes"
     }
   },
   "otp": {

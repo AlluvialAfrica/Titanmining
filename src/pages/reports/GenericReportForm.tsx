@@ -98,6 +98,10 @@ const templateFooters: Record<string, SignatorySlot[]> = {
     { role: 'financeManager', label: 'Finance Manager', required: true },
     { role: 'siteController', label: 'Site Controller', required: true },
   ],
+  TEMPLATE_16: [
+    { role: 'financeManager', label: 'Finance Manager', required: true },
+    { role: 'siteController', label: 'Site Controller', required: true },
+  ],
 };
 
 // ---------------------------------------------------------------------------
@@ -575,6 +579,43 @@ const formSpecs: Record<string, FormSpec> = {
         return `Petty cash variance detected. Discrepancy: ${variance > 0 ? '+' : ''}${variance.toFixed(2)} USD. Please explain the cash drawer variance.`;
       }
       return null;
+    },
+  },
+
+  // ---- TEMPLATE_16: Purchase Requisition ----
+  TEMPLATE_16: {
+    title: 'Template 16: Purchase Requisition',
+    headerFields: [
+      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'site', label: 'Site', type: 'text', required: true },
+      { name: 'requisitionNo', label: 'Requisition Number', type: 'text', required: true },
+      { name: 'requestedBy', label: 'Requested By', type: 'text', required: true },
+      { name: 'department', label: 'Department', type: 'text', required: true },
+    ],
+    fields: [],
+    tableColumns: [
+      { name: 'itemDescription', label: 'Item Description', type: 'text', required: true },
+      { name: 'specifications', label: 'Specifications / Details', type: 'text' },
+      { name: 'qty', label: 'Qty', type: 'number', required: true },
+      { name: 'unit', label: 'Unit', type: 'text' },
+      { name: 'estimatedUnitPrice', label: 'Est. Unit Price (USD)', type: 'number', required: true },
+      { name: 'estimatedTotal', label: 'Est. Total (USD)', type: 'number', disabled: true },
+      { name: 'preferredSupplier', label: 'Preferred Supplier', type: 'text' },
+      { name: 'urgency', label: 'Urgency', type: 'select', options: [{ value: 'NORMAL', label: 'Normal' }, { value: 'URGENT', label: 'Urgent' }, { value: 'CRITICAL', label: 'Critical' }] },
+      { name: 'justification', label: 'Justification / Purpose', type: 'text' },
+    ],
+    calculateRow: (row) => {
+      const qty = Number(row.qty || 0);
+      const price = Number(row.estimatedUnitPrice || 0);
+      return { ...row, estimatedTotal: parseFloat((qty * price).toFixed(2)) };
+    },
+    summaryFields: [
+      { name: 'grandTotal', label: 'Grand Total (USD)', type: 'number', disabled: true },
+      { name: 'budgetCode', label: 'Budget Code / Account', type: 'text' },
+      { name: 'approvalNotes', label: 'Approval Notes', type: 'textarea' },
+    ],
+    calculateSummary: (rows, setValue) => {
+      setValue('grandTotal', parseFloat(rows.reduce((s, r) => s + Number(r.estimatedTotal || 0), 0).toFixed(2)));
     },
   },
 };

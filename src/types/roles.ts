@@ -21,6 +21,7 @@ const ALL_TEMPLATES = [
   "TEMPLATE_01", "TEMPLATE_02", "TEMPLATE_03", "TEMPLATE_04", "TEMPLATE_05",
   "TEMPLATE_06", "TEMPLATE_07", "TEMPLATE_08", "TEMPLATE_09", "TEMPLATE_10",
   "TEMPLATE_11", "TEMPLATE_12", "TEMPLATE_13", "TEMPLATE_14", "TEMPLATE_15",
+  "TEMPLATE_16",
 ];
 
 export interface RolePermissions {
@@ -184,9 +185,9 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
   },
 
   [Role.FINANCE_MANAGER]: {
-    canCreate: ["TEMPLATE_12", "TEMPLATE_15"],
-    canRead: ["TEMPLATE_12", "TEMPLATE_15"],
-    canVerify: ["TEMPLATE_12", "TEMPLATE_15"],
+    canCreate: ["TEMPLATE_12", "TEMPLATE_15", "TEMPLATE_16"],
+    canRead: ["TEMPLATE_12", "TEMPLATE_15", "TEMPLATE_16"],
+    canVerify: ["TEMPLATE_12", "TEMPLATE_15", "TEMPLATE_16"],
     canManageUsers: false,
     canEditProfile: false,
     canExport: true,

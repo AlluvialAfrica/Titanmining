@@ -1,134 +1,213 @@
-import React, { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
 import MultiSignatureFooter from '../../components/MultiSignatureFooter';
 import VarianceAlert from '../../components/VarianceAlert';
 
-interface FuelFormData {
-  machineId: string;
-  openingMeter: number;
-  closingMeter: number;
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+interface MachineEntry {
+  machineName: string;
+  openingMeter: string;
+  closingMeter: string;
   hoursWorked: number;
-  fuelIssued: number;
-  expectedLPerHr: number;
-  actualLPerHr: number;
+  fuelIssued: string;
   issuedBy: string;
   receivedBy: string;
   remarks: string;
-  openingStock: number;
-  received: number;
+}
+
+interface StockData {
+  openingStock: string;
+  received: string;
   totalAvailable: number;
   totalIssued: number;
-  closingStock: number;
+  closingStock: string;
   variance: number;
   varianceReason: string;
 }
 
-const MACHINE_SPECS: Record<string, { brand: string; expectedLPerHr: number }> = {
-  'CAT_1': { brand: 'Caterpillar', expectedLPerHr: 25 },
-  'CAT_2': { brand: 'Caterpillar', expectedLPerHr: 25 },
-  'SANY_1': { brand: 'Sany', expectedLPerHr: 22 },
-  'SANY_2': { brand: 'Sany', expectedLPerHr: 22 },
+const EMPTY_ENTRY: MachineEntry = {
+  machineName: '',
+  openingMeter: '',
+  closingMeter: '',
+  hoursWorked: 0,
+  fuelIssued: '',
+  issuedBy: '',
+  receivedBy: '',
+  remarks: '',
 };
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export default function FuelReconciliation() {
   const { user } = useAuth();
   const { saveDraft, submitReport, loadDraft } = useReport();
   const { t } = useLanguage();
-  const { control, watch, setValue, handleSubmit, formState: { errors } } = useForm<FuelFormData>({
-    defaultValues: loadDraft('TEMPLATE_04') || {},
-  });
 
+  // Load draft or defaults
+  const draft = loadDraft('TEMPLATE_04');
+
+  const [machineEntries, setMachineEntries] = useState<MachineEntry[]>(
+    draft?.machineEntries?.length > 0
+      ? draft.machineEntries
+      : [{ ...EMPTY_ENTRY }],
+  );
+
+  const [stock, setStock] = useState<StockData>(
+    draft?.stock || {
+      openingStock: '',
+      received: '',
+      totalAvailable: 0,
+      totalIssued: 0,
+      closingStock: '',
+      variance: 0,
+      varianceReason: '',
+    },
+  );
+
+  const [reportDate, setReportDate] = useState<string>(draft?.reportDate || '');
+  const [site, setSite] = useState<string>(draft?.site || '');
   const [showVarianceAlert, setShowVarianceAlert] = useState(false);
   const [multiSignatures, setMultiSignatures] = useState<Record<string, string>>({});
 
-  const machineId = watch('machineId');
-  const openingMeter = watch('openingMeter');
-  const closingMeter = watch('closingMeter');
-  const fuelIssued = watch('fuelIssued');
-  const openingStock = watch('openingStock');
-  const received = watch('received');
-  const totalIssued = watch('totalIssued');
-  const closingStock = watch('closingStock');
-  const variance = watch('variance');
+  // ---- Auto-calculate hours worked per machine entry ----
+  const recalcEntry = useCallback((entry: MachineEntry): MachineEntry => {
+    const opening = Number(entry.openingMeter || 0);
+    const closing = Number(entry.closingMeter || 0);
+    const hours = closing > opening ? parseFloat((closing - opening).toFixed(1)) : 0;
+    return { ...entry, hoursWorked: hours };
+  }, []);
 
-  // Auto-calculations for machine usage
+  // ---- Auto-sum fuel issued across all machines → totalIssued ----
+  const totalFuelIssued = machineEntries.reduce(
+    (sum, e) => sum + Number(e.fuelIssued || 0),
+    0,
+  );
+
+  // ---- Auto-calculate stock reconciliation ----
   useEffect(() => {
-    if (openingMeter && closingMeter && closingMeter > openingMeter) {
-      const hours = closingMeter - openingMeter;
-      setValue('hoursWorked', parseFloat(hours.toFixed(1)));
-
-      if (machineId && fuelIssued && hours > 0) {
-        const expected = MACHINE_SPECS[machineId].expectedLPerHr;
-        const actual = fuelIssued / hours;
-        setValue('expectedLPerHr', expected);
-        setValue('actualLPerHr', parseFloat(actual.toFixed(2)));
-
-        if (actual > expected * 1.2) {
-          setShowVarianceAlert(true);
-        } else {
-          setShowVarianceAlert(false);
-        }
-      }
-    }
-  }, [openingMeter, closingMeter, fuelIssued, machineId, setValue]);
-
-  // Auto-calculations for stock levels
-  useEffect(() => {
-    const oStock = Number(openingStock || 0);
-    const rec = Number(received || 0);
-    const tIssued = Number(totalIssued || 0);
-    const cStock = Number(closingStock || 0);
-
+    const oStock = Number(stock.openingStock || 0);
+    const rec = Number(stock.received || 0);
     const totalAvail = oStock + rec;
-    setValue('totalAvailable', totalAvail);
+    const cStock = Number(stock.closingStock || 0);
+    const calcVariance = parseFloat(
+      (cStock - (totalAvail - totalFuelIssued)).toFixed(2),
+    );
 
-    const calcVariance = cStock - (totalAvail - tIssued);
-    setValue('variance', parseFloat(calcVariance.toFixed(2)));
+    setStock((prev) => ({
+      ...prev,
+      totalAvailable: totalAvail,
+      totalIssued: totalFuelIssued,
+      variance: calcVariance,
+    }));
 
-    if (Math.abs(calcVariance) > 50) {
-      setShowVarianceAlert(true);
-    }
-  }, [openingStock, received, totalIssued, closingStock, setValue]);
+    setShowVarianceAlert(Math.abs(calcVariance) > 50);
+  }, [stock.openingStock, stock.received, stock.closingStock, totalFuelIssued]);
 
-  // Auto-save draft every 30 seconds
+  // ---- Auto-save draft every 30 seconds ----
   useEffect(() => {
     const interval = setInterval(() => {
-      const currentValues = {
-        machineId, openingMeter, closingMeter, fuelIssued,
-        openingStock, received, totalIssued, closingStock, variance
-      };
-      saveDraft('TEMPLATE_04', currentValues);
+      saveDraft('TEMPLATE_04', {
+        reportDate,
+        site,
+        machineEntries,
+        stock,
+      });
     }, 30000);
     return () => clearInterval(interval);
-  }, [machineId, openingMeter, closingMeter, fuelIssued, openingStock, received, totalIssued, closingStock, variance, saveDraft]);
+  }, [reportDate, site, machineEntries, stock, saveDraft]);
 
-  const onSubmit = async (data: FuelFormData) => {
-    const requiredSigs = ['mechFuelLead', 'siteController'];
-    const missing = requiredSigs.filter(r => !multiSignatures[r]);
+  // ---- Machine entry helpers ----
+  const updateEntry = (index: number, field: keyof MachineEntry, value: string) => {
+    setMachineEntries((prev) => {
+      const updated = [...prev];
+      updated[index] = recalcEntry({ ...updated[index], [field]: value });
+      return updated;
+    });
+  };
+
+  const addMachine = () => {
+    // Auto-save current state to draft before adding
+    saveDraft('TEMPLATE_04', { reportDate, site, machineEntries, stock });
+    setMachineEntries((prev) => [...prev, { ...EMPTY_ENTRY }]);
+  };
+
+  const removeMachine = (index: number) => {
+    if (machineEntries.length <= 1) return;
+    setMachineEntries((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // ---- Stock field helper ----
+  const updateStock = (field: keyof StockData, value: string) => {
+    setStock((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // ---- Submit ----
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate required fields
+    if (!reportDate.trim()) {
+      alert('Date is required.');
+      return;
+    }
+
+    // Validate at least one machine entry has data
+    const filledEntries = machineEntries.filter(
+      (e) => e.machineName.trim() && Number(e.fuelIssued || 0) > 0,
+    );
+    if (filledEntries.length === 0) {
+      alert('Enter at least one machine with fuel data.');
+      return;
+    }
+
+    // SoD check: for each entry, issuedBy !== receivedBy
+    for (const entry of filledEntries) {
+      if (
+        entry.issuedBy.trim() &&
+        entry.receivedBy.trim() &&
+        entry.issuedBy.trim() === entry.receivedBy.trim()
+      ) {
+        alert(
+          t('fuelRecon.sodViolation') ||
+            `Segregation of Duties: Fuel issuer and receiver must be different for ${entry.machineName}.`,
+        );
+        return;
+      }
+    }
+
+    // Variance explanation check
+    if (Math.abs(stock.variance) > 0 && !stock.varianceReason.trim()) {
+      alert(
+        t('fuelRecon.varianceRequired') ||
+          'Variance explanation is required when there is a stock difference.',
+      );
+      return;
+    }
+
+    // Signature check
+    const requiredSigs = ['fuelManager', 'siteController'];
+    const missing = requiredSigs.filter((r) => !multiSignatures[r]);
     if (missing.length > 0) {
-      alert(t('fuelRecon.signatureRequired'));
-      return;
-    }
-
-    if (data.issuedBy === data.receivedBy) {
-      alert(t('fuelRecon.sodViolation'));
-      return;
-    }
-
-    if (Math.abs(data.variance) > 0 && !data.varianceReason) {
-      alert(t('fuelRecon.varianceRequired'));
+      alert(t('fuelRecon.signatureRequired') || 'All signatures are required.');
       return;
     }
 
     try {
       await submitReport('TEMPLATE_04', {
-        ...data,
+        reportDate,
+        site,
+        machineEntries: filledEntries,
+        stock,
         signatures: multiSignatures,
       });
-      alert(t('fuelRecon.submitSuccess'));
+      alert(t('fuelRecon.submitSuccess') || 'Fuel reconciliation submitted.');
       setMultiSignatures({});
     } catch (err: any) {
       alert(err.message || t('reports_form.submissionFailed'));
@@ -136,229 +215,320 @@ export default function FuelReconciliation() {
   };
 
   return (
-    <div className="max-w-3xl py-4">
-
-
+    <div className="max-w-4xl py-4">
       {showVarianceAlert && (
-        <VarianceAlert 
-          type="warning" 
-          message={t('fuelRecon.varianceWarning')} 
+        <VarianceAlert
+          type="warning"
+          message={
+            t('fuelRecon.varianceWarning') ||
+            'Fuel stock variance exceeds threshold. Please verify physical stock.'
+          }
         />
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        
-        {/* Machine selection */}
-        <div>
-          <label className="minimal-label">{t('fuelRecon.machine')}</label>
-          <Controller
-            name="machineId"
-            control={control}
-            rules={{ required: t('fuelRecon.machineRequired') }}
-            render={({ field }) => (
-              <select {...field} className="minimal-select">
-                <option value="">{t('fuelRecon.selectMachine')}</option>
-                <option value="CAT_1">CAT 1 (Caterpillar - Expected 25L/Hr)</option>
-                <option value="CAT_2">CAT 2 (Caterpillar - Expected 25L/Hr)</option>
-                <option value="SANY_1">SANY 1 (Sany - Expected 22L/Hr)</option>
-                <option value="SANY_2">SANY 2 (Sany - Expected 22L/Hr)</option>
-              </select>
-            )}
-          />
-          {errors.machineId && <span className="text-xs text-red-600 mt-1 block">{errors.machineId.message}</span>}
-        </div>
-
-        {/* Meters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Report header */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="minimal-label">{t('fuelRecon.openingMeter')}</label>
-            <Controller
-              name="openingMeter"
-              control={control}
-              rules={{ required: t('fuelRecon.openingRequired'), min: 0 }}
-              render={({ field }) => (
-                <input type="number" step="0.1" {...field} className="minimal-input" placeholder="0.0" />
-              )}
+            <label className="minimal-label">Date</label>
+            <input
+              type="text"
+              value={reportDate}
+              onChange={(e) => setReportDate(e.target.value)}
+              className="minimal-input"
+              placeholder="e.g. 2026-07-27"
+              required
             />
           </div>
           <div>
-            <label className="minimal-label">{t('fuelRecon.closingMeter')}</label>
-            <Controller
-              name="closingMeter"
-              control={control}
-              rules={{ required: t('fuelRecon.closingRequired'), min: 0 }}
-              render={({ field }) => (
-                <input type="number" step="0.1" {...field} className="minimal-input" placeholder="0.0" />
-              )}
+            <label className="minimal-label">Site</label>
+            <input
+              type="text"
+              value={site}
+              onChange={(e) => setSite(e.target.value)}
+              className="minimal-input"
+              placeholder="Site name"
             />
           </div>
         </div>
 
-        {/* Calculations */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-zinc-50 p-4 border border-zinc-200">
-          <div>
-            <label className="minimal-label">{t('fuelRecon.hoursWorked')}</label>
-            <Controller
-              name="hoursWorked"
-              control={control}
-              render={({ field }) => (
-                <input type="number" {...field} disabled className="minimal-input font-semibold" />
-              )}
-            />
-          </div>
-          <div>
-            <label className="minimal-label">{t('fuelRecon.expectedLPerHr')}</label>
-            <Controller
-              name="expectedLPerHr"
-              control={control}
-              render={({ field }) => (
-                <input type="number" {...field} disabled className="minimal-input font-semibold" />
-              )}
-            />
-          </div>
-          <div>
-            <label className="minimal-label">{t('fuelRecon.actualLPerHr')}</label>
-            <Controller
-              name="actualLPerHr"
-              control={control}
-              render={({ field }) => (
-                <input type="number" {...field} disabled className="minimal-input font-semibold" />
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Fuel details */}
-        <div>
-          <label className="minimal-label">{t('fuelRecon.fuelIssued')}</label>
-          <Controller
-            name="fuelIssued"
-            control={control}
-            rules={{ required: t('fuelRecon.fuelRequired'), min: 0 }}
-            render={({ field }) => (
-              <input type="number" step="1" {...field} className="minimal-input" placeholder="0" />
-            )}
-          />
-        </div>
-
-        {/* Dual Sign-off Users */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-zinc-100 pt-6">
-          <div>
-            <label className="minimal-label">{t('fuelRecon.issuedBy')}</label>
-            <Controller
-              name="issuedBy"
-              control={control}
-              rules={{ required: t('fuelRecon.issuerRequired') }}
-              render={({ field }) => (
-                <select {...field} className="minimal-select">
-                  <option value="">{t('fuelRecon.selectIssuer')}</option>
-                  <option value="user_fuel">Sarah Wambui (Logistics Lead)</option>
-                  <option value="user_controller">Amoroso Gombe (Controller)</option>
-                </select>
-              )}
-            />
-          </div>
-          <div>
-            <label className="minimal-label">{t('fuelRecon.receivedBy')}</label>
-            <Controller
-              name="receivedBy"
-              control={control}
-              rules={{ required: t('fuelRecon.receiverRequired') }}
-              render={({ field }) => (
-                <select {...field} className="minimal-select">
-                  <option value="">{t('fuelRecon.selectReceiver')}</option>
-                  <option value="user_excavator">Peter Kamau (Operator)</option>
-                  <option value="user_geology">Moses Kiprono (Mining Lead)</option>
-                  <option value="user_processing">David Ochieng (Processing Lead)</option>
-                </select>
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Stock levels */}
+        {/* ── Machine Fuel Entries ── */}
         <div className="border-t border-black pt-6">
-          <h3 className="font-serif italic text-lg mb-4 text-black">{t('fuelRecon.stockReconciliation')}</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label className="minimal-label">{t('fuelRecon.openingPhysical')}</label>
-              <Controller
-                name="openingStock"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" placeholder="0" />
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-serif italic text-lg text-black">
+              {t('fuelRecon.machineFuelSupply') || 'Machine Fuel Supply'}
+            </h3>
+            <span className="text-sm font-semibold text-zinc-600">
+              Total Fuel Issued: {totalFuelIssued.toLocaleString()} L
+            </span>
+          </div>
+
+          {machineEntries.map((entry, idx) => (
+            <div
+              key={idx}
+              className="border border-zinc-200 p-4 mb-4 bg-white"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+                  Machine {idx + 1}
+                </span>
+                {machineEntries.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeMachine(idx)}
+                    className="text-xs text-red-600 hover:text-red-800 font-semibold uppercase tracking-wider"
+                  >
+                    Remove
+                  </button>
                 )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Machine name — free text */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.machine') || 'Machine'}
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.machineName}
+                    onChange={(e) =>
+                      updateEntry(idx, 'machineName', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="e.g. CAT 1, SANY 3, Pump 2"
+                    required
+                  />
+                </div>
+
+                {/* Opening meter */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.openingMeter') || 'Opening Meter (Hrs)'}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={entry.openingMeter}
+                    onChange={(e) =>
+                      updateEntry(idx, 'openingMeter', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="0.0"
+                  />
+                </div>
+
+                {/* Closing meter */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.closingMeter') || 'Closing Meter (Hrs)'}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={entry.closingMeter}
+                    onChange={(e) =>
+                      updateEntry(idx, 'closingMeter', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="0.0"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
+                {/* Hours worked — auto */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.hoursWorked') || 'Hours Worked (Auto)'}
+                  </label>
+                  <input
+                    type="number"
+                    value={entry.hoursWorked}
+                    disabled
+                    className="minimal-input font-semibold bg-zinc-50"
+                  />
+                </div>
+
+                {/* Fuel issued */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.fuelIssued') || 'Fuel Issued (L)'}
+                  </label>
+                  <input
+                    type="number"
+                    step="1"
+                    value={entry.fuelIssued}
+                    onChange={(e) =>
+                      updateEntry(idx, 'fuelIssued', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+
+                {/* Issued by */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.issuedBy') || 'Issued By'}
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.issuedBy}
+                    onChange={(e) =>
+                      updateEntry(idx, 'issuedBy', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="Name"
+                  />
+                </div>
+
+                {/* Received by */}
+                <div>
+                  <label className="minimal-label">
+                    {t('fuelRecon.receivedBy') || 'Received By'}
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.receivedBy}
+                    onChange={(e) =>
+                      updateEntry(idx, 'receivedBy', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="Name"
+                  />
+                </div>
+              </div>
+
+              {/* Remarks */}
+              <div className="mt-3">
+                <label className="minimal-label">
+                  {t('fuelRecon.remarks') || 'Remarks'}
+                </label>
+                <input
+                  type="text"
+                  value={entry.remarks}
+                  onChange={(e) =>
+                    updateEntry(idx, 'remarks', e.target.value)
+                  }
+                  className="minimal-input"
+                  placeholder="Optional notes"
+                />
+              </div>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={addMachine}
+            className="minimal-btn-secondary text-sm"
+          >
+            + Add Machine
+          </button>
+        </div>
+
+        {/* ── Stock Reconciliation ── */}
+        <div className="border-t border-black pt-6">
+          <h3 className="font-serif italic text-lg mb-4 text-black">
+            {t('fuelRecon.stockReconciliation') || 'Fuel Stock Reconciliation'}
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="minimal-label">
+                {t('fuelRecon.openingPhysical') || 'Opening Physical Stock (L)'}
+              </label>
+              <input
+                type="number"
+                value={stock.openingStock}
+                onChange={(e) => updateStock('openingStock', e.target.value)}
+                className="minimal-input"
+                placeholder="0"
+                required
               />
             </div>
             <div>
-              <label className="minimal-label">{t('fuelRecon.fuelReceived')}</label>
-              <Controller
-                name="received"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" placeholder="0" />
-                )}
+              <label className="minimal-label">
+                {t('fuelRecon.fuelReceived') || 'Fuel Received (L)'}
+              </label>
+              <input
+                type="number"
+                value={stock.received}
+                onChange={(e) => updateStock('received', e.target.value)}
+                className="minimal-input"
+                placeholder="0"
+                required
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             <div>
-              <label className="minimal-label">{t('fuelRecon.totalAvailable')}</label>
-              <Controller
-                name="totalAvailable"
-                control={control}
-                render={({ field }) => (
-                  <input type="number" {...field} disabled className="minimal-input" />
-                )}
+              <label className="minimal-label">
+                {t('fuelRecon.totalAvailable') || 'Total Available (L)'}
+              </label>
+              <input
+                type="number"
+                value={stock.totalAvailable}
+                disabled
+                className="minimal-input font-semibold bg-zinc-50"
               />
             </div>
             <div>
-              <label className="minimal-label">{t('fuelRecon.totalIssuedToday')}</label>
-              <Controller
-                name="totalIssued"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" placeholder="0" />
-                )}
+              <label className="minimal-label">
+                {t('fuelRecon.totalIssuedToday') || 'Total Issued Today (L)'}
+                <span className="text-[10px] ml-1 text-zinc-400 font-normal">
+                  (auto from machines)
+                </span>
+              </label>
+              <input
+                type="number"
+                value={stock.totalIssued}
+                disabled
+                className="minimal-input font-bold bg-zinc-50"
               />
             </div>
             <div>
-              <label className="minimal-label">{t('fuelRecon.closingPhysical')}</label>
-              <Controller
-                name="closingStock"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <input type="number" {...field} className="minimal-input" placeholder="0" />
-                )}
+              <label className="minimal-label">
+                {t('fuelRecon.closingPhysical') || 'Closing Physical Stock (L)'}
+              </label>
+              <input
+                type="number"
+                value={stock.closingStock}
+                onChange={(e) => updateStock('closingStock', e.target.value)}
+                className="minimal-input"
+                placeholder="0"
+                required
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
-              <label className="minimal-label">{t('fuelRecon.physicalVariance')}</label>
-              <Controller
-                name="variance"
-                control={control}
-                render={({ field }) => (
-                  <input type="number" {...field} disabled className="minimal-input font-bold" />
-                )}
+              <label className="minimal-label">
+                {t('fuelRecon.physicalVariance') || 'Physical Variance (L)'}
+              </label>
+              <input
+                type="number"
+                value={stock.variance}
+                disabled
+                className="minimal-input font-bold bg-zinc-50"
               />
             </div>
             <div>
-              <label className="minimal-label">{t('fuelRecon.varianceExplanation')}</label>
-              <Controller
-                name="varianceReason"
-                control={control}
-                render={({ field }) => (
-                  <input type="text" {...field} className="minimal-input" placeholder={t('fuelRecon.variancePlaceholder')} />
-                )}
+              <label className="minimal-label">
+                {t('fuelRecon.varianceExplanation') || 'Variance Explanation'}
+              </label>
+              <input
+                type="text"
+                value={stock.varianceReason}
+                onChange={(e) => updateStock('varianceReason', e.target.value)}
+                className="minimal-input"
+                placeholder={
+                  t('fuelRecon.variancePlaceholder') ||
+                  'Explain any stock difference'
+                }
               />
             </div>
           </div>
@@ -367,24 +537,40 @@ export default function FuelReconciliation() {
         {/* Multi-Signature Footer */}
         <MultiSignatureFooter
           signatories={[
-            { role: 'fuelManager', label: 'Fuel Manager', required: true },
-            { role: 'siteController', label: t('fuelRecon.siteControllerSignOff') || 'Site Controller', required: true },
+            {
+              role: 'fuelManager',
+              label: 'Fuel Manager',
+              required: true,
+            },
+            {
+              role: 'siteController',
+              label:
+                t('fuelRecon.siteControllerSignOff') || 'Site Controller',
+              required: true,
+            },
           ]}
           onSignaturesChange={setMultiSignatures}
         />
 
         {/* Actions */}
         <div className="flex gap-4 pt-6">
-          <button type="submit" className="minimal-btn">{t('fuelRecon.submitReconciliation')}
+          <button type="submit" className="minimal-btn">
+            {t('fuelRecon.submitReconciliation') || 'Submit Reconciliation'}
           </button>
           <button
             type="button"
             onClick={() => {
-              saveDraft('TEMPLATE_04', watch());
-              alert(t('fuelRecon.draftSaved'));
+              saveDraft('TEMPLATE_04', {
+                reportDate,
+                site,
+                machineEntries,
+                stock,
+              });
+              alert(t('fuelRecon.draftSaved') || 'Draft saved.');
             }}
             className="minimal-btn-secondary"
-          >{t('reports_form.saveDraft')}
+          >
+            {t('reports_form.saveDraft') || 'Save Draft'}
           </button>
         </div>
       </form>
