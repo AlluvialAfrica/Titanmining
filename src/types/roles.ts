@@ -52,9 +52,9 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
   [Role.SITE_CONTROLLER]: { ...SITE_CONTROLLER_PERMISSIONS },
 
   [Role.MINING_GEOLOGY_LEAD]: {
-    canCreate: ["TEMPLATE_03", "TEMPLATE_05", "TEMPLATE_13"],
-    canRead: ["TEMPLATE_03", "TEMPLATE_05"],
-    canVerify: ["TEMPLATE_03"],
+    canCreate: ["TEMPLATE_05", "TEMPLATE_13"],
+    canRead: ["TEMPLATE_05"],
+    canVerify: ["TEMPLATE_05"],
     canManageUsers: false,
     canEditProfile: false,
     canExport: false,
