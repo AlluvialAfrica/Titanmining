@@ -103,9 +103,11 @@ export default function SiteManagerDashboard() {
   return (
     <div className="space-y-6 md:space-y-8">
       <div>
-        <h1 className="editorial-title text-2xl font-light">{t('siteManagerDashboard.title')}</h1>
+        <h1 className="editorial-title text-2xl font-light">
+          {user?.role === 'ENTERPRISE_MANAGER' ? 'Commercial Overview' : t('siteManagerDashboard.title')}
+        </h1>
         <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mt-1">
-          {t('siteManagerDashboard.subtitle')}
+          {user?.role === 'ENTERPRISE_MANAGER' ? 'Commercial and operational overview of the enterprise' : t('siteManagerDashboard.subtitle')}
         </p>
       </div>
 

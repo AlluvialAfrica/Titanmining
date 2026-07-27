@@ -1,9 +1,9 @@
 {
   "auth": {
-    "user_pool_id": "eu-north-1_UvepVlAOv",
+    "user_pool_id": "eu-north-1_KaqxJmpxp",
     "aws_region": "eu-north-1",
-    "user_pool_client_id": "76qhso3q43dk7283rhkkh0fad5",
-    "identity_pool_id": "eu-north-1:ef1d9a82-6c24-404c-a294-cbcbdc15d4e5",
+    "user_pool_client_id": "3krh0k2s1ema9q59i0ar1g4f4j",
+    "identity_pool_id": "eu-north-1:f7c8b9a3-554b-45e3-afe5-5d76f59cb4cd",
     "mfa_methods": [],
     "standard_required_attributes": [
       "email",
@@ -75,7 +75,7 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://ecun5zwtyrc5rbcxruyli5j6re.appsync-api.eu-north-1.amazonaws.com/graphql",
+    "url": "https://5o65erdaczg73a3x7cyblrwrli.appsync-api.eu-north-1.amazonaws.com/graphql",
     "aws_region": "eu-north-1",
     "default_authorization_type": "AMAZON_COGNITO_USER_POOLS",
     "authorization_types": [
@@ -403,7 +403,13 @@
                       "Maintenance",
                       "Security",
                       "Finance",
-                      "HRAdmin"
+                      "HRAdmin",
+                      "HRManagers",
+                      "MaintenanceManagers",
+                      "PumpSupervisors",
+                      "LabManagers",
+                      "FinanceManagers",
+                      "EnterpriseManagers"
                     ]
                   }
                 ]
@@ -592,7 +598,13 @@
                       "Maintenance",
                       "Security",
                       "Finance",
-                      "HRAdmin"
+                      "HRAdmin",
+                      "HRManagers",
+                      "MaintenanceManagers",
+                      "PumpSupervisors",
+                      "LabManagers",
+                      "FinanceManagers",
+                      "EnterpriseManagers"
                     ]
                   }
                 ]

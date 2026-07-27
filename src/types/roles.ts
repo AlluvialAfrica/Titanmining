@@ -76,9 +76,9 @@ export const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
   },
 
   [Role.FUEL_ADMIN_LOGISTICS]: {
-    canCreate: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
-    canRead: ["TEMPLATE_04", "TEMPLATE_12", "TEMPLATE_15"],
-    canVerify: ["TEMPLATE_04", "TEMPLATE_12"],
+    canCreate: ["TEMPLATE_04"],
+    canRead: ["TEMPLATE_04"],
+    canVerify: ["TEMPLATE_04"],
     canManageUsers: false,
     canEditProfile: false,
     canExport: true,
@@ -225,6 +225,7 @@ export function mapLegacyRole(role: string): Role {
       return Role.SITE_CONTROLLER;
 
     // Mining → MINING_GEOLOGY_LEAD
+    case "MINING_GEOLOGY":
     case "MINE_FOREMAN":
     case "EXCAVATOR_OPERATOR":
     case "DRILLER_SAMPLING_CREW":
@@ -232,6 +233,7 @@ export function mapLegacyRole(role: string): Role {
       return Role.MINING_GEOLOGY_LEAD;
 
     // Processing → PROCESSING_RECOVERY_LEAD
+    case "PROCESSING_RECOVERY":
     case "PLANT_MANAGER":
     case "DRUM_PUMP_ASSISTANT":
     case "CENTRIFUGE_OPERATOR":
@@ -268,6 +270,7 @@ export function mapLegacyRole(role: string): Role {
       return Role.FINANCE_MANAGER;
 
     // Admin/Logistics → FUEL_ADMIN_LOGISTICS
+    case "FUEL_LOGISTICS":
     case "FUEL_MANAGER":
     case "PROCUREMENT_OFFICER":
     case "COMMUNITY_RELATIONS_OFFICER":
@@ -297,6 +300,7 @@ export function mapLegacyRole(role: string): Role {
       return Role.GATE_SECURITY;
 
     // Helper → GREASING_WASHING_HELPER
+    case "GREASING_WASHING":
     case "GENERAL_WORKER":
     case Role.GREASING_WASHING_HELPER:
       return Role.GREASING_WASHING_HELPER;

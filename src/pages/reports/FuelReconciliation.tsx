@@ -367,7 +367,7 @@ export default function FuelReconciliation() {
         {/* Multi-Signature Footer */}
         <MultiSignatureFooter
           signatories={[
-            { role: 'mechFuelLead', label: t('fuelRecon.mechFuelLeadSignOff') || 'Mechanical / Fuel Lead', required: true },
+            { role: 'fuelManager', label: 'Fuel Manager', required: true },
             { role: 'siteController', label: t('fuelRecon.siteControllerSignOff') || 'Site Controller', required: true },
           ]}
           onSignaturesChange={setMultiSignatures}

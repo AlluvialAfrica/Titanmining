@@ -45,6 +45,12 @@ export default function Dashboard() {
     });
   }, []);
 
+  useEffect(() => {
+    if (user?.role === Role.ENTERPRISE_MANAGER) {
+      setActiveTab('siteManagerDashboard');
+    }
+  }, [user]);
+
   const suspenseFallback = (
     <div className="flex items-center justify-center py-12">
       <span className="font-serif italic text-zinc-400">Loading...</span>
@@ -139,7 +145,7 @@ export default function Dashboard() {
                 <HelpButton contextPage={activeTab} onOpenHelp={() => setActiveTab('help')} />
               </div>
 
-              {navButton('siteManagerDashboard', t('nav.siteManagerDashboard'), isFullAccessRole)}
+              {navButton('siteManagerDashboard', user.role === Role.ENTERPRISE_MANAGER ? 'Commercial Overview' : t('nav.siteManagerDashboard'), isFullAccessRole || user.role === Role.ENTERPRISE_MANAGER)}
               {navButton('form', t('nav.dailyReporting'))}
               {navButton('history', `${t('nav.reportHistory')} (${history.length})`)}
               {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
@@ -284,7 +290,7 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {activeTab === 'siteManagerDashboard' && isFullAccessRole && <SiteManagerDashboard />}
+              {activeTab === 'siteManagerDashboard' && (isFullAccessRole || user.role === Role.ENTERPRISE_MANAGER) && <SiteManagerDashboard />}
               {activeTab === 'kpiInput' && permissions.canInputKPI && <KPIInputForm />}
               {activeTab === 'kpiDashboard' && permissions.canViewKPI && <KPIDashboard />}
               {activeTab === 'teamDashboard' && permissions.canViewTeamKPI && <TeamKPIDashboard />}
