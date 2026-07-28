@@ -74,6 +74,9 @@ function buildUserFromAttributes(attrs: Record<string, string | undefined>, sub:
   };
 }
 
+/** SessionStorage key set only after successful OTP verification. */
+const OTP_VERIFIED_KEY = 'titan_otp_verified';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [tempUser, setTempUser] = useState<any | null>(null);
@@ -89,12 +92,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function checkExistingSession() {
     try {
+      // If OTP was never verified in this browser session, don't restore the user.
+      // This prevents bypassing OTP by refreshing the page after password-only sign-in.
+      if (!sessionStorage.getItem(OTP_VERIFIED_KEY)) {
+        // A Cognito session may still exist from a password-only sign-in; clear it.
+        try { await signOut(); } catch (_) { /* no session — fine */ }
+        return;
+      }
+
       const currentUser = await getCurrentUser();
       const attrs = await fetchUserAttributes();
       const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
       setUser(appUser);
     } catch (err) {
       // No current session on mount is expected (user not logged in)
+      sessionStorage.removeItem(OTP_VERIFIED_KEY);
       logger.debug('No existing auth session:', err);
     } finally {
       setLoading(false);
@@ -210,10 +222,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (result.isSignedIn) {
+        // Password changed — still require WhatsApp OTP before granting access
         const currentUser = await getCurrentUser();
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
-        setUser(appUser);
+        const phone = attrs.phone_number as string | undefined;
+        const username = tempUser?.username || '';
+
+        let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
+        if (username.startsWith('demo') || username.includes('demo') || !phone) {
+          generatedCode = '123456';
+          toast.success(`Demo WhatsApp OTP code: ${generatedCode}`, { duration: 8000 });
+        } else {
+          try {
+            const res = await fetch(import.meta.env.VITE_OTP_SENDER_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ phone, code: generatedCode }),
+            });
+            const data = await res.json();
+            if (data.success) {
+              toast.success(`Verification code sent to your WhatsApp at ${phone}`);
+            } else {
+              logger.error('Failed to send WhatsApp OTP:', data.error);
+              toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
+            }
+          } catch (err: any) {
+            logger.error('Network error sending WhatsApp OTP:', err);
+            toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
+          }
+        }
+
+        setOtpPending(true);
+        setTempUser({ appUser, generatedCode, phone });
       }
       setLoading(false);
     } catch (error: any) {
@@ -227,6 +268,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       if (tempUser && tempUser.generatedCode) {
         if (code === tempUser.generatedCode) {
+          sessionStorage.setItem(OTP_VERIFIED_KEY, '1');
           setUser(tempUser.appUser);
           setTempUser(null);
           setOtpPending(false);
@@ -242,6 +284,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await confirmSignIn({ challengeResponse: code });
 
       if (result.isSignedIn) {
+        sessionStorage.setItem(OTP_VERIFIED_KEY, '1');
         const currentUser = await getCurrentUser();
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
@@ -258,6 +301,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     trackEvent(AnalyticsEvents.LOGOUT);
+    sessionStorage.removeItem(OTP_VERIFIED_KEY);
     try {
       await signOut();
     } catch (err) {
