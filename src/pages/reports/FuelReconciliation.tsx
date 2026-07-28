@@ -4,6 +4,7 @@ import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
 import MultiSignatureFooter from '../../components/MultiSignatureFooter';
 import VarianceAlert from '../../components/VarianceAlert';
+import DateInput from '../../components/DateInput';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -15,6 +16,8 @@ interface MachineEntry {
   closingMeter: string;
   hoursWorked: number;
   fuelIssued: string;
+  expectedLPerHr: string;
+  actualLPerHr: number;
   issuedBy: string;
   receivedBy: string;
   remarks: string;
@@ -36,6 +39,8 @@ const EMPTY_ENTRY: MachineEntry = {
   closingMeter: '',
   hoursWorked: 0,
   fuelIssued: '',
+  expectedLPerHr: '',
+  actualLPerHr: 0,
   issuedBy: '',
   receivedBy: '',
   remarks: '',
@@ -76,12 +81,14 @@ export default function FuelReconciliation() {
   const [showVarianceAlert, setShowVarianceAlert] = useState(false);
   const [multiSignatures, setMultiSignatures] = useState<Record<string, string>>({});
 
-  // ---- Auto-calculate hours worked per machine entry ----
+  // ---- Auto-calculate hours worked and L/HR per machine entry ----
   const recalcEntry = useCallback((entry: MachineEntry): MachineEntry => {
     const opening = Number(entry.openingMeter || 0);
     const closing = Number(entry.closingMeter || 0);
     const hours = closing > opening ? parseFloat((closing - opening).toFixed(1)) : 0;
-    return { ...entry, hoursWorked: hours };
+    const fuel = Number(entry.fuelIssued || 0);
+    const actualLPerHr = hours > 0 ? parseFloat((fuel / hours).toFixed(2)) : 0;
+    return { ...entry, hoursWorked: hours, actualLPerHr };
   }, []);
 
   // ---- Auto-sum fuel issued across all machines → totalIssued ----
@@ -231,12 +238,9 @@ export default function FuelReconciliation() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="minimal-label">Date</label>
-            <input
-              type="text"
+            <DateInput
               value={reportDate}
-              onChange={(e) => setReportDate(e.target.value)}
-              className="minimal-input"
-              placeholder="e.g. 2026-07-27"
+              onChange={setReportDate}
               required
             />
           </div>
@@ -336,7 +340,7 @@ export default function FuelReconciliation() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
                 {/* Hours worked — auto */}
                 <div>
                   <label className="minimal-label">
@@ -366,6 +370,57 @@ export default function FuelReconciliation() {
                     placeholder="0"
                     required
                   />
+                </div>
+
+                {/* Expected L/HR */}
+                <div>
+                  <label className="minimal-label">
+                    Expected L/HR
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={entry.expectedLPerHr}
+                    onChange={(e) =>
+                      updateEntry(idx, 'expectedLPerHr', e.target.value)
+                    }
+                    className="minimal-input"
+                    placeholder="e.g. 18"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                {/* Actual L/HR — auto */}
+                <div>
+                  <label className="minimal-label">
+                    Actual L/HR (Auto)
+                  </label>
+                  <input
+                    type="number"
+                    value={entry.actualLPerHr}
+                    disabled
+                    className={`minimal-input font-bold bg-zinc-50 ${
+                      entry.expectedLPerHr && entry.actualLPerHr > Number(entry.expectedLPerHr) * 1.1
+                        ? 'text-red-600 border-b-red-500'
+                        : ''
+                    }`}
+                  />
+                  {entry.expectedLPerHr && entry.actualLPerHr > 0 && (
+                    <p className={`text-[10px] mt-1 font-semibold ${
+                      entry.actualLPerHr > Number(entry.expectedLPerHr) * 1.1
+                        ? 'text-red-600'
+                        : entry.actualLPerHr <= Number(entry.expectedLPerHr)
+                        ? 'text-green-600'
+                        : 'text-amber-600'
+                    }`}>
+                      {entry.actualLPerHr <= Number(entry.expectedLPerHr)
+                        ? 'WITHIN NORM'
+                        : entry.actualLPerHr > Number(entry.expectedLPerHr) * 1.1
+                        ? 'OVER CONSUMPTION — INVESTIGATE'
+                        : 'SLIGHTLY ABOVE NORM'}
+                    </p>
+                  )}
                 </div>
 
                 {/* Issued by */}

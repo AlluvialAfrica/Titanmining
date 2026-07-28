@@ -7,6 +7,7 @@ import SignatureOrOtp from '../../components/SignatureOrOtp';
 import MultiSignatureFooter, { SignatorySlot } from '../../components/MultiSignatureFooter';
 import VarianceAlert from '../../components/VarianceAlert';
 import MultiRowTable, { ColumnDef } from '../../components/MultiRowTable';
+import DateInput from '../../components/DateInput';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -15,7 +16,7 @@ import MultiRowTable, { ColumnDef } from '../../components/MultiRowTable';
 interface FieldSpec {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'textarea' | 'select' | 'checkbox' | 'time';
+  type: 'text' | 'number' | 'textarea' | 'select' | 'checkbox' | 'time' | 'date-ddmmyyyy';
   options?: { value: string; label: string }[];
   required?: boolean;
   disabled?: boolean;
@@ -113,7 +114,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_02: {
     title: 'Template 02: Staff Attendance & Shift Roster',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'shift', label: 'Shift', type: 'select', required: true, options: [{ value: 'DAY', label: 'Day Shift' }, { value: 'NIGHT', label: 'Night Shift' }] },
       { name: 'supervisor', label: 'Supervisor', type: 'text', required: true },
@@ -145,7 +146,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_03: {
     title: 'Template 03: Excavator / Machine Daily Log',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'shift', label: 'Shift', type: 'select', required: true, options: [{ value: 'DAY', label: 'Day Shift' }, { value: 'NIGHT', label: 'Night Shift' }] },
     ],
@@ -158,9 +159,9 @@ const formSpecs: Record<string, FormSpec> = {
       { name: 'openingHours', label: 'Opening Hrs', type: 'number', required: true },
       { name: 'closingHours', label: 'Closing Hrs', type: 'number', required: true },
       { name: 'hoursWorked', label: 'Hrs Worked', type: 'number', disabled: true },
-      { name: 'fuelAddedL', label: 'Fuel (L)', type: 'number' },
       { name: 'workArea', label: 'Work Area', type: 'text' },
       { name: 'breakdowns', label: 'Breakdowns / Issues', type: 'text' },
+      { name: 'breakdownStatus', label: 'Breakdown Status', type: 'select', options: [{ value: 'REGISTERED', label: 'Registered' }, { value: 'REPAIR_UNDERWAY', label: 'Repair Underway' }, { value: 'REPAIRED', label: 'Repaired' }, { value: 'WRITTEN_OFF', label: 'Written Off' }] },
     ],
     calculateRow: (row) => {
       const opening = Number(row.openingHours || 0);
@@ -177,7 +178,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_05: {
     title: 'Template 05: Mining & Geology Daily Sheet',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'shift', label: 'Shift', type: 'select', required: true, options: [{ value: 'DAY', label: 'Day Shift' }, { value: 'NIGHT', label: 'Night Shift' }] },
       { name: 'geologist', label: 'Geologist Name', type: 'text', required: true },
@@ -206,7 +207,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_06: {
     title: 'Template 06: Drum & Sand Pump Shift Log',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'shift', label: 'Shift', type: 'select', required: true, options: [{ value: 'DAY', label: 'Day Shift' }, { value: 'NIGHT', label: 'Night Shift' }] },
     ],
@@ -233,7 +234,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_07: {
     title: 'Template 07: Centrifuge Operation & Cleanup Log',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
     ],
     fields: [],
@@ -250,7 +251,7 @@ const formSpecs: Record<string, FormSpec> = {
       { name: 'cleanupTime', label: 'Cleanup Time', type: 'time' },
       { name: 'cleanupOperator', label: 'Cleanup Operator', type: 'text' },
       { name: 'verifier', label: 'Verifier', type: 'text' },
-      { name: 'remarks', label: 'Remarks', type: 'text' },
+      { name: 'remarks', label: 'Remarks', type: 'textarea' },
     ],
     summaryFields: [
       { name: 'totalConcentrate', label: 'Total Concentrate (g)', type: 'number', disabled: true },
@@ -264,7 +265,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_08: {
     title: 'Template 08: Shaking Table Operation Log',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
     ],
     fields: [],
@@ -295,7 +296,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_09: {
     title: 'Template 09: Gold Recovery & Handover Register',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'recoveryOfficer', label: 'Recovery Officer', type: 'text', required: true },
       { name: 'witness', label: 'Witness (Security / Management)', type: 'text', required: true },
@@ -344,7 +345,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_10: {
     title: 'Template 10: Maintenance, Greasing & Washing Log',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'mechanicName', label: 'Mechanic Name', type: 'text', required: true },
     ],
@@ -356,7 +357,7 @@ const formSpecs: Record<string, FormSpec> = {
       { name: 'startTime', label: 'Start Time', type: 'time' },
       { name: 'endTime', label: 'End Time', type: 'time' },
       { name: 'partsUsed', label: 'Parts Used', type: 'text' },
-      { name: 'machineStatus', label: 'Machine Status', type: 'select', options: [{ value: 'RUNNING', label: 'Running' }, { value: 'DOWN', label: 'Down' }, { value: 'NEEDS_PARTS', label: 'Needs Parts' }] },
+      { name: 'machineStatus', label: 'Machine Status', type: 'select', options: [{ value: 'RUNNING', label: 'Running' }, { value: 'DOWN', label: 'Down' }, { value: 'NEEDS_PARTS', label: 'Needs Parts' }, { value: 'WRITTEN_OFF', label: 'Written Off' }] },
       { name: 'nextAction', label: 'Next Action', type: 'text' },
     ],
     summaryFields: [
@@ -377,7 +378,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_11: {
     title: 'Template 11: Gate, Search & Items Movement Register',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'guardName', label: 'Guard Name', type: 'text', required: true },
     ],
@@ -400,7 +401,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_12: {
     title: 'Template 12: Stores, Purchases & Expense Sheet',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'purchaserName', label: 'Purchaser Name', type: 'text', required: true },
     ],
@@ -500,7 +501,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_14: {
     title: 'Template 14: HR Payroll & Leave Record',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'period', label: 'Period (Month / Year)', type: 'text', required: true },
       { name: 'hrOfficer', label: 'HR Officer Name', type: 'text', required: true },
@@ -538,7 +539,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_15: {
     title: 'Template 15: Petty Cash Daily Report',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'cashierName', label: 'Cashier Name', type: 'text', required: true },
       { name: 'openingBalance', label: 'Opening Balance (USD)', type: 'number', required: true },
@@ -586,7 +587,7 @@ const formSpecs: Record<string, FormSpec> = {
   TEMPLATE_16: {
     title: 'Template 16: Purchase Requisition',
     headerFields: [
-      { name: 'reportDate', label: 'Date', type: 'text', required: true },
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
       { name: 'site', label: 'Site', type: 'text', required: true },
       { name: 'requisitionNo', label: 'Requisition Number', type: 'text', required: true },
       { name: 'requestedBy', label: 'Requested By', type: 'text', required: true },
@@ -618,7 +619,37 @@ const formSpecs: Record<string, FormSpec> = {
       setValue('grandTotal', parseFloat(rows.reduce((s, r) => s + Number(r.estimatedTotal || 0), 0).toFixed(2)));
     },
   },
+  // ---- TEMPLATE_17: Mercury Based Recovery Log ----
+  TEMPLATE_17: {
+    title: 'Template 17: Mercury Based Recovery Log',
+    headerFields: [
+      { name: 'reportDate', label: 'Date', type: 'date-ddmmyyyy', required: true },
+      { name: 'site', label: 'Site', type: 'text', required: true },
+      { name: 'witness', label: 'Witness', type: 'text', required: true },
+    ],
+    fields: [],
+    tableColumns: [
+      { name: 'time', label: 'Time', type: 'time' },
+      { name: 'numberOfBasins', label: '# of Basins', type: 'number', required: true },
+      { name: 'pureGoldGms', label: 'Pure Gold (gms)', type: 'number', required: true },
+    ],
+    summaryFields: [
+      { name: 'totalNetWeight', label: 'Total Net Weight (g)', type: 'number', disabled: true },
+      { name: 'totalPureGold', label: 'Total Pure Gold (g)', type: 'number', disabled: true },
+    ],
+    calculateSummary: (rows, setValue) => {
+      const totalPureGold = parseFloat(rows.reduce((s, r) => s + Number(r.pureGoldGms || 0), 0).toFixed(2));
+      setValue('totalPureGold', totalPureGold);
+      setValue('totalNetWeight', totalPureGold);
+    },
+  },
 };
+
+// Add footer for TEMPLATE_17 (same as TEMPLATE_07)
+templateFooters['TEMPLATE_17'] = [
+  { role: 'labManager', label: 'Lab Manager', required: true },
+  { role: 'siteController', label: 'Site Controller', required: true },
+];
 
 // Pre-populate handover items for TEMPLATE_13
 const HANDOVER_ITEMS = [
@@ -787,6 +818,16 @@ export default function GenericReportForm({ templateId }: { templateId: string }
         control={control}
         rules={{ required: f.required ? `${f.label} is required` : false }}
         render={({ field }) => {
+          if (f.type === 'date-ddmmyyyy') {
+            return (
+              <DateInput
+                value={field.value || ''}
+                onChange={field.onChange}
+                required={f.required}
+                disabled={f.disabled}
+              />
+            );
+          }
           if (f.type === 'select') {
             return (
               <select {...field} className="minimal-select">

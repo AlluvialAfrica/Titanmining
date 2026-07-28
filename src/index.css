@@ -78,7 +78,7 @@ h1, h2, h3, h4, .font-serif {
 
 .minimal-select {
   width: 100%;
-  padding: 0.75rem 0;
+  padding: 0.75rem 1.5rem 0.75rem 0;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid var(--border-color);
@@ -87,6 +87,9 @@ h1, h2, h3, h4, .font-serif {
   font-size: 0.95rem;
   appearance: none;
   cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
 }
 
 .minimal-select:focus {
@@ -173,6 +176,36 @@ h1, h2, h3, h4, .font-serif {
   font-size: 0.9rem;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .editorial-title {
+    font-size: 1.5rem;
+  }
+
+  .editorial-container {
+    padding: 2rem 1rem;
+  }
+
+  .editorial-table th,
+  .editorial-table td {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .minimal-btn,
+  .minimal-btn-secondary {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* Print-friendly styles */
+@media print {
+  .print\\:hidden {
+    display: none !important;
+  }
 }
 
 /* Custom Scrollbars */

@@ -3,7 +3,7 @@ import React from 'react';
 export interface ColumnDef {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'select' | 'checkbox' | 'time';
+  type: 'text' | 'number' | 'select' | 'checkbox' | 'time' | 'textarea';
   width?: string;
   options?: { value: string; label: string }[];
   required?: boolean;
@@ -103,7 +103,18 @@ export default function MultiRowTable({
               )}
               {columns.map((col) => (
                 <td key={col.name} className="border border-black px-1 py-0.5">
-                  {col.type === 'select' ? (
+                  {col.type === 'textarea' ? (
+                    <textarea
+                      value={row[col.name] ?? ''}
+                      onChange={(e) => handleCellChange(rowIndex, col.name, e.target.value)}
+                      disabled={col.disabled}
+                      className={`w-full bg-transparent border-0 outline-none text-xs py-1 px-1 min-h-[2.5rem] resize-y ${
+                        col.disabled ? 'text-zinc-500 font-semibold' : ''
+                      }`}
+                      placeholder={col.disabled ? '(auto)' : ''}
+                      rows={2}
+                    />
+                  ) : col.type === 'select' ? (
                     <select
                       value={row[col.name] || ''}
                       onChange={(e) => handleCellChange(rowIndex, col.name, e.target.value)}

@@ -612,7 +612,9 @@
     "TEMPLATE_12": "Feuille Magasins, Achats et D\u00e9penses",
     "TEMPLATE_13": "Certificat de Passation de Service",
     "TEMPLATE_14": "Registre Paie et Cong\u00e9s RH",
-    "TEMPLATE_15": "Rapport Quotidien Petite Caisse"
+    "TEMPLATE_15": "Rapport Quotidien Petite Caisse",
+    "TEMPLATE_16": "Demande d'Achat",
+    "TEMPLATE_17": "Journal de R\u00e9cup\u00e9ration au Mercure"
   },
   "templates": {
     "TEMPLATE_02": {
@@ -737,6 +739,15 @@
       "calculatedBalance": "Solde de Tiroir Calcul\u00e9 (USD)",
       "cashVariance": "\u00c9cart R\u00e9el du Solde de Tiroir",
       "varianceMessage": "\u00c9cart de petite caisse d\u00e9tect\u00e9. \u00c9cart : {{variance}} USD. Veuillez expliquer l'\u00e9cart du tiroir-caisse."
+    },
+    "TEMPLATE_17": {
+      "title": "Journal de R\u00e9cup\u00e9ration au Mercure",
+      "witness": "T\u00e9moin",
+      "time": "Heure",
+      "numberOfBasins": "Nombre de Bassins",
+      "pureGoldGms": "Or Pur (grammes)",
+      "totalNetWeight": "Poids Net Total (g)",
+      "totalPureGold": "Or Pur Total (g)"
     }
   },
   "otp": {

@@ -3,7 +3,13 @@ import { getDataClient } from '../../services/dataService';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { logger } from '../../utils/logger';
+import { formatDateDDMMYYYY } from '../../utils/dateFormat';
+import DateInput from '../../components/DateInput';
 import toast from 'react-hot-toast';
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 interface StaffPayrollRecord {
   id: string;
@@ -20,12 +26,30 @@ interface StaffPayrollRecord {
 
 interface LeaveRequest {
   id: string;
-  staffName: string;
-  leaveType: 'Normal' | 'Sick' | 'Compassionate';
+  employeeName: string;
+  leaveType: string;
   startDate: string;
-  days: number;
+  endDate: string;
+  numberOfDays: number;
+  reason: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  appliedAt: string;
+  reviewedBy?: string;
+  reviewRemarks?: string;
 }
+
+interface AttendanceEntry {
+  staffName: string;
+  role: string;
+  status: 'PRESENT' | 'ABSENT' | 'LEAVE';
+  timeIn: string;
+  timeOut: string;
+}
+
+type SubTab = 'payroll' | 'attendance' | 'leave';
+
+const LEAVE_STORAGE_KEY = 'titan_leave_requests';
+const ATTENDANCE_STORAGE_PREFIX = 'titan_attendance_';
 
 const DEFAULT_SALARIES: Record<string, number> = {
   SITE_CONTROLLER: 2500,
@@ -44,59 +68,109 @@ const DEFAULT_SALARIES: Record<string, number> = {
   ENTERPRISE_MANAGER: 3000,
 };
 
+const SEED_STAFF = [
+  { id: 'seed-01', firstName: 'Osman', lastName: 'Faafan', role: 'SITE_CONTROLLER' },
+  { id: 'seed-02', firstName: 'Sarah', lastName: 'Kiprop', role: 'MINING_GEOLOGY_LEAD' },
+  { id: 'seed-03', firstName: 'Kwame', lastName: 'Mensah', role: 'PROCESSING_RECOVERY_LEAD' },
+  { id: 'seed-04', firstName: 'John', lastName: 'Kamau', role: 'FUEL_ADMIN_LOGISTICS' },
+  { id: 'seed-05', firstName: 'Peter', lastName: 'Njoroge', role: 'ENGINE_MECHANIC' },
+  { id: 'seed-06', firstName: 'Samuel', lastName: 'Mwita', role: 'ELECTRICAL_MECHANIC' },
+  { id: 'seed-07', firstName: 'Ibrahim', lastName: 'Abdi', role: 'GREASING_WASHING_HELPER' },
+  { id: 'seed-08', firstName: 'Francis', lastName: 'Ochieng', role: 'GATE_SECURITY' },
+];
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
 export default function PayrollManagement() {
   const { user } = useAuth();
   const { submitReport } = useReport();
+  const [subTab, setSubTab] = useState<SubTab>('payroll');
   const [staffList, setStaffList] = useState<StaffPayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState('2026-07');
-  const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([
-    { id: '1', staffName: 'Peter Njoroge', leaveType: 'Sick', startDate: '2026-07-10', days: 3, status: 'PENDING' },
-    { id: '2', staffName: 'Sarah Kiprop', leaveType: 'Normal', startDate: '2026-07-20', days: 5, status: 'APPROVED' },
-    { id: '3', staffName: 'Ibrahim Abdi', leaveType: 'Compassionate', startDate: '2026-07-24', days: 2, status: 'PENDING' },
-  ]);
+
+  // Leave state
+  const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+
+  // Attendance state
+  const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
+  const [attendanceEntries, setAttendanceEntries] = useState<AttendanceEntry[]>([]);
+
+  // ---------------------------------------------------------------------------
+  // Data loading
+  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     loadStaffData();
+    loadLeaveRequests();
   }, []);
+
+  useEffect(() => {
+    loadAttendanceForDate(attendanceDate);
+  }, [attendanceDate]);
+
+  function loadLeaveRequests() {
+    try {
+      const data = localStorage.getItem(LEAVE_STORAGE_KEY);
+      setLeaveRequests(data ? JSON.parse(data) : []);
+    } catch {
+      setLeaveRequests([]);
+    }
+  }
+
+  function saveLeaveRequests(requests: LeaveRequest[]) {
+    localStorage.setItem(LEAVE_STORAGE_KEY, JSON.stringify(requests));
+    setLeaveRequests(requests);
+  }
+
+  function loadAttendanceForDate(date: string) {
+    try {
+      const data = localStorage.getItem(`${ATTENDANCE_STORAGE_PREFIX}${date}`);
+      if (data) {
+        setAttendanceEntries(JSON.parse(data));
+      } else {
+        // Initialize from staff list
+        const entries: AttendanceEntry[] = SEED_STAFF.map(s => ({
+          staffName: `${s.firstName} ${s.lastName}`,
+          role: s.role,
+          status: 'PRESENT' as const,
+          timeIn: '07:00',
+          timeOut: '17:00',
+        }));
+        setAttendanceEntries(entries);
+      }
+    } catch {
+      setAttendanceEntries([]);
+    }
+  }
+
+  function saveAttendance() {
+    localStorage.setItem(`${ATTENDANCE_STORAGE_PREFIX}${attendanceDate}`, JSON.stringify(attendanceEntries));
+    toast.success('Attendance saved successfully.');
+  }
 
   async function loadStaffData() {
     setLoading(true);
     try {
       const client = getDataClient();
       const { data: users } = await client.models.User.list();
-      
-      // Seed users fallback if empty
-      const userRecords = users && users.length > 0 ? users : [
-        { id: 'seed-01', firstName: 'Osman', lastName: 'Faafan', role: 'SITE_CONTROLLER' },
-        { id: 'seed-02', firstName: 'Sarah', lastName: 'Kiprop', role: 'MINING_GEOLOGY_LEAD' },
-        { id: 'seed-03', firstName: 'Kwame', lastName: 'Mensah', role: 'PROCESSING_RECOVERY_LEAD' },
-        { id: 'seed-04', firstName: 'John', lastName: 'Kamau', role: 'FUEL_ADMIN_LOGISTICS' },
-        { id: 'seed-05', firstName: 'Peter', lastName: 'Njoroge', role: 'ENGINE_MECHANIC' },
-        { id: 'seed-06', firstName: 'Samuel', lastName: 'Mwita', role: 'ELECTRICAL_MECHANIC' },
-        { id: 'seed-07', firstName: 'Ibrahim', lastName: 'Abdi', role: 'GREASING_WASHING_HELPER' },
-        { id: 'seed-08', firstName: 'Francis', lastName: 'Ochieng', role: 'GATE_SECURITY' },
-      ];
+      const userRecords = users && users.length > 0 ? users : SEED_STAFF;
 
-      // Query any existing advances to deduct them from payroll (we'll fetch from localStorage for simplicity/integrity)
       const cachedAdvancesStr = localStorage.getItem('titan_advances_list');
       const advancesList = cachedAdvancesStr ? JSON.parse(cachedAdvancesStr) : [];
 
       const formatted: StaffPayrollRecord[] = userRecords.map((u: any, idx: number) => {
         const base = DEFAULT_SALARIES[u.role] || 1000;
-        
-        // Sum disbursed advances for this email/name
         const nameKey = `${u.firstName} ${u.lastName}`.toLowerCase();
         const userAdvance = advancesList
           .filter((a: any) => (a.staffName.toLowerCase() === nameKey || a.id === u.id) && a.status === 'DISBURSED')
           .reduce((sum: number, a: any) => sum + Number(a.amount || 0), 0);
 
-        // Mock work presence for demo purposes
         const daysPresent = 22 + (idx % 4);
         const leaveDays = idx % 3 === 0 ? 2 : 0;
         const daysAbsent = 26 - daysPresent - leaveDays;
-        
-        // Net pay calculation: (base / 26 days * daysPresent) - advances
         const salaryDue = Math.round((base / 26) * (daysPresent + leaveDays));
         const netPay = Math.max(0, salaryDue - userAdvance);
 
@@ -123,14 +197,19 @@ export default function PayrollManagement() {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Handlers
+  // ---------------------------------------------------------------------------
+
   const handleActionLeave = (id: string, action: 'APPROVED' | 'REJECTED') => {
-    setLeaveRequests(prev => prev.map(req => {
+    const updated = leaveRequests.map(req => {
       if (req.id === id) {
         toast.success(`Leave request ${action.toLowerCase()} successfully.`);
-        return { ...req, status: action };
+        return { ...req, status: action, reviewedBy: `${user?.firstName} ${user?.lastName}` };
       }
       return req;
-    }));
+    });
+    saveLeaveRequests(updated);
   };
 
   const handleSalaryChange = (id: string, field: keyof StaffPayrollRecord, value: number) => {
@@ -142,11 +221,16 @@ export default function PayrollManagement() {
         } else if (field === 'daysPresent' || field === 'leaveDays') {
           updated.salaryDue = Math.round((updated.baseSalary / 26) * (updated.daysPresent + updated.leaveDays));
         }
+        // Always recalculate netPay when any field changes (including advance)
         updated.netPay = Math.max(0, updated.salaryDue - updated.advance);
         return updated;
       }
       return s;
     }));
+  };
+
+  const handleAttendanceChange = (idx: number, field: keyof AttendanceEntry, value: string) => {
+    setAttendanceEntries(prev => prev.map((e, i) => i === idx ? { ...e, [field]: value } : e));
   };
 
   const submitPayrollReport = async () => {
@@ -178,8 +262,7 @@ export default function PayrollManagement() {
 
       await submitReport('TEMPLATE_14', payload);
       toast.success('Payroll compiled & TEMPLATE_14 report generated successfully!');
-      
-      // Store compiled payroll summary in localStorage to link with Petty Cash
+
       localStorage.setItem('titan_latest_payroll', JSON.stringify({
         period: selectedMonth,
         totalNetPay,
@@ -194,6 +277,17 @@ export default function PayrollManagement() {
   const grandTotalAdvances = staffList.reduce((sum, s) => sum + s.advance, 0);
   const grandTotalNetPay = staffList.reduce((sum, s) => sum + s.netPay, 0);
 
+  // Attendance summaries
+  const attendanceSummary = {
+    present: attendanceEntries.filter(e => e.status === 'PRESENT').length,
+    absent: attendanceEntries.filter(e => e.status === 'ABSENT').length,
+    leave: attendanceEntries.filter(e => e.status === 'LEAVE').length,
+  };
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+
   return (
     <div className="space-y-8">
       <div>
@@ -203,180 +297,237 @@ export default function PayrollManagement() {
         </p>
       </div>
 
-      {/* Leave Requests Panel */}
-      <div className="border border-black p-6 bg-white space-y-4">
-        <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
-          Recent Leave Applications
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="editorial-table">
-            <thead>
-              <tr>
-                <th>Staff Name</th>
-                <th>Type</th>
-                <th>Start Date</th>
-                <th>Days Requested</th>
-                <th>Status</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaveRequests.map((req) => (
-                <tr key={req.id}>
-                  <td className="font-serif italic font-semibold">{req.staffName}</td>
-                  <td>{req.leaveType}</td>
-                  <td>{req.startDate}</td>
-                  <td>{req.days} days</td>
-                  <td>
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 border uppercase tracking-wider ${
-                      req.status === 'APPROVED' ? 'border-green-600 bg-green-50 text-green-700' :
-                      req.status === 'REJECTED' ? 'border-red-600 bg-red-50 text-red-700' :
-                      'border-zinc-400 bg-zinc-50'
-                    }`}>
-                      {req.status}
-                    </span>
-                  </td>
-                  <td className="text-right space-x-2">
-                    {req.status === 'PENDING' && (
-                      <>
-                        <button
-                          onClick={() => handleActionLeave(req.id, 'APPROVED')}
-                          className="text-[10px] uppercase font-semibold text-green-700 hover:underline"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleActionLeave(req.id, 'REJECTED')}
-                          className="text-[10px] uppercase font-semibold text-red-600 hover:underline"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Sub-tab navigation */}
+      <div className="flex gap-2 border-b border-black pb-2">
+        {(['payroll', 'attendance', 'leave'] as SubTab[]).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setSubTab(tab)}
+            className={`text-[10px] uppercase tracking-widest font-semibold px-4 py-2 border ${
+              subTab === tab ? 'border-black bg-black text-white' : 'border-zinc-300 text-zinc-500 hover:border-black'
+            }`}
+          >
+            {tab === 'payroll' ? 'Payroll' : tab === 'attendance' ? 'Attendance' : 'Leave Requests'}
+          </button>
+        ))}
       </div>
 
-      {/* Payroll Configuration & Form */}
-      <div className="border border-black p-6 bg-white space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-black pb-4">
-          <h2 className="font-serif italic text-lg text-black">
-            Monthly Payroll Calculations
-          </h2>
-          <div className="flex items-center gap-4">
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="minimal-input max-w-[180px] py-1 text-xs"
-            />
-            <button
-              onClick={submitPayrollReport}
-              className="minimal-btn text-xs"
-            >
-              Sign & Compile Payroll (T14)
-            </button>
+      {/* ---------- PAYROLL TAB ---------- */}
+      {subTab === 'payroll' && (
+        <div className="border border-black p-6 bg-white space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-black pb-4">
+            <h2 className="font-serif italic text-lg text-black">Monthly Payroll Calculations</h2>
+            <div className="flex items-center gap-4">
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="minimal-input max-w-[180px] py-1 text-xs"
+              />
+              <button onClick={submitPayrollReport} className="minimal-btn text-xs">
+                Sign & Compile Payroll (T14)
+              </button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-8 font-serif italic text-zinc-400">Loading staff database...</div>
+          ) : (
+            <div className="space-y-6">
+              <div className="overflow-x-auto">
+                <table className="editorial-table">
+                  <thead>
+                    <tr>
+                      <th>Staff Name</th>
+                      <th>Role</th>
+                      <th>Base Salary</th>
+                      <th>Days Present (26d)</th>
+                      <th>Leave Days</th>
+                      <th>Salary Earned</th>
+                      <th>Advance</th>
+                      <th>Net Pay due</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {staffList.map((s) => (
+                      <tr key={s.id}>
+                        <td className="font-semibold text-black">{s.name}</td>
+                        <td className="text-[11px] font-mono text-zinc-500 uppercase">{s.role.replace('_', ' ')}</td>
+                        <td>
+                          <input type="number" value={s.baseSalary} onChange={(e) => handleSalaryChange(s.id, 'baseSalary', Number(e.target.value))} className="w-20 px-1 py-0.5 border border-zinc-200 text-xs" />
+                        </td>
+                        <td>
+                          <input type="number" max={26} value={s.daysPresent} onChange={(e) => handleSalaryChange(s.id, 'daysPresent', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
+                        </td>
+                        <td>
+                          <input type="number" max={26} value={s.leaveDays} onChange={(e) => handleSalaryChange(s.id, 'leaveDays', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
+                        </td>
+                        <td className="font-semibold">${s.salaryDue.toLocaleString()}</td>
+                        <td>
+                          <input type="number" value={s.advance} onChange={(e) => handleSalaryChange(s.id, 'advance', Number(e.target.value))} className="w-20 px-1 py-0.5 border border-zinc-200 text-xs text-red-600" />
+                        </td>
+                        <td className="font-serif italic font-bold text-green-700">${s.netPay.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-zinc-50 border-t-2 border-black font-bold">
+                      <td colSpan={2}>Grand Total</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>${grandTotalSalaries.toLocaleString()}</td>
+                      <td className="text-red-600">-${grandTotalAdvances.toLocaleString()}</td>
+                      <td className="font-serif italic text-green-700">${grandTotalNetPay.toLocaleString()}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-zinc-200">
+                <div className="border border-zinc-200 p-4">
+                  <p className="minimal-label">Total Outlay</p>
+                  <p className="text-xl font-serif italic mt-1">${(grandTotalSalaries + grandTotalAdvances).toLocaleString()}</p>
+                  <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded"><div className="bg-black h-1.5 rounded" style={{ width: '100%' }}></div></div>
+                </div>
+                <div className="border border-zinc-200 p-4">
+                  <p className="minimal-label">Net Disbursed Salary</p>
+                  <p className="text-xl font-serif italic mt-1 text-green-700">${grandTotalNetPay.toLocaleString()}</p>
+                  <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded"><div className="bg-green-600 h-1.5 rounded" style={{ width: `${(grandTotalNetPay / (grandTotalSalaries || 1)) * 100}%` }}></div></div>
+                </div>
+                <div className="border border-zinc-200 p-4">
+                  <p className="minimal-label">Advances Recovered</p>
+                  <p className="text-xl font-serif italic mt-1 text-red-600">${grandTotalAdvances.toLocaleString()}</p>
+                  <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded"><div className="bg-red-500 h-1.5 rounded" style={{ width: `${(grandTotalAdvances / (grandTotalSalaries || 1)) * 100}%` }}></div></div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ---------- ATTENDANCE TAB ---------- */}
+      {subTab === 'attendance' && (
+        <div className="border border-black p-6 bg-white space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-black pb-4">
+            <h2 className="font-serif italic text-lg text-black">Daily Attendance Register</h2>
+            <div className="flex items-center gap-4">
+              <DateInput value={attendanceDate} onChange={setAttendanceDate} className="minimal-input max-w-[180px] py-1 text-xs" />
+              <button onClick={saveAttendance} className="minimal-btn text-xs">Save Attendance</button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="editorial-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Staff Name</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Time In</th>
+                  <th>Time Out</th>
+                </tr>
+              </thead>
+              <tbody>
+                {attendanceEntries.map((entry, idx) => (
+                  <tr key={idx}>
+                    <td className="text-zinc-400 font-mono">{idx + 1}</td>
+                    <td className="font-semibold">{entry.staffName}</td>
+                    <td className="text-[11px] font-mono text-zinc-500 uppercase">{entry.role.replace(/_/g, ' ')}</td>
+                    <td>
+                      <select
+                        value={entry.status}
+                        onChange={e => handleAttendanceChange(idx, 'status', e.target.value)}
+                        className="text-xs border border-zinc-200 px-2 py-1"
+                      >
+                        <option value="PRESENT">Present</option>
+                        <option value="ABSENT">Absent</option>
+                        <option value="LEAVE">Leave</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input type="time" value={entry.timeIn} onChange={e => handleAttendanceChange(idx, 'timeIn', e.target.value)} className="text-xs border border-zinc-200 px-2 py-1" />
+                    </td>
+                    <td>
+                      <input type="time" value={entry.timeOut} onChange={e => handleAttendanceChange(idx, 'timeOut', e.target.value)} className="text-xs border border-zinc-200 px-2 py-1" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-200">
+            <div className="border border-green-200 bg-green-50 p-3 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-green-700 font-semibold">Present</p>
+              <p className="text-xl font-serif italic mt-1 text-green-700">{attendanceSummary.present}</p>
+            </div>
+            <div className="border border-red-200 bg-red-50 p-3 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-red-700 font-semibold">Absent</p>
+              <p className="text-xl font-serif italic mt-1 text-red-600">{attendanceSummary.absent}</p>
+            </div>
+            <div className="border border-amber-200 bg-amber-50 p-3 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-amber-700 font-semibold">Leave</p>
+              <p className="text-xl font-serif italic mt-1 text-amber-600">{attendanceSummary.leave}</p>
+            </div>
           </div>
         </div>
+      )}
 
-        {loading ? (
-          <div className="text-center py-8 font-serif italic text-zinc-400">Loading staff database...</div>
-        ) : (
-          <div className="space-y-6">
+      {/* ---------- LEAVE TAB ---------- */}
+      {subTab === 'leave' && (
+        <div className="border border-black p-6 bg-white space-y-4">
+          <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
+            All Leave Applications
+          </h2>
+          {leaveRequests.length === 0 ? (
+            <p className="text-zinc-500 font-serif italic text-center py-6">No leave applications submitted yet.</p>
+          ) : (
             <div className="overflow-x-auto">
               <table className="editorial-table">
                 <thead>
                   <tr>
                     <th>Staff Name</th>
-                    <th>Role</th>
-                    <th>Base Salary</th>
-                    <th>Days Present (26d)</th>
-                    <th>Leave Days</th>
-                    <th>Salary Earned</th>
-                    <th>Advances Deducted</th>
-                    <th>Net Pay due</th>
+                    <th>Type</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Days</th>
+                    <th>Status</th>
+                    <th className="text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {staffList.map((s) => (
-                    <tr key={s.id}>
-                      <td className="font-semibold text-black">{s.name}</td>
-                      <td className="text-[11px] font-mono text-zinc-500 uppercase">{s.role.replace('_', ' ')}</td>
+                  {leaveRequests.map((req) => (
+                    <tr key={req.id}>
+                      <td className="font-serif italic font-semibold">{req.employeeName}</td>
+                      <td>{req.leaveType}</td>
+                      <td>{formatDateDDMMYYYY(req.startDate)}</td>
+                      <td>{formatDateDDMMYYYY(req.endDate)}</td>
+                      <td>{req.numberOfDays} days</td>
                       <td>
-                        <input
-                          type="number"
-                          value={s.baseSalary}
-                          onChange={(e) => handleSalaryChange(s.id, 'baseSalary', Number(e.target.value))}
-                          className="w-20 px-1 py-0.5 border border-zinc-200 text-xs"
-                        />
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 border uppercase tracking-wider ${
+                          req.status === 'APPROVED' ? 'border-green-600 bg-green-50 text-green-700' :
+                          req.status === 'REJECTED' ? 'border-red-600 bg-red-50 text-red-700' :
+                          'border-zinc-400 bg-zinc-50'
+                        }`}>
+                          {req.status}
+                        </span>
                       </td>
-                      <td>
-                        <input
-                          type="number"
-                          max={26}
-                          value={s.daysPresent}
-                          onChange={(e) => handleSalaryChange(s.id, 'daysPresent', Number(e.target.value))}
-                          className="w-16 px-1 py-0.5 border border-zinc-200 text-xs"
-                        />
+                      <td className="text-right space-x-2">
+                        {req.status === 'PENDING' && (
+                          <>
+                            <button onClick={() => handleActionLeave(req.id, 'APPROVED')} className="text-[10px] uppercase font-semibold text-green-700 hover:underline">Approve</button>
+                            <button onClick={() => handleActionLeave(req.id, 'REJECTED')} className="text-[10px] uppercase font-semibold text-red-600 hover:underline">Reject</button>
+                          </>
+                        )}
                       </td>
-                      <td>
-                        <input
-                          type="number"
-                          max={26}
-                          value={s.leaveDays}
-                          onChange={(e) => handleSalaryChange(s.id, 'leaveDays', Number(e.target.value))}
-                          className="w-16 px-1 py-0.5 border border-zinc-200 text-xs"
-                        />
-                      </td>
-                      <td className="font-semibold">${s.salaryDue.toLocaleString()}</td>
-                      <td className="text-red-600 font-medium">-${s.advance.toLocaleString()}</td>
-                      <td className="font-serif italic font-bold text-green-700">${s.netPay.toLocaleString()}</td>
                     </tr>
                   ))}
-                  <tr className="bg-zinc-50 border-t-2 border-black font-bold">
-                    <td colSpan={2}>Grand Total</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>${grandTotalSalaries.toLocaleString()}</td>
-                    <td className="text-red-600">-${grandTotalAdvances.toLocaleString()}</td>
-                    <td className="font-serif italic text-green-700">${grandTotalNetPay.toLocaleString()}</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
-
-            {/* Quick Metrics visualization */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-zinc-200">
-              <div className="border border-zinc-200 p-4">
-                <p className="minimal-label">Total Outlay</p>
-                <p className="text-xl font-serif italic mt-1">${(grandTotalSalaries + grandTotalAdvances).toLocaleString()}</p>
-                <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded">
-                  <div className="bg-black h-1.5 rounded" style={{ width: '100%' }}></div>
-                </div>
-              </div>
-              <div className="border border-zinc-200 p-4">
-                <p className="minimal-label">Net Disbursed Salary</p>
-                <p className="text-xl font-serif italic mt-1 text-green-700">${grandTotalNetPay.toLocaleString()}</p>
-                <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded">
-                  <div className="bg-green-600 h-1.5 rounded" style={{ width: `${(grandTotalNetPay / (grandTotalSalaries || 1)) * 100}%` }}></div>
-                </div>
-              </div>
-              <div className="border border-zinc-200 p-4">
-                <p className="minimal-label">Advances Recovered</p>
-                <p className="text-xl font-serif italic mt-1 text-red-600">${grandTotalAdvances.toLocaleString()}</p>
-                <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded">
-                  <div className="bg-red-500 h-1.5 rounded" style={{ width: `${(grandTotalAdvances / (grandTotalSalaries || 1)) * 100}%` }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -13,6 +13,54 @@ import { logger } from '../utils/logger';
 import { trackEvent, AnalyticsEvents } from '../utils/analytics';
 import toast from 'react-hot-toast';
 
+// ---------------------------------------------------------------------------
+// OTP session security — HMAC-nonce approach
+// ---------------------------------------------------------------------------
+// The nonce lives only in module-level memory. On page refresh the JS module
+// re-initialises, so `otpSessionNonce` becomes null and the stored HMAC can
+// never be recomputed → session restore fails → user is signed out.
+// An attacker who sets the sessionStorage key via DevTools still cannot bypass
+// OTP because they don't have the in-memory nonce.
+// ---------------------------------------------------------------------------
+
+let otpSessionNonce: string | null = null;
+
+function generateNonce(): string {
+  const arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function computeHmac(nonce: string, userId: string): Promise<string> {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', enc.encode(nonce), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(userId));
+  return Array.from(new Uint8Array(sig), b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ---------------------------------------------------------------------------
+// Demo user detection
+// ---------------------------------------------------------------------------
+
+const DEMO_EMAILS = new Set([
+  'demo_site_controller@titan.demo',
+  'demo_geology@titan.demo',
+  'demo_processing@titan.demo',
+  'demo_fuel@titan.demo',
+  'demo_mechanic@titan.demo',
+  'demo_security@titan.demo',
+  'demo_hr@titan.demo',
+  'demo_finance@titan.demo',
+  'demo_enterprise@titan.demo',
+  'faafan10@gmail.com',
+]);
+
+function isDemoUser(username: string): boolean {
+  return username.startsWith('demo') || username.includes('demo') || DEMO_EMAILS.has(username.toLowerCase());
+}
+
 export interface User {
   id: string;
   firstName: string;
@@ -92,15 +140,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function checkExistingSession() {
     try {
+      const storedHmac = sessionStorage.getItem(OTP_VERIFIED_KEY);
       // If OTP was never verified in this browser session, don't restore the user.
       // This prevents bypassing OTP by refreshing the page after password-only sign-in.
-      if (!sessionStorage.getItem(OTP_VERIFIED_KEY)) {
-        // A Cognito session may still exist from a password-only sign-in; clear it.
+      if (!storedHmac || !otpSessionNonce) {
+        // Nonce lives only in memory — on page refresh it's null, so we can't
+        // recompute the HMAC and session restore intentionally fails.
+        sessionStorage.removeItem(OTP_VERIFIED_KEY);
         try { await signOut(); } catch (_) { /* no session — fine */ }
         return;
       }
 
       const currentUser = await getCurrentUser();
+      // Verify the stored HMAC against the in-memory nonce
+      const expectedHmac = await computeHmac(otpSessionNonce, currentUser.userId);
+      if (storedHmac !== expectedHmac) {
+        sessionStorage.removeItem(OTP_VERIFIED_KEY);
+        otpSessionNonce = null;
+        try { await signOut(); } catch (_) { /* ignore */ }
+        return;
+      }
+
       const attrs = await fetchUserAttributes();
       const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
       setUser(appUser);
@@ -116,6 +176,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (mobileNumber: string, emailOrUsername: string, password: string) => {
     setLoading(true);
     try {
+      // Generate a fresh nonce for this login attempt
+      otpSessionNonce = generateNonce();
+
       // Clear any stale Cognito session before signing in (e.g. demo role switching)
       try { await signOut(); } catch (_) { /* no active session — expected */ }
 
@@ -150,7 +213,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Verify that the mobile number typed by the user matches the registered phone_number
         const phone = attrs.phone_number;
-        if (!username.startsWith('demo') && !username.includes('demo') && phone) {
+        if (!isDemoUser(username) && phone) {
           const formattedTyped = mobileNumber.replace(/[\s\-\(\)]/g, '');
           const formattedReg = phone.replace(/[\s\-\(\)]/g, '');
           if (formattedTyped !== formattedReg) {
@@ -162,7 +225,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         let otpSent = false;
         let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
 
-        if (username.startsWith('demo') || username.includes('demo') || !phone) {
+        if (isDemoUser(username) || !phone) {
           generatedCode = '123456';
           toast.success(`Demo WhatsApp OTP code: ${generatedCode}`, { duration: 8000 });
           otpSent = true;
@@ -210,6 +273,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const changePassword = async (newPassword: string) => {
     setLoading(true);
     try {
+      // Ensure nonce exists for password-change flow
+      if (!otpSessionNonce) otpSessionNonce = generateNonce();
+
       const result = await confirmSignIn({ challengeResponse: newPassword });
       setSignInResult(result);
       setForcePasswordChange(false);
@@ -230,7 +296,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const username = tempUser?.username || '';
 
         let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
-        if (username.startsWith('demo') || username.includes('demo') || !phone) {
+        if (isDemoUser(username) || !phone) {
           generatedCode = '123456';
           toast.success(`Demo WhatsApp OTP code: ${generatedCode}`, { duration: 8000 });
         } else {
@@ -268,7 +334,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       if (tempUser && tempUser.generatedCode) {
         if (code === tempUser.generatedCode) {
-          sessionStorage.setItem(OTP_VERIFIED_KEY, '1');
+          // Store HMAC(nonce, userId) — not just '1'.
+          // On refresh the nonce is gone so HMAC can't be recomputed → session dies.
+          const hmac = otpSessionNonce
+            ? await computeHmac(otpSessionNonce, tempUser.appUser.id)
+            : '';
+          sessionStorage.setItem(OTP_VERIFIED_KEY, hmac);
           setUser(tempUser.appUser);
           setTempUser(null);
           setOtpPending(false);
@@ -284,8 +355,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await confirmSignIn({ challengeResponse: code });
 
       if (result.isSignedIn) {
-        sessionStorage.setItem(OTP_VERIFIED_KEY, '1');
         const currentUser = await getCurrentUser();
+        const hmac = otpSessionNonce
+          ? await computeHmac(otpSessionNonce, currentUser.userId)
+          : '';
+        sessionStorage.setItem(OTP_VERIFIED_KEY, hmac);
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
         setUser(appUser);
@@ -302,6 +376,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     trackEvent(AnalyticsEvents.LOGOUT);
     sessionStorage.removeItem(OTP_VERIFIED_KEY);
+    otpSessionNonce = null;
     try {
       await signOut();
     } catch (err) {

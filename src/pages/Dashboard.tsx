@@ -9,6 +9,7 @@ import OfflineBanner from '../components/OfflineBanner';
 import HelpButton from '../components/HelpButton';
 import ReportExportMenu from '../components/ReportExportMenu';
 import { useReport } from '../hooks/useReport';
+import { formatDateDDMMYYYY } from '../utils/dateFormat';
 
 // Lazy-loaded page components for code-splitting
 const FuelReconciliation = lazy(() => import('./reports/FuelReconciliation'));
@@ -27,8 +28,10 @@ const AdminDashboard = lazy(() => import('./AdminDashboard'));
 const SiteManagerDashboard = lazy(() => import('./SiteManagerDashboard'));
 const PayrollManagement = lazy(() => import('./hr/PayrollManagement'));
 const FinanceManagement = lazy(() => import('./finance/FinanceManagement'));
+const LeaveApplication = lazy(() => import('./leave/LeaveApplication'));
+const LeaveSettings = lazy(() => import('./hr/LeaveSettings'));
 
-type TabType = 'form' | 'history' | 'users' | 'settings' | 'admin' | 'siteManagerDashboard' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help' | 'payrollManagement' | 'financeManagement';
+type TabType = 'form' | 'history' | 'users' | 'settings' | 'admin' | 'siteManagerDashboard' | 'kpiInput' | 'kpiDashboard' | 'teamDashboard' | 'profile' | 'help' | 'payrollManagement' | 'financeManagement' | 'leaveApplication' | 'leaveSettings';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -52,9 +55,8 @@ export default function Dashboard() {
       setActiveTab('siteManagerDashboard');
     } else if (user?.role === Role.HR_MANAGER) {
       setActiveTab('payrollManagement');
-    } else if (user?.role === Role.FINANCE_MANAGER) {
-      setActiveTab('financeManagement');
     }
+    // Finance Manager defaults to 'form' (Daily Reporting) — no override needed
   }, [user]);
 
   const suspenseFallback = (
@@ -157,7 +159,9 @@ export default function Dashboard() {
               {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
               {navButton('kpiDashboard', t('nav.kpiDashboard'), permissions.canViewKPI)}
               {navButton('teamDashboard', t('nav.teamDashboard'), permissions.canViewTeamKPI)}
+              {navButton('leaveApplication', 'Leave Application')}
               {navButton('payrollManagement', 'Payroll & Leave', user.role === Role.HR_MANAGER)}
+              {navButton('leaveSettings', 'Leave Settings', user.role === Role.HR_MANAGER)}
               {navButton('financeManagement', 'Treasury & Advances', user.role === Role.FINANCE_MANAGER)}
               {navButton('profile', t('nav.roleProfile'))}
               {navButton('users', t('nav.userManagement'), permissions.canManageUsers)}
@@ -183,7 +187,7 @@ export default function Dashboard() {
                         onChange={e => setSelectedControllerForm(e.target.value)}
                         className="minimal-select text-base md:text-lg font-serif italic max-w-full md:max-w-md"
                       >
-                        {Array.from({ length: 16 }, (_, i) => {
+                        {Array.from({ length: 17 }, (_, i) => {
                           const tid = `TEMPLATE_${String(i + 1).padStart(2, '0')}`;
                           return (
                             <option key={tid} value={tid}>
@@ -193,7 +197,7 @@ export default function Dashboard() {
                         })}
                       </select>
                     </div>
-                  ) : creatableReports.length > 1 ? (
+                  ) : creatableReports.length >= 1 ? (
                     <div className="mb-8">
                       <label className="minimal-label">{t('reports_form.selectModule')}</label>
                       <select
@@ -211,7 +215,7 @@ export default function Dashboard() {
                   ) : (
                     <div className="mb-8">
                       <h1 className="editorial-title text-2xl font-light">
-                        {creatableReports[0] ? t(`reports.${creatableReports[0]}`) : t('reports_form.noFormsActive')}
+                        {t('reports_form.noFormsActive')}
                       </h1>
                     </div>
                   )}
@@ -277,7 +281,7 @@ export default function Dashboard() {
                       <tbody>
                         {history.map((h: any) => (
                           <tr key={h.id || h.submittedAt}>
-                            <td>{new Date(h.submittedAt).toLocaleDateString()}</td>
+                            <td>{formatDateDDMMYYYY(h.submittedAt)}</td>
                             <td className="font-serif italic font-semibold">{t(`reports.${h.reportType}`) || h.reportType}</td>
                             <td>{h.userId}</td>
                             <td>
@@ -305,7 +309,9 @@ export default function Dashboard() {
               {activeTab === 'profile' && <RoleProfile />}
               {activeTab === 'users' && permissions.canManageUsers && <UserManagement />}
               {activeTab === 'settings' && permissions.canEditProfile && <InstitutionalProfile />}
+              {activeTab === 'leaveApplication' && <LeaveApplication />}
               {activeTab === 'payrollManagement' && user.role === Role.HR_MANAGER && <PayrollManagement />}
+              {activeTab === 'leaveSettings' && user.role === Role.HR_MANAGER && <LeaveSettings />}
               {activeTab === 'financeManagement' && user.role === Role.FINANCE_MANAGER && <FinanceManagement />}
               {activeTab === 'admin' && isAdmin && <AdminDashboard />}
               {activeTab === 'help' && <HelpViewer contextFilter={activeTab} />}

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useReport } from '../hooks/useReport';
 import { useLanguage } from '../contexts/LanguageContext';
+import { formatDateDDMMYYYY } from '../utils/dateFormat';
 
-const TEMPLATE_IDS = Array.from({ length: 13 }, (_, i) => `TEMPLATE_${String(i + 1).padStart(2, '0')}`);
+const TEMPLATE_IDS = Array.from({ length: 17 }, (_, i) => `TEMPLATE_${String(i + 1).padStart(2, '0')}`);
 
 interface ReportSummary {
   templateId: string;
@@ -81,6 +82,54 @@ export default function SiteManagerDashboard() {
   const cashUsed = getMetric('TEMPLATE_01', 'cashUsed');
   const completedCount = completionStatus.filter(s => s.submitted).length;
 
+  // ---------------------------------------------------------------------------
+  // Variance Alerts — compare current values against trailing 3-month averages
+  // ---------------------------------------------------------------------------
+  const varianceAlerts: { label: string; current: number; average: number; pctChange: number; severity: 'amber' | 'red' }[] = [];
+
+  if (history.length >= 30) {
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 86400000).toISOString().split('T')[0];
+    const historicalT01 = history.filter((h: any) => {
+      if (h.reportType !== 'TEMPLATE_01') return false;
+      const d = h.submittedAt ? new Date(h.submittedAt).toISOString().split('T')[0] : '';
+      return d >= ninetyDaysAgo && d < today;
+    });
+
+    if (historicalT01.length > 0) {
+      const avgOf = (key: string) => {
+        const vals = historicalT01.map((h: any) => {
+          try {
+            const d = typeof h.data === 'string' ? JSON.parse(h.data) : (h.data || {});
+            return Number(d[key] || 0);
+          } catch { return 0; }
+        });
+        return vals.reduce((a: number, b: number) => a + b, 0) / vals.length;
+      };
+
+      const checks = [
+        { label: 'Fuel Variance', key: 'fuelVarianceL', current: fuelVariance },
+        { label: 'Cash Used', key: 'cashUsed', current: cashUsed },
+        { label: 'Total Gold', key: 'totalGoldRecoveryG', current: totalGold },
+      ];
+
+      for (const chk of checks) {
+        const avg = avgOf(chk.key);
+        if (avg !== 0) {
+          const pct = ((chk.current - avg) / Math.abs(avg)) * 100;
+          if (Math.abs(pct) > 5) {
+            varianceAlerts.push({
+              label: chk.label,
+              current: chk.current,
+              average: parseFloat(avg.toFixed(2)),
+              pctChange: parseFloat(pct.toFixed(1)),
+              severity: Math.abs(pct) > 15 ? 'red' : 'amber',
+            });
+          }
+        }
+      }
+    }
+  }
+
   const handleExportPdf = (report: any) => {
     const win = window.open('', '_blank');
     if (!win) return;
@@ -131,10 +180,36 @@ export default function SiteManagerDashboard() {
         </div>
       </div>
 
+      {/* Variance Alerts */}
+      {varianceAlerts.length > 0 && (
+        <div>
+          <h2 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            Consumables Variance Alerts
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {varianceAlerts.map((alert, idx) => (
+              <div
+                key={idx}
+                className={`border p-4 ${alert.severity === 'red' ? 'border-red-500 bg-red-50' : 'border-amber-500 bg-amber-50'}`}
+              >
+                <p className="text-[10px] uppercase tracking-widest font-semibold text-zinc-600">{alert.label}</p>
+                <p className={`text-xl font-serif italic mt-1 ${alert.severity === 'red' ? 'text-red-600' : 'text-amber-600'}`}>
+                  {alert.pctChange > 0 ? '+' : ''}{alert.pctChange}%
+                </p>
+                <div className="flex justify-between mt-2 text-[10px] text-zinc-500">
+                  <span>Current: {alert.current}</span>
+                  <span>3-mo avg: {alert.average}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Report Completion Status */}
       <div>
         <h2 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
-          {t('siteManagerDashboard.completionStatus')} ({completedCount}/13)
+          {t('siteManagerDashboard.completionStatus')} ({completedCount}/{TEMPLATE_IDS.length})
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {completionStatus.map((s) => (
@@ -198,7 +273,7 @@ export default function SiteManagerDashboard() {
             <tbody>
               {filtered.map((h: any) => (
                 <tr key={h.id || h.submittedAt}>
-                  <td>{new Date(h.submittedAt).toLocaleDateString()}</td>
+                  <td>{formatDateDDMMYYYY(h.submittedAt)}</td>
                   <td className="font-serif italic font-semibold">{t(`reports.${h.reportType}`) || h.reportType}</td>
                   <td>{h.userId}</td>
                   <td>

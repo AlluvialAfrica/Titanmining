@@ -124,7 +124,10 @@ export default function SiteDailySummary() {
 
         {/* Production totals */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.productionDetails')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.productionDetails')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Mining & Geology Lead</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {numField('materialMinedM3', t('siteSummary.materialMined'), { required: true, className: 'font-semibold' })}
             {numField('materialProcessedM3', t('siteSummary.materialProcessed'), { required: true, className: 'font-semibold' })}
@@ -134,7 +137,10 @@ export default function SiteDailySummary() {
 
         {/* Gold recovery */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.goldRecovery')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.goldRecovery')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Lab Manager / Processing Lead</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
             {numField('centrifugeRecoveryG', t('siteSummary.centrifugeRecovery'), { required: true, step: '0.01' })}
             {numField('shakingTableRecoveryG', t('siteSummary.shakingTableRecovery'), { required: true, step: '0.01' })}
@@ -154,7 +160,10 @@ export default function SiteDailySummary() {
 
         {/* Fuel reconciliation summary */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.fuelInventory')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.fuelInventory')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Fuel Admin / Logistics</span>
+          </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {numField('fuelOpeningStockL', t('siteSummary.openingStock'), { required: true })}
@@ -179,7 +188,10 @@ export default function SiteDailySummary() {
 
         {/* Machines Section */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.machinesSection')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.machinesSection')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Maintenance Manager</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
             {numField('machineWorkingHours', t('siteSummary.machineWorkingHours'))}
             {numField('machineDowntime', t('siteSummary.machineDowntime'))}
@@ -192,7 +204,10 @@ export default function SiteDailySummary() {
 
         {/* Staff Section */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.staffSection')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.staffSection')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">HR Manager</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
             {numField('totalPresent', t('siteSummary.totalPresent'))}
             {numField('totalAbsent', t('siteSummary.totalAbsent'))}
@@ -203,7 +218,10 @@ export default function SiteDailySummary() {
 
         {/* Security/Gate Section */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.securitySection')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.securitySection')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Gate Security</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             {numField('searchesDone', t('siteSummary.searchesDone'))}
             {numField('vehicleMovements', t('siteSummary.vehicleMovements'))}
@@ -216,7 +234,10 @@ export default function SiteDailySummary() {
 
         {/* Expenses Section */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.expensesSection')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.expensesSection')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Finance Manager</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             {numField('cashUsed', t('siteSummary.cashUsed'), { step: '0.01' })}
             {numField('purchasesTotal', t('siteSummary.purchasesTotal'), { step: '0.01' })}
@@ -228,7 +249,10 @@ export default function SiteDailySummary() {
 
         {/* Tomorrow Plan Section */}
         <div>
-          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">{t('siteSummary.tomorrowPlanSection')}</h3>
+          <h3 className="font-serif italic text-lg mb-4 text-black border-b border-zinc-150 pb-1">
+            {t('siteSummary.tomorrowPlanSection')}
+            <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-sans font-semibold ml-3">Site Controller</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             {textField('pitToMine', t('siteSummary.pitToMine'))}
             {textField('plantTarget', t('siteSummary.plantTarget'))}

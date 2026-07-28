@@ -74,9 +74,9 @@ export interface MachineLogRow {
   openingHours: number;
   closingHours: number;
   hoursWorked: number;
-  fuelAddedL: number;
   workArea: string;
   breakdowns?: string;
+  breakdownStatus?: 'REGISTERED' | 'REPAIR_UNDERWAY' | 'REPAIRED' | 'WRITTEN_OFF';
 }
 
 export interface MachineDailyLogData extends BaseReportData {
@@ -233,7 +233,7 @@ export interface MaintenanceRow {
   startTime?: string;
   endTime?: string;
   partsUsed: string;
-  machineStatus: "RUNNING" | "DOWN" | "NEEDS_PARTS";
+  machineStatus: "RUNNING" | "DOWN" | "NEEDS_PARTS" | "WRITTEN_OFF";
   nextAction: string;
 }
 
@@ -348,4 +348,18 @@ export interface PettyCashData extends BaseReportData {
   closingBalance: number;
   actualBalance: number;
   variance: number;
+}
+
+// TEMPLATE_17: Mercury Based Recovery Log
+export interface MercuryRecoveryRow {
+  time?: string;
+  numberOfBasins: number;
+  pureGoldGms: number;
+}
+
+export interface MercuryRecoveryData extends BaseReportData {
+  witness: string;
+  rows: MercuryRecoveryRow[];
+  totalNetWeight: number;
+  totalPureGold: number;
 }

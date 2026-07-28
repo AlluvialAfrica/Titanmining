@@ -168,6 +168,42 @@ const schema = a.schema({
     allow.owner().to(['read']),
   ]),
 
+  LeaveRequest: a.model({
+    orgId: a.string().required(),
+    siteId: a.string().required(),
+    employeeId: a.string().required(),
+    employeeName: a.string().required(),
+    employeeRole: a.string(),
+    leaveType: a.string().required(),
+    startDate: a.date().required(),
+    endDate: a.date().required(),
+    numberOfDays: a.integer().required(),
+    reason: a.string(),
+    status: a.string().default('PENDING'),
+    reviewedBy: a.string(),
+    reviewedAt: a.datetime(),
+    reviewRemarks: a.string(),
+    appliedBy: a.string().required(),
+    appliedAt: a.datetime().required(),
+  }).authorization((allow) => [
+    allow.owner().to(['create', 'read', 'update']),
+    allow.groups(['SiteControllers', 'HRManagers']).to(['create', 'read', 'update', 'delete']),
+    allow.authenticated().to(['read']),
+  ]),
+
+  LeaveSettings: a.model({
+    orgId: a.string().required(),
+    siteId: a.string().required(),
+    leaveType: a.string().required(),
+    maxDaysPerYear: a.integer().required(),
+    isActive: a.boolean().default(true),
+    createdBy: a.string(),
+    updatedAt: a.datetime(),
+  }).authorization((allow) => [
+    allow.groups(['SiteControllers', 'HRManagers']).to(['create', 'read', 'update', 'delete']),
+    allow.authenticated().to(['read']),
+  ]),
+
   HelpArticle: a.model({
     articleId: a.string().required(),
     category: a.string().required(),

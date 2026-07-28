@@ -19,6 +19,11 @@ const TEMPLATE_NAMES: Record<string, string> = {
   TEMPLATE_13: 'Shift Handover Certificate',
   TEMPLATE_14: 'HR Payroll & Leave Record',
   TEMPLATE_15: 'Petty Cash Daily Report',
+  TEMPLATE_16: 'Purchase Requisition',
+  TEMPLATE_17: 'Mercury Based Recovery Log',
+  LEAVE_NOTIFICATION: 'Leave Application Update',
+  MACHINE_WRITTEN_OFF: 'Machine Written Off Alert',
+  VARIANCE_ALERT: 'Consumables Variance Alert',
 };
 
 function escapeHtml(str: any): string {

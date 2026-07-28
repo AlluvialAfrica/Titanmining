@@ -611,7 +611,8 @@
     "TEMPLATE_13": "Shift Handover Certificate",
     "TEMPLATE_14": "HR Payroll & Leave Record",
     "TEMPLATE_15": "Petty Cash Daily Report",
-    "TEMPLATE_16": "Purchase Requisition"
+    "TEMPLATE_16": "Purchase Requisition",
+    "TEMPLATE_17": "Mercury Based Recovery Log"
   },
   "templates": {
     "TEMPLATE_02": {
@@ -754,6 +755,15 @@
       "grandTotal": "Grand Total (USD)",
       "budgetCode": "Budget Code / Account",
       "approvalNotes": "Approval Notes"
+    },
+    "TEMPLATE_17": {
+      "title": "Mercury Based Recovery Log",
+      "witness": "Witness",
+      "time": "Time",
+      "numberOfBasins": "Number of Basins",
+      "pureGoldGms": "Pure Gold (gms)",
+      "totalNetWeight": "Total Net Weight (g)",
+      "totalPureGold": "Total Pure Gold (g)"
     }
   },
   "otp": {
