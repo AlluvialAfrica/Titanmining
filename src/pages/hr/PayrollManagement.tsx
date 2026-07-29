@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getDataClient } from '../../services/dataService';
 import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../utils/logger';
 import { formatDateDDMMYYYY } from '../../utils/dateFormat';
 import DateInput from '../../components/DateInput';
@@ -187,6 +188,7 @@ function getAttendanceFromReports(
 export default function PayrollManagement() {
   const { user } = useAuth();
   const { submitReport } = useReport();
+  const { t } = useLanguage();
   const [subTab, setSubTab] = useState<SubTab>('payroll');
   const [staffList, setStaffList] = useState<StaffPayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -257,7 +259,7 @@ export default function PayrollManagement() {
 
   function saveAttendance() {
     localStorage.setItem(`${ATTENDANCE_STORAGE_PREFIX}${attendanceDate}`, JSON.stringify(attendanceEntries));
-    toast.success('Attendance saved successfully.');
+    toast.success(t('payroll.attendanceSaved'));
   }
 
   async function loadStaffData() {
@@ -327,7 +329,7 @@ export default function PayrollManagement() {
       setStaffList(formatted);
     } catch (err) {
       logger.error('Failed to load staff list for payroll:', err);
-      toast.error('Failed to load staff directory.');
+      toast.error(t('payroll.staffLoadFailed'));
     } finally {
       setLoading(false);
     }
@@ -340,7 +342,7 @@ export default function PayrollManagement() {
   const handleDeleteLeave = (id: string) => {
     const updated = leaveRequests.filter(req => req.id !== id);
     saveLeaveRequests(updated);
-    toast.success('Leave record removed.');
+    toast.success(t('payroll.leaveRemoved'));
   };
 
   const handleSalaryChange = (id: string, field: keyof StaffPayrollRecord, value: number) => {
@@ -366,9 +368,9 @@ export default function PayrollManagement() {
   };
 
   const handleSubmitLeave = () => {
-    if (!leaveStaff) { toast.error('Please select a staff member.'); return; }
-    if (!leaveStart || !leaveEnd) { toast.error('Start and end dates are required.'); return; }
-    if (leaveEnd < leaveStart) { toast.error('End date cannot be before start date.'); return; }
+    if (!leaveStaff) { toast.error(t('payroll.selectStaffError')); return; }
+    if (!leaveStart || !leaveEnd) { toast.error(t('payroll.datesRequired')); return; }
+    if (leaveEnd < leaveStart) { toast.error(t('payroll.endBeforeStart')); return; }
 
     const start = new Date(leaveStart);
     const end = new Date(leaveEnd);
@@ -389,7 +391,7 @@ export default function PayrollManagement() {
     };
 
     saveLeaveRequests([newRecord, ...leaveRequests]);
-    toast.success(`Leave recorded: ${leaveStaff} — ${numberOfDays} day(s) ${leaveType}.`);
+    toast.success(t('payroll.leaveRecorded', { name: leaveStaff, days: String(numberOfDays), type: leaveType }));
 
     // Reset form
     setLeaveStaff('');
@@ -428,7 +430,7 @@ export default function PayrollManagement() {
       };
 
       await submitReport('TEMPLATE_14', payload);
-      toast.success('Payroll compiled & TEMPLATE_14 report generated successfully!');
+      toast.success(t('payroll.payrollCompiled'));
 
       localStorage.setItem('titan_latest_payroll', JSON.stringify({
         period: selectedMonth,
@@ -436,7 +438,7 @@ export default function PayrollManagement() {
         compiledAt: new Date().toISOString(),
       }));
     } catch (err: any) {
-      toast.error(err.message || 'Failed to submit payroll report.');
+      toast.error(err.message || t('payroll.payrollSubmitFailed'));
     }
   };
 
@@ -460,7 +462,7 @@ export default function PayrollManagement() {
   };
 
   // Compute leave days per staff (auto-calculated)
-  const leaveDaysCalcNote = '(auto: 30 - present - leave)';
+  const leaveDaysCalcNote = t('payroll.absentCalcNote');
 
   // Staff names for leave input dropdown
   const allStaffNames = SEED_STAFF.map(s => `${s.firstName} ${s.lastName}`);
@@ -472,9 +474,9 @@ export default function PayrollManagement() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="editorial-title text-2xl font-light">Payroll & Leave Management</h1>
+        <h1 className="editorial-title text-2xl font-light">{t('payroll.title')}</h1>
         <p className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mt-1">
-          Review attendance, leaves, advances, and run monthly payroll sheets
+          {t('payroll.subtitle')}
         </p>
       </div>
 
@@ -488,7 +490,7 @@ export default function PayrollManagement() {
               subTab === tab ? 'border-black bg-black text-white' : 'border-zinc-300 text-zinc-500 hover:border-black'
             }`}
           >
-            {tab === 'payroll' ? 'Payroll' : tab === 'attendance' ? 'Attendance' : 'Leave Requests'}
+            {tab === 'payroll' ? t('payroll.tabPayroll') : tab === 'attendance' ? t('payroll.tabAttendance') : t('payroll.tabLeave')}
           </button>
         ))}
       </div>
@@ -497,7 +499,7 @@ export default function PayrollManagement() {
       {subTab === 'payroll' && (
         <div className="border border-black p-6 bg-white space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-black pb-4">
-            <h2 className="font-serif italic text-lg text-black">Monthly Payroll Calculations</h2>
+            <h2 className="font-serif italic text-lg text-black">{t('payroll.monthlyPayroll')}</h2>
             <div className="flex items-center gap-4">
               <input
                 type="month"
@@ -506,20 +508,20 @@ export default function PayrollManagement() {
                 className="minimal-input max-w-[180px] py-1 text-xs"
               />
               <button onClick={submitPayrollReport} className="minimal-btn text-xs">
-                Sign & Compile Payroll (T14)
+                {t('payroll.compilePayroll')}
               </button>
             </div>
           </div>
 
           {/* Role filter dropdown */}
           <div className="flex items-center gap-3">
-            <label className="text-[10px] uppercase tracking-widest font-semibold text-zinc-500">Filter by Role:</label>
+            <label className="text-[10px] uppercase tracking-widest font-semibold text-zinc-500">{t('payroll.filterByRole')}</label>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
               className="text-xs border border-zinc-300 px-3 py-1.5 bg-white"
             >
-              <option value="ALL">All Roles ({staffList.length})</option>
+              <option value="ALL">{t('payroll.allRoles')} ({staffList.length})</option>
               {STAFF_ROLES.map(role => {
                 const count = staffList.filter(s => s.role === role).length;
                 if (count === 0) return null;
@@ -533,22 +535,22 @@ export default function PayrollManagement() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 font-serif italic text-zinc-400">Loading staff database...</div>
+            <div className="text-center py-8 font-serif italic text-zinc-400">{t('payroll.loadingStaff')}</div>
           ) : (
             <div className="space-y-6">
               <div className="overflow-x-auto">
                 <table className="editorial-table">
                   <thead>
                     <tr>
-                      <th>Staff Name</th>
-                      <th>Role</th>
-                      <th>Base Salary</th>
-                      <th>Days Present ({WORKING_DAYS_PER_MONTH}d)</th>
-                      <th>Days Absent <span className="text-[9px] font-normal text-zinc-400 block">{leaveDaysCalcNote}</span></th>
-                      <th>Leave Days</th>
-                      <th>Salary Earned</th>
-                      <th>Advance</th>
-                      <th>Net Pay due</th>
+                      <th>{t('payroll.staffName')}</th>
+                      <th>{t('payroll.role')}</th>
+                      <th>{t('payroll.baseSalary')}</th>
+                      <th>{t('payroll.daysPresent')} ({WORKING_DAYS_PER_MONTH}d)</th>
+                      <th>{t('payroll.daysAbsent')} <span className="text-[9px] font-normal text-zinc-400 block">{leaveDaysCalcNote}</span></th>
+                      <th>{t('payroll.leaveDays')}</th>
+                      <th>{t('payroll.salaryEarned')}</th>
+                      <th>{t('payroll.advance')}</th>
+                      <th>{t('payroll.netPayDue')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -576,7 +578,7 @@ export default function PayrollManagement() {
                       </tr>
                     ))}
                     <tr className="bg-zinc-50 border-t-2 border-black font-bold">
-                      <td colSpan={2}>Grand Total</td>
+                      <td colSpan={2}>{t('payroll.grandTotal')}</td>
                       <td>-</td>
                       <td>-</td>
                       <td>-</td>
@@ -591,17 +593,17 @@ export default function PayrollManagement() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-zinc-200">
                 <div className="border border-zinc-200 p-4">
-                  <p className="minimal-label">Total Outlay</p>
+                  <p className="minimal-label">{t('payroll.totalOutlay')}</p>
                   <p className="text-xl font-serif italic mt-1">${(grandTotalSalaries + grandTotalAdvances).toLocaleString()}</p>
                   <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded"><div className="bg-black h-1.5 rounded" style={{ width: '100%' }}></div></div>
                 </div>
                 <div className="border border-zinc-200 p-4">
-                  <p className="minimal-label">Net Disbursed Salary</p>
+                  <p className="minimal-label">{t('payroll.netDisbursed')}</p>
                   <p className="text-xl font-serif italic mt-1 text-green-700">${grandTotalNetPay.toLocaleString()}</p>
                   <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded"><div className="bg-green-600 h-1.5 rounded" style={{ width: `${(grandTotalNetPay / (grandTotalSalaries || 1)) * 100}%` }}></div></div>
                 </div>
                 <div className="border border-zinc-200 p-4">
-                  <p className="minimal-label">Advances Recovered</p>
+                  <p className="minimal-label">{t('payroll.advancesRecovered')}</p>
                   <p className="text-xl font-serif italic mt-1 text-red-600">${grandTotalAdvances.toLocaleString()}</p>
                   <div className="w-full bg-zinc-100 h-1.5 mt-2 rounded"><div className="bg-red-500 h-1.5 rounded" style={{ width: `${(grandTotalAdvances / (grandTotalSalaries || 1)) * 100}%` }}></div></div>
                 </div>
@@ -615,10 +617,10 @@ export default function PayrollManagement() {
       {subTab === 'attendance' && (
         <div className="border border-black p-6 bg-white space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-black pb-4">
-            <h2 className="font-serif italic text-lg text-black">Daily Attendance Register</h2>
+            <h2 className="font-serif italic text-lg text-black">{t('payroll.dailyAttendance')}</h2>
             <div className="flex items-center gap-4">
               <DateInput value={attendanceDate} onChange={setAttendanceDate} className="minimal-input max-w-[180px] py-1 text-xs" />
-              <button onClick={saveAttendance} className="minimal-btn text-xs">Save Attendance</button>
+              <button onClick={saveAttendance} className="minimal-btn text-xs">{t('payroll.saveAttendance')}</button>
             </div>
           </div>
 
@@ -627,11 +629,11 @@ export default function PayrollManagement() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Staff Name</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Time In</th>
-                  <th>Time Out</th>
+                  <th>{t('payroll.staffName')}</th>
+                  <th>{t('payroll.role')}</th>
+                  <th>{t('payroll.status')}</th>
+                  <th>{t('payroll.timeIn')}</th>
+                  <th>{t('payroll.timeOut')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -646,9 +648,9 @@ export default function PayrollManagement() {
                         onChange={e => handleAttendanceChange(idx, 'status', e.target.value)}
                         className="text-xs border border-zinc-200 px-2 py-1"
                       >
-                        <option value="PRESENT">Present</option>
-                        <option value="ABSENT">Absent</option>
-                        <option value="LEAVE">Leave</option>
+                        <option value="PRESENT">{t('payroll.present')}</option>
+                        <option value="ABSENT">{t('payroll.absent')}</option>
+                        <option value="LEAVE">{t('payroll.leave')}</option>
                       </select>
                     </td>
                     <td>
@@ -665,15 +667,15 @@ export default function PayrollManagement() {
 
           <div className="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-200">
             <div className="border border-green-200 bg-green-50 p-3 text-center">
-              <p className="text-[10px] uppercase tracking-widest text-green-700 font-semibold">Present</p>
+              <p className="text-[10px] uppercase tracking-widest text-green-700 font-semibold">{t('payroll.present')}</p>
               <p className="text-xl font-serif italic mt-1 text-green-700">{attendanceSummary.present}</p>
             </div>
             <div className="border border-red-200 bg-red-50 p-3 text-center">
-              <p className="text-[10px] uppercase tracking-widest text-red-700 font-semibold">Absent</p>
+              <p className="text-[10px] uppercase tracking-widest text-red-700 font-semibold">{t('payroll.absent')}</p>
               <p className="text-xl font-serif italic mt-1 text-red-600">{attendanceSummary.absent}</p>
             </div>
             <div className="border border-amber-200 bg-amber-50 p-3 text-center">
-              <p className="text-[10px] uppercase tracking-widest text-amber-700 font-semibold">Leave</p>
+              <p className="text-[10px] uppercase tracking-widest text-amber-700 font-semibold">{t('payroll.leave')}</p>
               <p className="text-xl font-serif italic mt-1 text-amber-600">{attendanceSummary.leave}</p>
             </div>
           </div>
@@ -686,28 +688,28 @@ export default function PayrollManagement() {
           {/* Leave Input Form */}
           <div className="border border-black p-6 bg-white space-y-4">
             <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
-              Record Staff Leave
+              {t('payroll.recordStaffLeave')}
             </h2>
             <p className="text-xs text-zinc-500">
-              Input leave days for staff members. Leave is recorded directly by the HR Manager.
+              {t('payroll.leaveInstructions')}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="minimal-label">Staff Member</label>
+                <label className="minimal-label">{t('payroll.staffMember')}</label>
                 <select
                   value={leaveStaff}
                   onChange={(e) => setLeaveStaff(e.target.value)}
                   className="minimal-input text-xs"
                 >
-                  <option value="">Select staff...</option>
+                  <option value="">{t('payroll.selectStaff')}</option>
                   {allStaffNames.map(name => (
                     <option key={name} value={name}>{name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="minimal-label">Leave Type</label>
+                <label className="minimal-label">{t('payroll.leaveType')}</label>
                 <select
                   value={leaveType}
                   onChange={(e) => setLeaveType(e.target.value)}
@@ -722,15 +724,15 @@ export default function PayrollManagement() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="minimal-label">Start Date</label>
+                <label className="minimal-label">{t('payroll.startDate')}</label>
                 <DateInput value={leaveStart} onChange={setLeaveStart} className="minimal-input text-xs" />
               </div>
               <div>
-                <label className="minimal-label">End Date</label>
+                <label className="minimal-label">{t('payroll.endDate')}</label>
                 <DateInput value={leaveEnd} onChange={setLeaveEnd} className="minimal-input text-xs" />
               </div>
               <div>
-                <label className="minimal-label">Days <span className="text-zinc-400 font-normal">(auto)</span></label>
+                <label className="minimal-label">{t('payroll.days')} <span className="text-zinc-400 font-normal">({t('payroll.auto')})</span></label>
                 <input
                   type="number"
                   value={leaveStart && leaveEnd && leaveEnd >= leaveStart
@@ -744,41 +746,41 @@ export default function PayrollManagement() {
             </div>
 
             <div>
-              <label className="minimal-label">Reason / Notes</label>
+              <label className="minimal-label">{t('payroll.reasonNotes')}</label>
               <input
                 type="text"
                 value={leaveReason}
                 onChange={(e) => setLeaveReason(e.target.value)}
                 className="minimal-input text-xs"
-                placeholder="Optional reason or notes"
+                placeholder={t('payroll.reasonPlaceholder')}
               />
             </div>
 
             <button onClick={handleSubmitLeave} className="minimal-btn text-xs">
-              Record Leave
+              {t('payroll.recordLeave')}
             </button>
           </div>
 
           {/* Leave Records Table */}
           <div className="border border-black p-6 bg-white space-y-4">
             <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
-              Leave Records
+              {t('payroll.leaveRecords')}
             </h2>
             {leaveRequests.length === 0 ? (
-              <p className="text-zinc-500 font-serif italic text-center py-6">No leave records yet.</p>
+              <p className="text-zinc-500 font-serif italic text-center py-6">{t('payroll.noLeaveRecords')}</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="editorial-table">
                   <thead>
                     <tr>
-                      <th>Staff Name</th>
-                      <th>Type</th>
-                      <th>Start</th>
-                      <th>End</th>
-                      <th>Days</th>
-                      <th>Status</th>
-                      <th>Recorded By</th>
-                      <th className="text-right">Actions</th>
+                      <th>{t('payroll.staffName')}</th>
+                      <th>{t('payroll.type')}</th>
+                      <th>{t('payroll.start')}</th>
+                      <th>{t('payroll.end')}</th>
+                      <th>{t('payroll.days')}</th>
+                      <th>{t('payroll.status')}</th>
+                      <th>{t('payroll.recordedBy')}</th>
+                      <th className="text-right">{t('dashboard.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -800,7 +802,7 @@ export default function PayrollManagement() {
                         </td>
                         <td className="text-xs text-zinc-500">{req.reviewedBy || '-'}</td>
                         <td className="text-right">
-                          <button onClick={() => handleDeleteLeave(req.id)} className="text-[10px] uppercase font-semibold text-red-600 hover:underline">Remove</button>
+                          <button onClick={() => handleDeleteLeave(req.id)} className="text-[10px] uppercase font-semibold text-red-600 hover:underline">{t('payroll.remove')}</button>
                         </td>
                       </tr>
                     ))}

@@ -111,7 +111,7 @@ export default function Login() {
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
                 className="minimal-input"
-                placeholder="Min 8 chars, upper + lower + number + symbol"
+                placeholder={t('login.passwordHint')}
               />
             </div>
 
@@ -202,7 +202,7 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="minimal-label">Email Address</label>
+              <label className="minimal-label">{t('login.emailAddress')}</label>
               <input
                 type="email"
                 required
@@ -214,7 +214,7 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="minimal-label">Mobile Number</label>
+              <label className="minimal-label">{t('login.mobileNumberLabel')}</label>
               <input
                 type="text"
                 required
@@ -234,14 +234,14 @@ export default function Login() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="minimal-input pr-12 font-mono"
-                  placeholder="Enter your password"
+                  placeholder={t('login.passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-2.5 text-[9px] uppercase tracking-widest text-zinc-400 hover:text-black font-semibold"
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  {showPassword ? t('login.hidePassword') : t('login.showPassword')}
                 </button>
               </div>
             </div>
@@ -273,27 +273,27 @@ export default function Login() {
           {/* Quick Demo Logins Section */}
           <div className="mt-10 pt-6 border-t border-black">
             <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold mb-3">
-              Fast Role Switch & Demo Logins (Click to Sign In):
+              {t('login.demoHeader')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {[
-                { label: 'Site Manager (Osman)', purpose: 'Daily report to Owner/Director + shift handover', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
-                { label: 'HR Manager', purpose: 'Attendance, shift presence & payroll', email: 'demo.hr@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Maintenance Manager', purpose: 'Machines, shifts, hours & preventive maintenance', email: 'demo.maintenance@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Fuel Manager', purpose: 'Fuel stock, issue & abnormal usage', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Lead Geologist', purpose: 'Pay gravel, sampling, pit direction & dilution', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Pump Supervisor', purpose: 'Wash plant, water, downtime & assistants', email: 'demo.pumpsupervisor@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Lab Manager', purpose: 'Concentrate, cleanup & recovery accountability', email: 'demo.labmanager@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Gate Security', purpose: 'People, vehicles, items in/out & searches', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Finance Manager', purpose: 'Daily purchases, stores issue & costs', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
-                { label: 'Enterprise Manager', purpose: 'Commercial overview of the enterprise', email: 'demo.enterprise@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoSiteManager', purposeKey: 'login.demoSiteManagerDesc', email: 'faafan10@gmail.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoHrManager', purposeKey: 'login.demoHrManagerDesc', email: 'demo.hr@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoMaintenanceManager', purposeKey: 'login.demoMaintenanceManagerDesc', email: 'demo.maintenance@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoFuelManager', purposeKey: 'login.demoFuelManagerDesc', email: 'demo.fueladmin@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoGeologist', purposeKey: 'login.demoGeologistDesc', email: 'demo.geologist@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoPumpSupervisor', purposeKey: 'login.demoPumpSupervisorDesc', email: 'demo.pumpsupervisor@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoLabManager', purposeKey: 'login.demoLabManagerDesc', email: 'demo.labmanager@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoSecurity', purposeKey: 'login.demoSecurityDesc', email: 'demo.security@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoFinanceManager', purposeKey: 'login.demoFinanceManagerDesc', email: 'demo.finance@titanmining.com', pass: 'TitanMining2026!' },
+                { labelKey: 'login.demoEnterpriseManager', purposeKey: 'login.demoEnterpriseManagerDesc', email: 'demo.enterprise@titanmining.com', pass: 'TitanMining2026!' },
               ].map((demo) => (
                 <button
                   key={demo.email}
                   type="button"
                   onClick={async () => {
                     setEmail(demo.email);
-                    const mockPhone = demo.email === 'faafan10@gmail.com' ? '+254700000001' : 
+                    const mockPhone = demo.email === 'faafan10@gmail.com' ? '+254700000001' :
                                       demo.email === 'ahmerim@yahoo.com' ? '+254700000020' :
                                       demo.email === 'amo.gombe@gmail.com' ? '+254700000021' :
                                       demo.email === 'amoroso.gombe@chatworks.chat' ? '+254700000022' : '+254700000000';
@@ -304,15 +304,15 @@ export default function Login() {
                     try {
                       await login(mockPhone, demo.email, demo.pass);
                     } catch (err: any) {
-                      setError(err.message || 'Demo login failed.');
+                      setError(err.message || t('login.demoLoginFailed'));
                     } finally {
                       setLoading(false);
                     }
                   }}
                   className="p-2 border border-zinc-200 hover:border-black text-left bg-zinc-50 hover:bg-white transition-all text-[11px]"
                 >
-                  <span className="font-serif italic font-semibold text-black block truncate">{demo.label}</span>
-                  <span className="text-[9px] text-zinc-500 block truncate">{demo.purpose}</span>
+                  <span className="font-serif italic font-semibold text-black block truncate">{t(demo.labelKey)}</span>
+                  <span className="text-[9px] text-zinc-500 block truncate">{t(demo.purposeKey)}</span>
                   <span className="text-[9px] text-zinc-400 font-mono block truncate">{demo.email}</span>
                 </button>
               ))}

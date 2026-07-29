@@ -45,7 +45,7 @@ export default function Dashboard() {
   useEffect(() => {
     getReportHistory().then(setHistory).catch((err) => {
       logger.error('Failed to load report history:', err);
-      toast.error('Failed to load report history.');
+      toast.error(t('dashboard.loadingFailed'));
       setHistory([]);
     });
   }, []);
@@ -62,7 +62,7 @@ export default function Dashboard() {
 
   const suspenseFallback = (
     <div className="flex items-center justify-center py-12">
-      <span className="font-serif italic text-zinc-400">Loading...</span>
+      <span className="font-serif italic text-zinc-400">{t('common.loading')}</span>
     </div>
   );
 
@@ -154,20 +154,20 @@ export default function Dashboard() {
                 <HelpButton contextPage={activeTab} onOpenHelp={() => setActiveTab('help')} />
               </div>
 
-              {navButton('siteManagerDashboard', user.role === Role.ENTERPRISE_MANAGER ? 'Commercial Overview' : t('nav.siteManagerDashboard'), isFullAccessRole || user.role === Role.ENTERPRISE_MANAGER)}
+              {navButton('siteManagerDashboard', user.role === Role.ENTERPRISE_MANAGER ? t('nav.commercialOverview') : t('nav.siteManagerDashboard'), isFullAccessRole || user.role === Role.ENTERPRISE_MANAGER)}
               {navButton('form', t('nav.dailyReporting'))}
               {navButton('history', `${t('nav.reportHistory')} (${history.length})`)}
               {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
               {navButton('kpiDashboard', t('nav.kpiDashboard'), permissions.canViewKPI)}
               {navButton('teamDashboard', t('nav.teamDashboard'), permissions.canViewTeamKPI)}
-              {navButton('leaveApplication', 'Leave Application', user.role === Role.HR_MANAGER)}
-              {navButton('payrollManagement', 'Payroll & Leave', user.role === Role.HR_MANAGER)}
-              {navButton('leaveSettings', 'Leave Settings', user.role === Role.HR_MANAGER)}
-              {navButton('financeManagement', 'Treasury & Advances', user.role === Role.FINANCE_MANAGER)}
+              {navButton('leaveApplication', t('nav.leaveApplication'), user.role === Role.HR_MANAGER)}
+              {navButton('payrollManagement', t('nav.payrollLeave'), user.role === Role.HR_MANAGER)}
+              {navButton('leaveSettings', t('nav.leaveSettings'), user.role === Role.HR_MANAGER)}
+              {navButton('financeManagement', t('nav.financeManagement'), user.role === Role.FINANCE_MANAGER)}
               {navButton('profile', t('nav.roleProfile'))}
               {navButton('users', t('nav.userManagement'), permissions.canManageUsers)}
               {navButton('settings', t('nav.siteSettings'), permissions.canEditProfile)}
-              {navButton('admin', 'Admin Dashboard', isAdmin)}
+              {navButton('admin', t('nav.adminDashboard'), isAdmin)}
               {navButton('help', t('nav.help'))}
 
               <div className="mt-auto pt-6 md:pt-12 border-t border-zinc-100">
@@ -257,7 +257,7 @@ export default function Dashboard() {
                         }}
                         className="minimal-btn text-xs"
                       >
-                        Export CSV
+                        {t('dashboard.exportCsv')}
                       </button>
                     )}
                   </div>
@@ -276,7 +276,7 @@ export default function Dashboard() {
                           <th>{t('history.submittedBy')}</th>
                           <th>{t('history.status')}</th>
                           <th>{t('history.source')}</th>
-                          <th>Actions</th>
+                          <th>{t('dashboard.actions')}</th>
                         </tr>
                       </thead>
                       <tbody>
