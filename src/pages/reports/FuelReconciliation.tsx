@@ -130,6 +130,61 @@ export default function FuelReconciliation() {
     return () => clearInterval(interval);
   }, [reportDate, site, machineEntries, stock, saveDraft]);
 
+  // ---- Auto-fill opening values from previous day's TEMPLATE_04 ----
+  useEffect(() => {
+    if (!user) return;
+    try {
+      const historyKey = `history_${user.orgId}`;
+      const raw = localStorage.getItem(historyKey);
+      if (!raw) return;
+      const history: any[] = JSON.parse(raw);
+
+      // Find the most recent TEMPLATE_04 submission before the current date
+      const fuelReports = history
+        .filter((h: any) => h.reportType === 'TEMPLATE_04')
+        .sort((a: any, b: any) => (b.submittedAt || '').localeCompare(a.submittedAt || ''));
+
+      // If a reportDate is set, filter to reports before that date; otherwise use the latest
+      const previousReport = reportDate
+        ? fuelReports.find((h: any) => (h.reportDate || h.submittedAt?.slice(0, 10)) < reportDate)
+        : fuelReports[0];
+
+      if (!previousReport) return;
+
+      const prevData = typeof previousReport.data === 'string'
+        ? JSON.parse(previousReport.data)
+        : previousReport.data;
+
+      if (!prevData) return;
+
+      // Auto-fill opening stock from previous closing stock (only if currently empty)
+      if (prevData.stock?.closingStock && !stock.openingStock) {
+        setStock((prev) => ({ ...prev, openingStock: String(prevData.stock.closingStock) }));
+      }
+
+      // Auto-fill machine opening meters from previous closing meters
+      if (prevData.machineEntries?.length > 0) {
+        setMachineEntries((prev) => {
+          let changed = false;
+          const updated = prev.map((entry) => {
+            if (entry.openingMeter || !entry.machineName) return entry;
+            const match = prevData.machineEntries.find(
+              (pe: any) => pe.machineName && pe.machineName.trim().toLowerCase() === entry.machineName.trim().toLowerCase(),
+            );
+            if (match?.closingMeter) {
+              changed = true;
+              return recalcEntry({ ...entry, openingMeter: String(match.closingMeter) });
+            }
+            return entry;
+          });
+          return changed ? updated : prev;
+        });
+      }
+    } catch (err) {
+      // Silently fail — auto-fill is best-effort
+    }
+  }, [reportDate, user]);
+
   // ---- Machine entry helpers ----
   const updateEntry = (index: number, field: keyof MachineEntry, value: string) => {
     setMachineEntries((prev) => {
@@ -505,12 +560,12 @@ export default function FuelReconciliation() {
             </div>
             <div>
               <label className="minimal-label">
-                {t('fuelRecon.fuelReceived') || 'Fuel Received (L)'}
+                {t('fuelRecon.closingPhysical') || 'Closing Physical Stock (L)'}
               </label>
               <input
                 type="number"
-                value={stock.received}
-                onChange={(e) => updateStock('received', e.target.value)}
+                value={stock.closingStock}
+                onChange={(e) => updateStock('closingStock', e.target.value)}
                 className="minimal-input"
                 placeholder="0"
                 required
@@ -521,13 +576,15 @@ export default function FuelReconciliation() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             <div>
               <label className="minimal-label">
-                {t('fuelRecon.totalAvailable') || 'Total Available (L)'}
+                {t('fuelRecon.fuelReceived') || 'Fuel Received (L)'}
               </label>
               <input
                 type="number"
-                value={stock.totalAvailable}
-                disabled
-                className="minimal-input font-semibold bg-zinc-50"
+                value={stock.received}
+                onChange={(e) => updateStock('received', e.target.value)}
+                className="minimal-input"
+                placeholder="0"
+                required
               />
             </div>
             <div>
@@ -546,15 +603,13 @@ export default function FuelReconciliation() {
             </div>
             <div>
               <label className="minimal-label">
-                {t('fuelRecon.closingPhysical') || 'Closing Physical Stock (L)'}
+                {t('fuelRecon.totalAvailable') || 'Total Available (L)'}
               </label>
               <input
                 type="number"
-                value={stock.closingStock}
-                onChange={(e) => updateStock('closingStock', e.target.value)}
-                className="minimal-input"
-                placeholder="0"
-                required
+                value={stock.totalAvailable}
+                disabled
+                className="minimal-input font-semibold bg-zinc-50"
               />
             </div>
           </div>

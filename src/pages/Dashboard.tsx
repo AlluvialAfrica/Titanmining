@@ -159,7 +159,7 @@ export default function Dashboard() {
               {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
               {navButton('kpiDashboard', t('nav.kpiDashboard'), permissions.canViewKPI)}
               {navButton('teamDashboard', t('nav.teamDashboard'), permissions.canViewTeamKPI)}
-              {navButton('leaveApplication', 'Leave Application')}
+              {navButton('leaveApplication', 'Leave Application', user.role === Role.HR_MANAGER)}
               {navButton('payrollManagement', 'Payroll & Leave', user.role === Role.HR_MANAGER)}
               {navButton('leaveSettings', 'Leave Settings', user.role === Role.HR_MANAGER)}
               {navButton('financeManagement', 'Treasury & Advances', user.role === Role.FINANCE_MANAGER)}

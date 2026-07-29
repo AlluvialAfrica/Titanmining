@@ -79,6 +79,59 @@ const SEED_STAFF = [
   { id: 'seed-08', firstName: 'Francis', lastName: 'Ochieng', role: 'GATE_SECURITY' },
 ];
 
+const WORKING_DAYS_PER_MONTH = 30;
+
+// ---------------------------------------------------------------------------
+// Attendance auto-fill from TEMPLATE_02 history
+// ---------------------------------------------------------------------------
+
+function getAttendanceFromReports(
+  orgId: string,
+  staffName: string,
+  month: number,
+  year: number,
+): { present: number; absent: number; leave: number } | null {
+  try {
+    const raw = localStorage.getItem(`history_${orgId}`);
+    if (!raw) return null;
+    const history: any[] = JSON.parse(raw);
+
+    const t02Reports = history.filter((h: any) => {
+      if (h.reportType !== 'TEMPLATE_02') return false;
+      const dateStr = h.reportDate || h.submittedAt?.slice(0, 10);
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      return d.getMonth() + 1 === month && d.getFullYear() === year;
+    });
+
+    if (t02Reports.length === 0) return null;
+
+    let present = 0;
+    let absent = 0;
+    let leave = 0;
+    const nameLower = staffName.toLowerCase();
+
+    for (const report of t02Reports) {
+      const data = typeof report.data === 'string' ? JSON.parse(report.data) : report.data;
+      if (!data?.rows) continue;
+      for (const row of data.rows) {
+        const rowName = (row.staffName || row.name || '').toLowerCase();
+        if (rowName !== nameLower) continue;
+        const status = (row.status || '').toUpperCase();
+        if (status === 'PRESENT') present++;
+        else if (status === 'ABSENT') absent++;
+        else if (status === 'LEAVE') leave++;
+      }
+    }
+
+    // Only return if we found at least one matching entry
+    if (present + absent + leave === 0) return null;
+    return { present, absent, leave };
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -105,7 +158,7 @@ export default function PayrollManagement() {
   useEffect(() => {
     loadStaffData();
     loadLeaveRequests();
-  }, []);
+  }, [selectedMonth]);
 
   useEffect(() => {
     loadAttendanceForDate(attendanceDate);
@@ -161,22 +214,43 @@ export default function PayrollManagement() {
       const cachedAdvancesStr = localStorage.getItem('titan_advances_list');
       const advancesList = cachedAdvancesStr ? JSON.parse(cachedAdvancesStr) : [];
 
+      // Parse selectedMonth to get month/year for attendance lookup
+      const [selYear, selMonth] = selectedMonth.split('-').map(Number);
+
       const formatted: StaffPayrollRecord[] = userRecords.map((u: any, idx: number) => {
         const base = DEFAULT_SALARIES[u.role] || 1000;
-        const nameKey = `${u.firstName} ${u.lastName}`.toLowerCase();
+        const fullName = `${u.firstName} ${u.lastName}`;
+        const nameKey = fullName.toLowerCase();
         const userAdvance = advancesList
           .filter((a: any) => (a.staffName.toLowerCase() === nameKey || a.id === u.id) && a.status === 'DISBURSED')
           .reduce((sum: number, a: any) => sum + Number(a.amount || 0), 0);
 
-        const daysPresent = 22 + (idx % 4);
-        const leaveDays = idx % 3 === 0 ? 2 : 0;
-        const daysAbsent = 26 - daysPresent - leaveDays;
-        const salaryDue = Math.round((base / 26) * (daysPresent + leaveDays));
+        // Try to pull real attendance from TEMPLATE_02 submissions
+        const attendance = user?.orgId
+          ? getAttendanceFromReports(user.orgId, fullName, selMonth, selYear)
+          : null;
+
+        let daysPresent: number;
+        let leaveDays: number;
+        let daysAbsent: number;
+
+        if (attendance) {
+          daysPresent = attendance.present;
+          leaveDays = attendance.leave;
+          daysAbsent = WORKING_DAYS_PER_MONTH - daysPresent - leaveDays;
+        } else {
+          // Fallback seed values
+          daysPresent = 26 + (idx % 4);
+          leaveDays = idx % 3 === 0 ? 2 : 0;
+          daysAbsent = WORKING_DAYS_PER_MONTH - daysPresent - leaveDays;
+        }
+
+        const salaryDue = Math.round((base / WORKING_DAYS_PER_MONTH) * (daysPresent + leaveDays));
         const netPay = Math.max(0, salaryDue - userAdvance);
 
         return {
           id: u.id || `staff-${idx}`,
-          name: `${u.firstName} ${u.lastName}`,
+          name: fullName,
           role: u.role,
           baseSalary: base,
           daysPresent,
@@ -217,9 +291,9 @@ export default function PayrollManagement() {
       if (s.id === id) {
         const updated = { ...s, [field]: value };
         if (field === 'baseSalary') {
-          updated.salaryDue = Math.round((value / 26) * (updated.daysPresent + updated.leaveDays));
+          updated.salaryDue = Math.round((value / WORKING_DAYS_PER_MONTH) * (updated.daysPresent + updated.leaveDays));
         } else if (field === 'daysPresent' || field === 'leaveDays') {
-          updated.salaryDue = Math.round((updated.baseSalary / 26) * (updated.daysPresent + updated.leaveDays));
+          updated.salaryDue = Math.round((updated.baseSalary / WORKING_DAYS_PER_MONTH) * (updated.daysPresent + updated.leaveDays));
         }
         // Always recalculate netPay when any field changes (including advance)
         updated.netPay = Math.max(0, updated.salaryDue - updated.advance);
@@ -341,7 +415,7 @@ export default function PayrollManagement() {
                       <th>Staff Name</th>
                       <th>Role</th>
                       <th>Base Salary</th>
-                      <th>Days Present (26d)</th>
+                      <th>Days Present ({WORKING_DAYS_PER_MONTH}d)</th>
                       <th>Leave Days</th>
                       <th>Salary Earned</th>
                       <th>Advance</th>
@@ -357,10 +431,10 @@ export default function PayrollManagement() {
                           <input type="number" value={s.baseSalary} onChange={(e) => handleSalaryChange(s.id, 'baseSalary', Number(e.target.value))} className="w-20 px-1 py-0.5 border border-zinc-200 text-xs" />
                         </td>
                         <td>
-                          <input type="number" max={26} value={s.daysPresent} onChange={(e) => handleSalaryChange(s.id, 'daysPresent', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
+                          <input type="number" max={WORKING_DAYS_PER_MONTH} value={s.daysPresent} onChange={(e) => handleSalaryChange(s.id, 'daysPresent', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
                         </td>
                         <td>
-                          <input type="number" max={26} value={s.leaveDays} onChange={(e) => handleSalaryChange(s.id, 'leaveDays', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
+                          <input type="number" max={WORKING_DAYS_PER_MONTH} value={s.leaveDays} onChange={(e) => handleSalaryChange(s.id, 'leaveDays', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
                         </td>
                         <td className="font-semibold">${s.salaryDue.toLocaleString()}</td>
                         <td>
