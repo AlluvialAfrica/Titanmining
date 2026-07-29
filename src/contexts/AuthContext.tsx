@@ -40,26 +40,6 @@ async function computeHmac(nonce: string, userId: string): Promise<string> {
   return Array.from(new Uint8Array(sig), b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ---------------------------------------------------------------------------
-// Demo user detection
-// ---------------------------------------------------------------------------
-
-const DEMO_EMAILS = new Set([
-  'demo_site_controller@titan.demo',
-  'demo_geology@titan.demo',
-  'demo_processing@titan.demo',
-  'demo_fuel@titan.demo',
-  'demo_mechanic@titan.demo',
-  'demo_security@titan.demo',
-  'demo_hr@titan.demo',
-  'demo_finance@titan.demo',
-  'demo_enterprise@titan.demo',
-  'faafan10@gmail.com',
-]);
-
-function isDemoUser(username: string): boolean {
-  return username.startsWith('demo') || username.includes('demo') || DEMO_EMAILS.has(username.toLowerCase());
-}
 
 export interface User {
   id: string;
@@ -213,7 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Verify that the mobile number typed by the user matches the registered phone_number
         const phone = attrs.phone_number;
-        if (!isDemoUser(username) && phone) {
+        if (phone) {
           const formattedTyped = mobileNumber.replace(/[\s\-\(\)]/g, '');
           const formattedReg = phone.replace(/[\s\-\(\)]/g, '');
           if (formattedTyped !== formattedReg) {
@@ -221,35 +201,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        // Custom WhatsApp OTP challenge step
+        // WhatsApp OTP challenge — all users must verify via Twilio
         let otpSent = false;
-        let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
+        const generatedCode = String(Math.floor(100000 + Math.random() * 900000));
 
-        if (isDemoUser(username) || !phone) {
-          generatedCode = '123456';
-          toast.success(`Demo WhatsApp OTP code: ${generatedCode}`, { duration: 8000 });
-          otpSent = true;
-        } else {
-          try {
-            const res = await fetch(import.meta.env.VITE_OTP_SENDER_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ phone, code: generatedCode }),
-            });
-            const data = await res.json();
-            if (data.success) {
-              toast.success(`Verification code sent to your WhatsApp at ${phone}`);
-              otpSent = true;
-            } else {
-              logger.error('Failed to send WhatsApp OTP:', data.error);
-              toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
-              otpSent = true;
-            }
-          } catch (err: any) {
-            logger.error('Network error sending WhatsApp OTP:', err);
-            toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
+        if (!phone) {
+          throw new Error('No phone number registered for this account. Contact your administrator.');
+        }
+
+        try {
+          const res = await fetch(import.meta.env.VITE_OTP_SENDER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, code: generatedCode }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            toast.success(`Verification code sent to your WhatsApp at ${phone}`);
             otpSent = true;
+          } else {
+            logger.error('Failed to send WhatsApp OTP:', data.error);
+            throw new Error('Failed to send verification code. Please try again.');
           }
+        } catch (err: any) {
+          if (err.message === 'Failed to send verification code. Please try again.') throw err;
+          logger.error('Network error sending WhatsApp OTP:', err);
+          throw new Error('Failed to send verification code. Please check your connection and try again.');
         }
 
         if (otpSent) {
@@ -293,30 +270,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const attrs = await fetchUserAttributes();
         const appUser = buildUserFromAttributes(attrs as Record<string, string>, currentUser.userId);
         const phone = attrs.phone_number as string | undefined;
-        const username = tempUser?.username || '';
 
-        let generatedCode = String(Math.floor(100000 + Math.random() * 900000));
-        if (isDemoUser(username) || !phone) {
-          generatedCode = '123456';
-          toast.success(`Demo WhatsApp OTP code: ${generatedCode}`, { duration: 8000 });
-        } else {
-          try {
-            const res = await fetch(import.meta.env.VITE_OTP_SENDER_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ phone, code: generatedCode }),
-            });
-            const data = await res.json();
-            if (data.success) {
-              toast.success(`Verification code sent to your WhatsApp at ${phone}`);
-            } else {
-              logger.error('Failed to send WhatsApp OTP:', data.error);
-              toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
-            }
-          } catch (err: any) {
-            logger.error('Network error sending WhatsApp OTP:', err);
-            toast.success(`[Fallback] WhatsApp OTP: ${generatedCode}`, { duration: 10000 });
+        const generatedCode = String(Math.floor(100000 + Math.random() * 900000));
+        if (!phone) {
+          throw new Error('No phone number registered for this account. Contact your administrator.');
+        }
+
+        try {
+          const res = await fetch(import.meta.env.VITE_OTP_SENDER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, code: generatedCode }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            toast.success(`Verification code sent to your WhatsApp at ${phone}`);
+          } else {
+            logger.error('Failed to send WhatsApp OTP:', data.error);
+            throw new Error('Failed to send verification code. Please try again.');
           }
+        } catch (err: any) {
+          if (err.message === 'Failed to send verification code. Please try again.') throw err;
+          logger.error('Network error sending WhatsApp OTP:', err);
+          throw new Error('Failed to send verification code. Please check your connection and try again.');
         }
 
         setOtpPending(true);

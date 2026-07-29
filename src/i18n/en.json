@@ -44,7 +44,7 @@
     "enterSecurityCode": "Enter Security Code",
     "otpSentWhatsApp": "OTP sent to WhatsApp",
     "verificationCode": "6-Digit Verification Code",
-    "otpTip": "Tip: Enter \"123456\" or \"1234\" to bypass for testing",
+    "otpTip": "Enter the 6-digit code sent to your WhatsApp",
     "verifyCode": "Verify Code",
     "verifying": "Verifying...",
     "invalidCredentials": "Invalid mobile number or credentials.",

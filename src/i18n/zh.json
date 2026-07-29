@@ -44,7 +44,7 @@
     "enterSecurityCode": "输入安全码",
     "otpSentWhatsApp": "OTP 已发送至 WhatsApp",
     "verificationCode": "6位验证码",
-    "otpTip": "提示：输入 \"123456\" 或 \"1234\" 可跳过测试验证",
+    "otpTip": "请输入发送到您WhatsApp的6位验证码",
     "verifyCode": "验证代码",
     "verifying": "验证中...",
     "invalidCredentials": "手机号码或凭证无效。",

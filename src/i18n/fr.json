@@ -44,7 +44,7 @@
     "enterSecurityCode": "Entrez le Code de S\u00e9curit\u00e9",
     "otpSentWhatsApp": "OTP envoy\u00e9 par WhatsApp",
     "verificationCode": "Code de V\u00e9rification \u00e0 6 Chiffres",
-    "otpTip": "Astuce : Entrez \"123456\" ou \"1234\" pour contourner en mode test",
+    "otpTip": "Entrez le code à 6 chiffres envoyé sur votre WhatsApp",
     "verifyCode": "V\u00e9rifier le Code",
     "verifying": "V\u00e9rification...",
     "invalidCredentials": "Num\u00e9ro de mobile ou identifiants invalides.",
