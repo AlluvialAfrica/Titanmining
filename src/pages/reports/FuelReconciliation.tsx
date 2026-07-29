@@ -547,7 +547,7 @@ export default function FuelReconciliation() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="minimal-label">
-                {t('fuelRecon.openingPhysical') || 'Opening Physical Stock (L)'}
+                {t('fuelRecon.openingPhysical') || 'Opening Meter (L)'}
               </label>
               <input
                 type="number"
@@ -560,7 +560,7 @@ export default function FuelReconciliation() {
             </div>
             <div>
               <label className="minimal-label">
-                {t('fuelRecon.closingPhysical') || 'Closing Physical Stock (L)'}
+                {t('fuelRecon.closingPhysical') || 'Closing Meter (L)'}
               </label>
               <input
                 type="number"
@@ -573,7 +573,7 @@ export default function FuelReconciliation() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
               <label className="minimal-label">
                 {t('fuelRecon.fuelReceived') || 'Fuel Received (L)'}
@@ -601,9 +601,12 @@ export default function FuelReconciliation() {
                 className="minimal-input font-bold bg-zinc-50"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
               <label className="minimal-label">
-                {t('fuelRecon.totalAvailable') || 'Total Available (L)'}
+                {t('fuelRecon.totalAvailable') || 'Total Available Stock (Auto)'}
               </label>
               <input
                 type="number"
@@ -612,9 +615,6 @@ export default function FuelReconciliation() {
                 className="minimal-input font-semibold bg-zinc-50"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
               <label className="minimal-label">
                 {t('fuelRecon.physicalVariance') || 'Physical Variance (L)'}
@@ -626,21 +626,22 @@ export default function FuelReconciliation() {
                 className="minimal-input font-bold bg-zinc-50"
               />
             </div>
-            <div>
-              <label className="minimal-label">
-                {t('fuelRecon.varianceExplanation') || 'Variance Explanation'}
-              </label>
-              <input
-                type="text"
-                value={stock.varianceReason}
-                onChange={(e) => updateStock('varianceReason', e.target.value)}
-                className="minimal-input"
-                placeholder={
-                  t('fuelRecon.variancePlaceholder') ||
-                  'Explain any stock difference'
-                }
-              />
-            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="minimal-label">
+              {t('fuelRecon.varianceExplanation') || 'Variance Explanation'}
+            </label>
+            <input
+              type="text"
+              value={stock.varianceReason}
+              onChange={(e) => updateStock('varianceReason', e.target.value)}
+              className="minimal-input"
+              placeholder={
+                t('fuelRecon.variancePlaceholder') ||
+                'Explain any stock difference'
+              }
+            />
           </div>
         </div>
 

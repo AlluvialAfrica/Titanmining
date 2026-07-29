@@ -68,6 +68,33 @@ const DEFAULT_SALARIES: Record<string, number> = {
   ENTERPRISE_MANAGER: 3000,
 };
 
+/** The ten identified operational staff roles for payroll. */
+const STAFF_ROLES = [
+  'SITE_CONTROLLER',
+  'MINING_GEOLOGY_LEAD',
+  'PROCESSING_RECOVERY_LEAD',
+  'FUEL_ADMIN_LOGISTICS',
+  'ENGINE_MECHANIC',
+  'ELECTRICAL_MECHANIC',
+  'GREASING_WASHING_HELPER',
+  'GATE_SECURITY',
+  'MAINTENANCE_MANAGER',
+  'PUMP_SUPERVISOR',
+] as const;
+
+const ROLE_DISPLAY: Record<string, string> = {
+  SITE_CONTROLLER: 'Site Controller',
+  MINING_GEOLOGY_LEAD: 'Mining & Geology Lead',
+  PROCESSING_RECOVERY_LEAD: 'Processing & Recovery Lead',
+  FUEL_ADMIN_LOGISTICS: 'Fuel, Admin & Logistics',
+  ENGINE_MECHANIC: 'Engine Mechanic',
+  ELECTRICAL_MECHANIC: 'Electrical Mechanic',
+  GREASING_WASHING_HELPER: 'Greasing, Washing & Helper',
+  GATE_SECURITY: 'Gate Security',
+  MAINTENANCE_MANAGER: 'Maintenance Manager',
+  PUMP_SUPERVISOR: 'Pump Supervisor',
+};
+
 const SEED_STAFF = [
   { id: 'seed-01', firstName: 'Osman', lastName: 'Faafan', role: 'SITE_CONTROLLER' },
   { id: 'seed-02', firstName: 'Sarah', lastName: 'Kiprop', role: 'MINING_GEOLOGY_LEAD' },
@@ -77,7 +104,28 @@ const SEED_STAFF = [
   { id: 'seed-06', firstName: 'Samuel', lastName: 'Mwita', role: 'ELECTRICAL_MECHANIC' },
   { id: 'seed-07', firstName: 'Ibrahim', lastName: 'Abdi', role: 'GREASING_WASHING_HELPER' },
   { id: 'seed-08', firstName: 'Francis', lastName: 'Ochieng', role: 'GATE_SECURITY' },
+  { id: 'seed-09', firstName: 'Joseph', lastName: 'Wekesa', role: 'MAINTENANCE_MANAGER' },
+  { id: 'seed-10', firstName: 'Grace', lastName: 'Akinyi', role: 'PUMP_SUPERVISOR' },
 ];
+
+/** Mock seed advances for demonstration. */
+const SEED_ADVANCES: Record<string, number> = {
+  'Osman Faafan': 200,
+  'John Kamau': 150,
+  'Samuel Mwita': 100,
+  'Ibrahim Abdi': 50,
+  'Joseph Wekesa': 120,
+};
+
+/** Mock seed leave stats for demonstration. */
+const SEED_LEAVE_STATS: Record<string, number> = {
+  'Osman Faafan': 2,
+  'Kwame Mensah': 3,
+  'Peter Njoroge': 1,
+  'Grace Akinyi': 2,
+};
+
+const LEAVE_TYPES = ['Normal', 'Sick', 'Compassionate', 'Maternity'];
 
 const WORKING_DAYS_PER_MONTH = 30;
 
@@ -143,9 +191,17 @@ export default function PayrollManagement() {
   const [staffList, setStaffList] = useState<StaffPayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState('2026-07');
+  const [roleFilter, setRoleFilter] = useState<string>('ALL');
 
   // Leave state
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+
+  // Leave input form state
+  const [leaveStaff, setLeaveStaff] = useState('');
+  const [leaveType, setLeaveType] = useState('Normal');
+  const [leaveStart, setLeaveStart] = useState('');
+  const [leaveEnd, setLeaveEnd] = useState('');
+  const [leaveReason, setLeaveReason] = useState('');
 
   // Attendance state
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
@@ -221,9 +277,12 @@ export default function PayrollManagement() {
         const base = DEFAULT_SALARIES[u.role] || 1000;
         const fullName = `${u.firstName} ${u.lastName}`;
         const nameKey = fullName.toLowerCase();
-        const userAdvance = advancesList
+
+        // Check real advances first, fall back to seed mock data
+        const realAdvance = advancesList
           .filter((a: any) => (a.staffName.toLowerCase() === nameKey || a.id === u.id) && a.status === 'DISBURSED')
           .reduce((sum: number, a: any) => sum + Number(a.amount || 0), 0);
+        const userAdvance = realAdvance > 0 ? realAdvance : (SEED_ADVANCES[fullName] || 0);
 
         // Try to pull real attendance from TEMPLATE_02 submissions
         const attendance = user?.orgId
@@ -239,11 +298,14 @@ export default function PayrollManagement() {
           leaveDays = attendance.leave;
           daysAbsent = WORKING_DAYS_PER_MONTH - daysPresent - leaveDays;
         } else {
-          // Fallback seed values
-          daysPresent = 26 + (idx % 4);
-          leaveDays = idx % 3 === 0 ? 2 : 0;
+          // Fallback seed values with more variety
+          const seedLeave = SEED_LEAVE_STATS[fullName] || 0;
+          daysPresent = 24 + (idx % 6);
+          leaveDays = seedLeave;
           daysAbsent = WORKING_DAYS_PER_MONTH - daysPresent - leaveDays;
         }
+
+        if (daysAbsent < 0) daysAbsent = 0;
 
         const salaryDue = Math.round((base / WORKING_DAYS_PER_MONTH) * (daysPresent + leaveDays));
         const netPay = Math.max(0, salaryDue - userAdvance);
@@ -275,15 +337,10 @@ export default function PayrollManagement() {
   // Handlers
   // ---------------------------------------------------------------------------
 
-  const handleActionLeave = (id: string, action: 'APPROVED' | 'REJECTED') => {
-    const updated = leaveRequests.map(req => {
-      if (req.id === id) {
-        toast.success(`Leave request ${action.toLowerCase()} successfully.`);
-        return { ...req, status: action, reviewedBy: `${user?.firstName} ${user?.lastName}` };
-      }
-      return req;
-    });
+  const handleDeleteLeave = (id: string) => {
+    const updated = leaveRequests.filter(req => req.id !== id);
     saveLeaveRequests(updated);
+    toast.success('Leave record removed.');
   };
 
   const handleSalaryChange = (id: string, field: keyof StaffPayrollRecord, value: number) => {
@@ -293,6 +350,7 @@ export default function PayrollManagement() {
         if (field === 'baseSalary') {
           updated.salaryDue = Math.round((value / WORKING_DAYS_PER_MONTH) * (updated.daysPresent + updated.leaveDays));
         } else if (field === 'daysPresent' || field === 'leaveDays') {
+          updated.daysAbsent = Math.max(0, WORKING_DAYS_PER_MONTH - updated.daysPresent - updated.leaveDays);
           updated.salaryDue = Math.round((updated.baseSalary / WORKING_DAYS_PER_MONTH) * (updated.daysPresent + updated.leaveDays));
         }
         // Always recalculate netPay when any field changes (including advance)
@@ -307,16 +365,51 @@ export default function PayrollManagement() {
     setAttendanceEntries(prev => prev.map((e, i) => i === idx ? { ...e, [field]: value } : e));
   };
 
+  const handleSubmitLeave = () => {
+    if (!leaveStaff) { toast.error('Please select a staff member.'); return; }
+    if (!leaveStart || !leaveEnd) { toast.error('Start and end dates are required.'); return; }
+    if (leaveEnd < leaveStart) { toast.error('End date cannot be before start date.'); return; }
+
+    const start = new Date(leaveStart);
+    const end = new Date(leaveEnd);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    const newRecord: LeaveRequest = {
+      id: `leave-${Date.now()}`,
+      employeeName: leaveStaff,
+      leaveType,
+      startDate: leaveStart,
+      endDate: leaveEnd,
+      numberOfDays,
+      reason: leaveReason || 'Recorded by HR',
+      status: 'APPROVED',
+      appliedAt: new Date().toISOString(),
+      reviewedBy: `${user?.firstName} ${user?.lastName}`,
+    };
+
+    saveLeaveRequests([newRecord, ...leaveRequests]);
+    toast.success(`Leave recorded: ${leaveStaff} — ${numberOfDays} day(s) ${leaveType}.`);
+
+    // Reset form
+    setLeaveStaff('');
+    setLeaveType('Normal');
+    setLeaveStart('');
+    setLeaveEnd('');
+    setLeaveReason('');
+  };
+
   const submitPayrollReport = async () => {
     try {
-      const totalAdvances = staffList.reduce((sum, s) => sum + s.advance, 0);
-      const totalSalaries = staffList.reduce((sum, s) => sum + s.salaryDue, 0);
-      const totalNetPay = staffList.reduce((sum, s) => sum + s.netPay, 0);
+      const displayList = filteredStaffList;
+      const totalAdvances = displayList.reduce((sum, s) => sum + s.advance, 0);
+      const totalSalaries = displayList.reduce((sum, s) => sum + s.salaryDue, 0);
+      const totalNetPay = displayList.reduce((sum, s) => sum + s.netPay, 0);
 
       const payload = {
         period: selectedMonth,
         hrOfficer: `${user?.firstName} ${user?.lastName}`,
-        rows: staffList.map(s => ({
+        rows: displayList.map(s => ({
           staffName: s.name,
           role: s.role,
           daysPresent: s.daysPresent,
@@ -347,9 +440,17 @@ export default function PayrollManagement() {
     }
   };
 
-  const grandTotalSalaries = staffList.reduce((sum, s) => sum + s.salaryDue, 0);
-  const grandTotalAdvances = staffList.reduce((sum, s) => sum + s.advance, 0);
-  const grandTotalNetPay = staffList.reduce((sum, s) => sum + s.netPay, 0);
+  // ---------------------------------------------------------------------------
+  // Computed values
+  // ---------------------------------------------------------------------------
+
+  const filteredStaffList = roleFilter === 'ALL'
+    ? staffList
+    : staffList.filter(s => s.role === roleFilter);
+
+  const grandTotalSalaries = filteredStaffList.reduce((sum, s) => sum + s.salaryDue, 0);
+  const grandTotalAdvances = filteredStaffList.reduce((sum, s) => sum + s.advance, 0);
+  const grandTotalNetPay = filteredStaffList.reduce((sum, s) => sum + s.netPay, 0);
 
   // Attendance summaries
   const attendanceSummary = {
@@ -357,6 +458,12 @@ export default function PayrollManagement() {
     absent: attendanceEntries.filter(e => e.status === 'ABSENT').length,
     leave: attendanceEntries.filter(e => e.status === 'LEAVE').length,
   };
+
+  // Compute leave days per staff (auto-calculated)
+  const leaveDaysCalcNote = '(auto: 30 - present - leave)';
+
+  // Staff names for leave input dropdown
+  const allStaffNames = SEED_STAFF.map(s => `${s.firstName} ${s.lastName}`);
 
   // ---------------------------------------------------------------------------
   // Render
@@ -404,6 +511,27 @@ export default function PayrollManagement() {
             </div>
           </div>
 
+          {/* Role filter dropdown */}
+          <div className="flex items-center gap-3">
+            <label className="text-[10px] uppercase tracking-widest font-semibold text-zinc-500">Filter by Role:</label>
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="text-xs border border-zinc-300 px-3 py-1.5 bg-white"
+            >
+              <option value="ALL">All Roles ({staffList.length})</option>
+              {STAFF_ROLES.map(role => {
+                const count = staffList.filter(s => s.role === role).length;
+                if (count === 0) return null;
+                return (
+                  <option key={role} value={role}>
+                    {ROLE_DISPLAY[role] || role.replace(/_/g, ' ')} ({count})
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
           {loading ? (
             <div className="text-center py-8 font-serif italic text-zinc-400">Loading staff database...</div>
           ) : (
@@ -416,6 +544,7 @@ export default function PayrollManagement() {
                       <th>Role</th>
                       <th>Base Salary</th>
                       <th>Days Present ({WORKING_DAYS_PER_MONTH}d)</th>
+                      <th>Days Absent <span className="text-[9px] font-normal text-zinc-400 block">{leaveDaysCalcNote}</span></th>
                       <th>Leave Days</th>
                       <th>Salary Earned</th>
                       <th>Advance</th>
@@ -423,15 +552,18 @@ export default function PayrollManagement() {
                     </tr>
                   </thead>
                   <tbody>
-                    {staffList.map((s) => (
+                    {filteredStaffList.map((s) => (
                       <tr key={s.id}>
                         <td className="font-semibold text-black">{s.name}</td>
-                        <td className="text-[11px] font-mono text-zinc-500 uppercase">{s.role.replace('_', ' ')}</td>
+                        <td className="text-[11px] font-mono text-zinc-500 uppercase">{ROLE_DISPLAY[s.role] || s.role.replace(/_/g, ' ')}</td>
                         <td>
                           <input type="number" value={s.baseSalary} onChange={(e) => handleSalaryChange(s.id, 'baseSalary', Number(e.target.value))} className="w-20 px-1 py-0.5 border border-zinc-200 text-xs" />
                         </td>
                         <td>
                           <input type="number" max={WORKING_DAYS_PER_MONTH} value={s.daysPresent} onChange={(e) => handleSalaryChange(s.id, 'daysPresent', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
+                        </td>
+                        <td className="font-semibold text-red-600 bg-zinc-50">
+                          {s.daysAbsent}
                         </td>
                         <td>
                           <input type="number" max={WORKING_DAYS_PER_MONTH} value={s.leaveDays} onChange={(e) => handleSalaryChange(s.id, 'leaveDays', Number(e.target.value))} className="w-16 px-1 py-0.5 border border-zinc-200 text-xs" />
@@ -445,6 +577,7 @@ export default function PayrollManagement() {
                     ))}
                     <tr className="bg-zinc-50 border-t-2 border-black font-bold">
                       <td colSpan={2}>Grand Total</td>
+                      <td>-</td>
                       <td>-</td>
                       <td>-</td>
                       <td>-</td>
@@ -549,57 +682,133 @@ export default function PayrollManagement() {
 
       {/* ---------- LEAVE TAB ---------- */}
       {subTab === 'leave' && (
-        <div className="border border-black p-6 bg-white space-y-4">
-          <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
-            All Leave Applications
-          </h2>
-          {leaveRequests.length === 0 ? (
-            <p className="text-zinc-500 font-serif italic text-center py-6">No leave applications submitted yet.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="editorial-table">
-                <thead>
-                  <tr>
-                    <th>Staff Name</th>
-                    <th>Type</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Days</th>
-                    <th>Status</th>
-                    <th className="text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaveRequests.map((req) => (
-                    <tr key={req.id}>
-                      <td className="font-serif italic font-semibold">{req.employeeName}</td>
-                      <td>{req.leaveType}</td>
-                      <td>{formatDateDDMMYYYY(req.startDate)}</td>
-                      <td>{formatDateDDMMYYYY(req.endDate)}</td>
-                      <td>{req.numberOfDays} days</td>
-                      <td>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 border uppercase tracking-wider ${
-                          req.status === 'APPROVED' ? 'border-green-600 bg-green-50 text-green-700' :
-                          req.status === 'REJECTED' ? 'border-red-600 bg-red-50 text-red-700' :
-                          'border-zinc-400 bg-zinc-50'
-                        }`}>
-                          {req.status}
-                        </span>
-                      </td>
-                      <td className="text-right space-x-2">
-                        {req.status === 'PENDING' && (
-                          <>
-                            <button onClick={() => handleActionLeave(req.id, 'APPROVED')} className="text-[10px] uppercase font-semibold text-green-700 hover:underline">Approve</button>
-                            <button onClick={() => handleActionLeave(req.id, 'REJECTED')} className="text-[10px] uppercase font-semibold text-red-600 hover:underline">Reject</button>
-                          </>
-                        )}
-                      </td>
-                    </tr>
+        <div className="space-y-6">
+          {/* Leave Input Form */}
+          <div className="border border-black p-6 bg-white space-y-4">
+            <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
+              Record Staff Leave
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Input leave days for staff members. Leave is recorded directly by the HR Manager.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="minimal-label">Staff Member</label>
+                <select
+                  value={leaveStaff}
+                  onChange={(e) => setLeaveStaff(e.target.value)}
+                  className="minimal-input text-xs"
+                >
+                  <option value="">Select staff...</option>
+                  {allStaffNames.map(name => (
+                    <option key={name} value={name}>{name}</option>
                   ))}
-                </tbody>
-              </table>
+                </select>
+              </div>
+              <div>
+                <label className="minimal-label">Leave Type</label>
+                <select
+                  value={leaveType}
+                  onChange={(e) => setLeaveType(e.target.value)}
+                  className="minimal-input text-xs"
+                >
+                  {LEAVE_TYPES.map(lt => (
+                    <option key={lt} value={lt}>{lt}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-          )}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="minimal-label">Start Date</label>
+                <DateInput value={leaveStart} onChange={setLeaveStart} className="minimal-input text-xs" />
+              </div>
+              <div>
+                <label className="minimal-label">End Date</label>
+                <DateInput value={leaveEnd} onChange={setLeaveEnd} className="minimal-input text-xs" />
+              </div>
+              <div>
+                <label className="minimal-label">Days <span className="text-zinc-400 font-normal">(auto)</span></label>
+                <input
+                  type="number"
+                  value={leaveStart && leaveEnd && leaveEnd >= leaveStart
+                    ? Math.ceil(Math.abs(new Date(leaveEnd).getTime() - new Date(leaveStart).getTime()) / (1000 * 60 * 60 * 24)) + 1
+                    : 0
+                  }
+                  disabled
+                  className="minimal-input text-xs bg-zinc-50 font-semibold"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="minimal-label">Reason / Notes</label>
+              <input
+                type="text"
+                value={leaveReason}
+                onChange={(e) => setLeaveReason(e.target.value)}
+                className="minimal-input text-xs"
+                placeholder="Optional reason or notes"
+              />
+            </div>
+
+            <button onClick={handleSubmitLeave} className="minimal-btn text-xs">
+              Record Leave
+            </button>
+          </div>
+
+          {/* Leave Records Table */}
+          <div className="border border-black p-6 bg-white space-y-4">
+            <h2 className="font-serif italic text-lg text-black border-b border-zinc-150 pb-1">
+              Leave Records
+            </h2>
+            {leaveRequests.length === 0 ? (
+              <p className="text-zinc-500 font-serif italic text-center py-6">No leave records yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="editorial-table">
+                  <thead>
+                    <tr>
+                      <th>Staff Name</th>
+                      <th>Type</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Days</th>
+                      <th>Status</th>
+                      <th>Recorded By</th>
+                      <th className="text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leaveRequests.map((req) => (
+                      <tr key={req.id}>
+                        <td className="font-serif italic font-semibold">{req.employeeName}</td>
+                        <td>{req.leaveType}</td>
+                        <td>{formatDateDDMMYYYY(req.startDate)}</td>
+                        <td>{formatDateDDMMYYYY(req.endDate)}</td>
+                        <td>{req.numberOfDays} days</td>
+                        <td>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 border uppercase tracking-wider ${
+                            req.status === 'APPROVED' ? 'border-green-600 bg-green-50 text-green-700' :
+                            req.status === 'REJECTED' ? 'border-red-600 bg-red-50 text-red-700' :
+                            'border-zinc-400 bg-zinc-50'
+                          }`}>
+                            {req.status}
+                          </span>
+                        </td>
+                        <td className="text-xs text-zinc-500">{req.reviewedBy || '-'}</td>
+                        <td className="text-right">
+                          <button onClick={() => handleDeleteLeave(req.id)} className="text-[10px] uppercase font-semibold text-red-600 hover:underline">Remove</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

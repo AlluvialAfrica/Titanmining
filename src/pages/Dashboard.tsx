@@ -54,7 +54,8 @@ export default function Dashboard() {
     if (user?.role === Role.ENTERPRISE_MANAGER) {
       setActiveTab('siteManagerDashboard');
     } else if (user?.role === Role.HR_MANAGER) {
-      setActiveTab('payrollManagement');
+      setActiveTab('form');
+      setSelectedControllerForm('TEMPLATE_02');
     }
     // Finance Manager defaults to 'form' (Daily Reporting) — no override needed
   }, [user]);

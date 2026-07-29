@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import en from '../i18n/en.json';
 import fr from '../i18n/fr.json';
+import zh from '../i18n/zh.json';
 
-type Language = 'en' | 'fr';
+type Language = 'en' | 'fr' | 'zh';
 
 interface LanguageContextType {
   language: Language;
@@ -10,7 +11,7 @@ interface LanguageContextType {
   t: (key: string, params?: Record<string, string>) => string;
 }
 
-const translations = { en, fr };
+const translations = { en, fr, zh };
 
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
@@ -22,7 +23,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
       const saved = localStorage.getItem('language');
-      if (saved === 'en' || saved === 'fr') return saved;
+      if (saved === 'en' || saved === 'fr' || saved === 'zh') return saved;
     } catch { /* ignore */ }
     return 'en';
   });

@@ -27,6 +27,17 @@ export default function LanguageToggle() {
       >
         FR
       </button>
+      <span className="text-gray-300">/</span>
+      <button
+        onClick={() => setLanguage('zh')}
+        className={`pb-1 transition-all ${
+          language === 'zh'
+            ? 'border-b border-black text-black font-semibold'
+            : 'text-gray-400 hover:text-black'
+        }`}
+      >
+        ZH
+      </button>
     </div>
   );
 }
