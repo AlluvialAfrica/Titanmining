@@ -15,15 +15,12 @@ export default function GuidanceTip({ tipKey, children, position = 'top' }: Guid
   const ref = useRef<HTMLDivElement>(null);
 
   const translatedTip = t(`guidance.${tipKey}`);
+  const hasTranslation = translatedTip !== `guidance.${tipKey}`;
+  const isActive = guidanceEnabled && hasTranslation;
 
-  // If guidance is off or the key has no translation, render children only
-  if (!guidanceEnabled || translatedTip === `guidance.${tipKey}`) {
-    return <>{children}</>;
-  }
-
-  // Close on outside click
+  // Close on outside click — hook always runs regardless of isActive
   useEffect(() => {
-    if (!open) return;
+    if (!open || !isActive) return;
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
@@ -31,7 +28,16 @@ export default function GuidanceTip({ tipKey, children, position = 'top' }: Guid
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
+  }, [open, isActive]);
+
+  // Reset open state when guidance is turned off
+  useEffect(() => {
+    if (!isActive) setOpen(false);
+  }, [isActive]);
+
+  if (!isActive) {
+    return <>{children}</>;
+  }
 
   const positionClasses = {
     top: 'bottom-full left-0 mb-2',

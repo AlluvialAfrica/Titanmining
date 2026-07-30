@@ -13,14 +13,12 @@ export default function GuidanceBadge({ tipKey }: GuidanceBadgeProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
   const translatedTip = t(`guidance.nav.${tipKey}`);
+  const hasTranslation = translatedTip !== `guidance.nav.${tipKey}`;
+  const isActive = guidanceEnabled && hasTranslation;
 
-  if (!guidanceEnabled || translatedTip === `guidance.nav.${tipKey}`) {
-    return null;
-  }
-
-  // Close on outside click
+  // Close on outside click — hook always runs regardless of isActive
   useEffect(() => {
-    if (!open) return;
+    if (!open || !isActive) return;
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
@@ -28,7 +26,16 @@ export default function GuidanceBadge({ tipKey }: GuidanceBadgeProps) {
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
+  }, [open, isActive]);
+
+  // Reset open state when guidance is turned off
+  useEffect(() => {
+    if (!isActive) setOpen(false);
+  }, [isActive]);
+
+  if (!isActive) {
+    return null;
+  }
 
   return (
     <span className="relative inline-block ml-1" ref={ref}>
