@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useReport } from '../../hooks/useReport';
 import { useLanguage } from '../../contexts/LanguageContext';
 import MultiSignatureFooter from '../../components/MultiSignatureFooter';
+import GuidanceTip from '../../components/GuidanceTip';
 import { SiteDailySummaryData } from '../../types/reports';
 
 export default function SiteDailySummary() {
@@ -70,46 +71,50 @@ export default function SiteDailySummary() {
   };
 
   const numField = (name: keyof SiteDailySummaryData, label: string, opts?: { required?: boolean; disabled?: boolean; step?: string; className?: string }) => (
-    <div>
-      <label className="minimal-label">{label}</label>
-      <Controller
-        name={name}
-        control={control}
-        rules={{ required: opts?.required }}
-        render={({ field }) => (
-          <input
-            type="number"
-            step={opts?.step || '1'}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            name={field.name}
-            ref={field.ref}
-            value={typeof field.value === 'object' ? '' : (field.value ?? '')}
-            disabled={opts?.disabled}
-            className={`minimal-input ${opts?.className || ''}`}
-          />
-        )}
-      />
-    </div>
+    <GuidanceTip tipKey={`siteSummary.${name}`}>
+      <div>
+        <label className="minimal-label">{label}</label>
+        <Controller
+          name={name}
+          control={control}
+          rules={{ required: opts?.required }}
+          render={({ field }) => (
+            <input
+              type="number"
+              step={opts?.step || '1'}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
+              value={typeof field.value === 'object' ? '' : (field.value ?? '')}
+              disabled={opts?.disabled}
+              className={`minimal-input ${opts?.className || ''}`}
+            />
+          )}
+        />
+      </div>
+    </GuidanceTip>
   );
 
   const textField = (name: keyof SiteDailySummaryData, label: string, opts?: { required?: boolean; placeholder?: string; textarea?: boolean }) => (
-    <div>
-      <label className="minimal-label">{label}</label>
-      <Controller
-        name={name}
-        control={control}
-        rules={{ required: opts?.required }}
-        render={({ field }) => {
-          const val = typeof field.value === 'object' ? '' : (field.value as string || '');
-          return opts?.textarea ? (
-            <textarea onChange={field.onChange} onBlur={field.onBlur} name={field.name} ref={field.ref} rows={3} className="minimal-input w-full font-serif italic" placeholder={opts?.placeholder} value={val} />
-          ) : (
-            <input type="text" onChange={field.onChange} onBlur={field.onBlur} name={field.name} ref={field.ref} className="minimal-input font-semibold" value={val} />
-          );
-        }}
-      />
-    </div>
+    <GuidanceTip tipKey={`siteSummary.${name}`}>
+      <div>
+        <label className="minimal-label">{label}</label>
+        <Controller
+          name={name}
+          control={control}
+          rules={{ required: opts?.required }}
+          render={({ field }) => {
+            const val = typeof field.value === 'object' ? '' : (field.value as string || '');
+            return opts?.textarea ? (
+              <textarea onChange={field.onChange} onBlur={field.onBlur} name={field.name} ref={field.ref} rows={3} className="minimal-input w-full font-serif italic" placeholder={opts?.placeholder} value={val} />
+            ) : (
+              <input type="text" onChange={field.onChange} onBlur={field.onBlur} name={field.name} ref={field.ref} className="minimal-input font-semibold" value={val} />
+            );
+          }}
+        />
+      </div>
+    </GuidanceTip>
   );
 
   return (

@@ -5,6 +5,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import MultiSignatureFooter from '../../components/MultiSignatureFooter';
 import VarianceAlert from '../../components/VarianceAlert';
 import DateInput from '../../components/DateInput';
+import GuidanceTip from '../../components/GuidanceTip';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -344,55 +345,61 @@ export default function FuelReconciliation() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Machine name — free text */}
-                <div>
-                  <label className="minimal-label">
-                    {t('fuelRecon.machine') || 'Machine'}
-                  </label>
-                  <input
-                    type="text"
-                    value={entry.machineName}
-                    onChange={(e) =>
-                      updateEntry(idx, 'machineName', e.target.value)
-                    }
-                    className="minimal-input"
-                    placeholder="e.g. CAT 1, SANY 3, Pump 2"
-                    required
-                  />
-                </div>
+                <GuidanceTip tipKey="fuelRecon.machineName">
+                  <div>
+                    <label className="minimal-label">
+                      {t('fuelRecon.machine') || 'Machine'}
+                    </label>
+                    <input
+                      type="text"
+                      value={entry.machineName}
+                      onChange={(e) =>
+                        updateEntry(idx, 'machineName', e.target.value)
+                      }
+                      className="minimal-input"
+                      placeholder="e.g. CAT 1, SANY 3, Pump 2"
+                      required
+                    />
+                  </div>
+                </GuidanceTip>
 
                 {/* Opening meter */}
-                <div>
-                  <label className="minimal-label">
-                    {t('fuelRecon.openingMeter') || 'Opening Meter (Hrs)'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={entry.openingMeter}
-                    onChange={(e) =>
-                      updateEntry(idx, 'openingMeter', e.target.value)
-                    }
-                    className="minimal-input"
-                    placeholder="0.0"
-                  />
-                </div>
+                <GuidanceTip tipKey="fuelRecon.openingMeter">
+                  <div>
+                    <label className="minimal-label">
+                      {t('fuelRecon.openingMeter') || 'Opening Meter (Hrs)'}
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={entry.openingMeter}
+                      onChange={(e) =>
+                        updateEntry(idx, 'openingMeter', e.target.value)
+                      }
+                      className="minimal-input"
+                      placeholder="0.0"
+                    />
+                  </div>
+                </GuidanceTip>
 
                 {/* Closing meter */}
-                <div>
-                  <label className="minimal-label">
-                    {t('fuelRecon.closingMeter') || 'Closing Meter (Hrs)'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={entry.closingMeter}
-                    onChange={(e) =>
-                      updateEntry(idx, 'closingMeter', e.target.value)
-                    }
-                    className="minimal-input"
-                    placeholder="0.0"
-                  />
-                </div>
+                <GuidanceTip tipKey="fuelRecon.closingMeter">
+                  <div>
+                    <label className="minimal-label">
+                      {t('fuelRecon.closingMeter') || 'Closing Meter (Hrs)'}
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={entry.closingMeter}
+                      onChange={(e) =>
+                        updateEntry(idx, 'closingMeter', e.target.value)
+                      }
+                      className="minimal-input"
+                      placeholder="0.0"
+                    />
+                  </div>
+                </GuidanceTip>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
@@ -410,22 +417,24 @@ export default function FuelReconciliation() {
                 </div>
 
                 {/* Fuel issued */}
-                <div>
-                  <label className="minimal-label">
-                    {t('fuelRecon.fuelIssued') || 'Fuel Issued (L)'}
-                  </label>
-                  <input
-                    type="number"
-                    step="1"
-                    value={entry.fuelIssued}
-                    onChange={(e) =>
-                      updateEntry(idx, 'fuelIssued', e.target.value)
-                    }
-                    className="minimal-input"
-                    placeholder="0"
-                    required
-                  />
-                </div>
+                <GuidanceTip tipKey="fuelRecon.fuelIssued">
+                  <div>
+                    <label className="minimal-label">
+                      {t('fuelRecon.fuelIssued') || 'Fuel Issued (L)'}
+                    </label>
+                    <input
+                      type="number"
+                      step="1"
+                      value={entry.fuelIssued}
+                      onChange={(e) =>
+                        updateEntry(idx, 'fuelIssued', e.target.value)
+                      }
+                      className="minimal-input"
+                      placeholder="0"
+                      required
+                    />
+                  </div>
+                </GuidanceTip>
 
                 {/* Expected L/HR */}
                 <div>
@@ -545,32 +554,36 @@ export default function FuelReconciliation() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="minimal-label">
-                {t('fuelRecon.openingPhysical') || 'Opening Meter (L)'}
-              </label>
-              <input
-                type="number"
-                value={stock.openingStock}
-                onChange={(e) => updateStock('openingStock', e.target.value)}
-                className="minimal-input"
-                placeholder="0"
-                required
-              />
-            </div>
-            <div>
-              <label className="minimal-label">
-                {t('fuelRecon.closingPhysical') || 'Closing Meter (L)'}
-              </label>
-              <input
-                type="number"
-                value={stock.closingStock}
-                onChange={(e) => updateStock('closingStock', e.target.value)}
-                className="minimal-input"
-                placeholder="0"
-                required
-              />
-            </div>
+            <GuidanceTip tipKey="fuelRecon.openingStock">
+              <div>
+                <label className="minimal-label">
+                  {t('fuelRecon.openingPhysical') || 'Opening Meter (L)'}
+                </label>
+                <input
+                  type="number"
+                  value={stock.openingStock}
+                  onChange={(e) => updateStock('openingStock', e.target.value)}
+                  className="minimal-input"
+                  placeholder="0"
+                  required
+                />
+              </div>
+            </GuidanceTip>
+            <GuidanceTip tipKey="fuelRecon.closingStock">
+              <div>
+                <label className="minimal-label">
+                  {t('fuelRecon.closingPhysical') || 'Closing Meter (L)'}
+                </label>
+                <input
+                  type="number"
+                  value={stock.closingStock}
+                  onChange={(e) => updateStock('closingStock', e.target.value)}
+                  className="minimal-input"
+                  placeholder="0"
+                  required
+                />
+              </div>
+            </GuidanceTip>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

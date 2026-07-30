@@ -83,7 +83,17 @@
     "demoFinanceManager": "Finance Manager",
     "demoFinanceManagerDesc": "Daily purchases, stores issue & costs",
     "demoEnterpriseManager": "Enterprise Manager",
-    "demoEnterpriseManagerDesc": "Commercial overview of the enterprise"
+    "demoEnterpriseManagerDesc": "Commercial overview of the enterprise",
+    "demoProcessingLead": "Processing & Recovery Lead",
+    "demoProcessingLeadDesc": "Centrifuge, shaking table, sluice & gold recovery",
+    "demoEngineMechanic": "Engine Mechanic",
+    "demoEngineMechanicDesc": "Heavy equipment repairs, servicing & welding",
+    "demoElectricalMechanic": "Electrical Mechanic",
+    "demoElectricalMechanicDesc": "Electrical repairs, motors & wiring",
+    "demoGreasingHelper": "Greasing & Washing Helper",
+    "demoGreasingHelperDesc": "Greasing, washing & mechanic helper tasks",
+    "demoSystemAdmin": "System Administrator",
+    "demoSystemAdminDesc": "Full system access, user management & configuration"
   },
   "admin": {
     "title": "Enterprise Administration",
@@ -942,5 +952,63 @@
     "emailSent": "Report emailed successfully.",
     "emailFailed": "Failed to send email.",
     "emailRequired": "Recipient email is required."
+  },
+  "guidance": {
+    "label": "Guide",
+    "on": "ON",
+    "off": "OFF",
+    "dismiss": "Got it",
+    "nav": {
+      "siteManagerDashboard": "Consolidated overview of all daily site operations and production metrics.",
+      "dailyReporting": "Submit daily operational reports for your role. Select the appropriate template from the dropdown.",
+      "reportHistory": "View previously submitted reports with timestamps, status, and export options.",
+      "kpiInput": "Enter your daily key performance indicators for your shift.",
+      "kpiDashboard": "Track your individual KPI performance trends and target achievement.",
+      "teamDashboard": "View aggregated KPI performance for your direct reports and team members.",
+      "leaveApplication": "Submit and manage staff leave applications.",
+      "payrollLeave": "Review attendance, process leave records, and compile monthly payroll.",
+      "leaveSettings": "Configure leave types, entitlements, and approval workflows.",
+      "financeManagement": "Manage treasury operations, advances, and financial reconciliation.",
+      "roleProfile": "View your role permissions, reporting hierarchy, and assigned templates.",
+      "userManagement": "Add new staff, assign roles, and manage user accounts.",
+      "siteSettings": "Configure organizational profile, site locations, and system preferences.",
+      "adminDashboard": "Enterprise administration with tenant management, revenue, and system monitoring.",
+      "help": "Access guides, tutorials, and troubleshooting resources."
+    },
+    "siteSummary": {
+      "materialMinedM3": "Total cubic meters of material excavated from the pit today.",
+      "materialProcessedM3": "Total cubic meters of material processed through the wash plant.",
+      "pitAreaWorked": "Name or identifier of the active pit area being mined today.",
+      "centrifugeRecoveryG": "Gold recovered from centrifuge operations in grams.",
+      "shakingTableRecoveryG": "Gold recovered from shaking table operations in grams.",
+      "sluiceCleanupG": "Gold recovered from sluice box cleanup in grams.",
+      "fuelOpeningStockL": "Physical fuel stock at the start of the day in liters.",
+      "fuelReceivedL": "Fuel delivered to site today in liters.",
+      "fuelIssuedL": "Total fuel issued to machines and vehicles today.",
+      "fuelClosingStockL": "Physical fuel stock at end of day. Must be verified by dip-stick reading.",
+      "machineWorkingHours": "Total combined working hours across all machines today.",
+      "machineDowntime": "Total hours of machine downtime across all equipment.",
+      "machinesDown": "Number of machines currently non-operational.",
+      "downtimeReason": "Explain the primary reasons for any machine downtime.",
+      "totalPresent": "Total number of staff present on site today.",
+      "totalAbsent": "Total number of staff absent today.",
+      "visitors": "Number of visitors who entered the site today.",
+      "casualsUsed": "Number of casual/temporary workers engaged today.",
+      "searchesDone": "Total security searches conducted at the gate.",
+      "vehicleMovements": "Number of vehicle entries and exits recorded.",
+      "cashUsed": "Total cash disbursed today in USD.",
+      "purchasesTotal": "Total value of purchases made today in USD.",
+      "pitToMine": "Planned pit area for mining operations tomorrow.",
+      "plantTarget": "Processing plant production target for tomorrow.",
+      "repairPriority": "Priority repair or maintenance items for tomorrow."
+    },
+    "fuelRecon": {
+      "machineName": "Enter the machine name or identifier (e.g., CAT 1, SANY 3).",
+      "openingMeter": "Hour meter reading at the start of the shift. Auto-filled from previous day if available.",
+      "closingMeter": "Hour meter reading at the end of the shift.",
+      "fuelIssued": "Volume of fuel issued to this machine in liters.",
+      "openingStock": "Physical fuel stock measured at start of day (dip-stick reading).",
+      "closingStock": "Physical fuel stock measured at end of day. Variance is auto-calculated."
+    }
   }
 }

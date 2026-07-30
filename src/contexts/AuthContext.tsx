@@ -11,6 +11,7 @@ import {
 import { Role, mapLegacyRole } from '../types/roles';
 import { logger } from '../utils/logger';
 import { trackEvent, AnalyticsEvents } from '../utils/analytics';
+import { DEMO_ACCOUNTS } from '../data/demoAccounts';
 import toast from 'react-hot-toast';
 
 // ---------------------------------------------------------------------------
@@ -65,6 +66,7 @@ interface AuthContextType {
   tempUser: any | null;
   changePassword: (newPassword: string) => Promise<void>;
   otpPending: boolean;
+  demoLogin: (role: Role) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -77,6 +79,7 @@ const AuthContext = createContext<AuthContextType>({
   tempUser: null,
   changePassword: async () => {},
   otpPending: false,
+  demoLogin: () => {},
 });
 
 /**
@@ -365,6 +368,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSignInResult(null);
   };
 
+  const demoLogin = (role: Role) => {
+    const account = DEMO_ACCOUNTS.find((a) => a.role === role);
+    if (!account) {
+      logger.error('Demo account not found for role:', role);
+      return;
+    }
+    // Generate nonce + HMAC for session consistency (demo sessions don't
+    // survive page refresh by design — same as real OTP sessions).
+    otpSessionNonce = generateNonce();
+    const demoUser = { ...account.user };
+    setUser(demoUser);
+    setTempUser(null);
+    setForcePasswordChange(false);
+    setOtpPending(false);
+    setSignInResult(null);
+    trackEvent(AnalyticsEvents.LOGIN_SUCCESS, { role: demoUser.role, demo: true });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -377,6 +398,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         tempUser,
         changePassword,
         otpPending,
+        demoLogin,
       }}
     >
       {children}

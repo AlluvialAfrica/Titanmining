@@ -83,7 +83,17 @@
     "demoFinanceManager": "Responsable Financier",
     "demoFinanceManagerDesc": "Achats quotidiens, magasins et coûts",
     "demoEnterpriseManager": "Directeur d'Entreprise",
-    "demoEnterpriseManagerDesc": "Vue commerciale de l'entreprise"
+    "demoEnterpriseManagerDesc": "Vue commerciale de l'entreprise",
+    "demoProcessingLead": "Responsable Traitement & Récupération",
+    "demoProcessingLeadDesc": "Centrifugeuse, table vibrante, sluice & récupération d'or",
+    "demoEngineMechanic": "Mécanicien Moteur",
+    "demoEngineMechanicDesc": "Réparations équipements lourds, entretien & soudure",
+    "demoElectricalMechanic": "Mécanicien Électrique",
+    "demoElectricalMechanicDesc": "Réparations électriques, moteurs & câblage",
+    "demoGreasingHelper": "Aide Graissage & Lavage",
+    "demoGreasingHelperDesc": "Graissage, lavage & aide mécanicien",
+    "demoSystemAdmin": "Administrateur Système",
+    "demoSystemAdminDesc": "Accès complet, gestion des utilisateurs & configuration"
   },
   "admin": {
     "title": "Administration Entreprise",
@@ -925,5 +935,63 @@
     "emailSent": "Rapport envoy\u00e9 par email avec succ\u00e8s.",
     "emailFailed": "\u00c9chec de l'envoi de l'email.",
     "emailRequired": "L'email du destinataire est obligatoire."
+  },
+  "guidance": {
+    "label": "Guide",
+    "on": "ON",
+    "off": "OFF",
+    "dismiss": "Compris",
+    "nav": {
+      "siteManagerDashboard": "Vue consolidée de toutes les opérations quotidiennes du site et des indicateurs de production.",
+      "dailyReporting": "Soumettez les rapports opérationnels quotidiens pour votre rôle. Sélectionnez le modèle approprié.",
+      "reportHistory": "Consultez les rapports précédemment soumis avec horodatage, statut et options d'exportation.",
+      "kpiInput": "Saisissez vos indicateurs de performance clés quotidiens pour votre poste.",
+      "kpiDashboard": "Suivez vos tendances de performance KPI individuelles et l'atteinte des objectifs.",
+      "teamDashboard": "Consultez la performance KPI agrégée de vos subordonnés directs.",
+      "leaveApplication": "Soumettez et gérez les demandes de congé du personnel.",
+      "payrollLeave": "Vérifiez la présence, traitez les congés et compilez la paie mensuelle.",
+      "leaveSettings": "Configurez les types de congés, les droits et les flux d'approbation.",
+      "financeManagement": "Gérez les opérations de trésorerie, les avances et la réconciliation financière.",
+      "roleProfile": "Consultez vos permissions de rôle, votre hiérarchie et vos modèles assignés.",
+      "userManagement": "Ajoutez du personnel, assignez des rôles et gérez les comptes utilisateurs.",
+      "siteSettings": "Configurez le profil organisationnel, les sites et les préférences système.",
+      "adminDashboard": "Administration d'entreprise avec gestion des locataires, revenus et surveillance système.",
+      "help": "Accédez aux guides, tutoriels et ressources de dépannage."
+    },
+    "siteSummary": {
+      "materialMinedM3": "Total des mètres cubes de matériaux excavés de la fosse aujourd'hui.",
+      "materialProcessedM3": "Total des mètres cubes de matériaux traités par l'usine de lavage.",
+      "pitAreaWorked": "Nom ou identifiant de la zone de fosse active en exploitation aujourd'hui.",
+      "centrifugeRecoveryG": "Or récupéré par les opérations de centrifugation en grammes.",
+      "shakingTableRecoveryG": "Or récupéré par les opérations de table vibrante en grammes.",
+      "sluiceCleanupG": "Or récupéré lors du nettoyage du sluice en grammes.",
+      "fuelOpeningStockL": "Stock physique de carburant au début de la journée en litres.",
+      "fuelReceivedL": "Carburant livré sur le site aujourd'hui en litres.",
+      "fuelIssuedL": "Total du carburant distribué aux machines et véhicules aujourd'hui.",
+      "fuelClosingStockL": "Stock physique de carburant en fin de journée. Doit être vérifié par jauge.",
+      "machineWorkingHours": "Total des heures de fonctionnement combinées de toutes les machines.",
+      "machineDowntime": "Total des heures d'arrêt des machines.",
+      "machinesDown": "Nombre de machines actuellement hors service.",
+      "downtimeReason": "Expliquez les principales raisons des temps d'arrêt des machines.",
+      "totalPresent": "Nombre total de personnel présent sur le site aujourd'hui.",
+      "totalAbsent": "Nombre total de personnel absent aujourd'hui.",
+      "visitors": "Nombre de visiteurs entrés sur le site aujourd'hui.",
+      "casualsUsed": "Nombre de travailleurs temporaires engagés aujourd'hui.",
+      "searchesDone": "Total des fouilles de sécurité effectuées à la porte.",
+      "vehicleMovements": "Nombre d'entrées et sorties de véhicules enregistrées.",
+      "cashUsed": "Total des décaissements en espèces aujourd'hui en USD.",
+      "purchasesTotal": "Valeur totale des achats effectués aujourd'hui en USD.",
+      "pitToMine": "Zone de fosse prévue pour les opérations minières demain.",
+      "plantTarget": "Objectif de production de l'usine de traitement pour demain.",
+      "repairPriority": "Éléments de réparation ou de maintenance prioritaires pour demain."
+    },
+    "fuelRecon": {
+      "machineName": "Entrez le nom ou l'identifiant de la machine (ex. CAT 1, SANY 3).",
+      "openingMeter": "Lecture du compteur horaire au début du poste. Auto-rempli à partir du jour précédent si disponible.",
+      "closingMeter": "Lecture du compteur horaire à la fin du poste.",
+      "fuelIssued": "Volume de carburant distribué à cette machine en litres.",
+      "openingStock": "Stock physique de carburant mesuré en début de journée (lecture par jauge).",
+      "closingStock": "Stock physique de carburant mesuré en fin de journée. La variance est auto-calculée."
+    }
   }
 }

@@ -8,6 +8,7 @@ import MultiSignatureFooter, { SignatorySlot } from '../../components/MultiSigna
 import VarianceAlert from '../../components/VarianceAlert';
 import MultiRowTable, { ColumnDef } from '../../components/MultiRowTable';
 import DateInput from '../../components/DateInput';
+import GuidanceTip from '../../components/GuidanceTip';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -811,61 +812,63 @@ export default function GenericReportForm({ templateId }: { templateId: string }
 
   // Render a single field
   const renderField = (f: FieldSpec) => (
-    <div key={f.name}>
-      <label className="minimal-label">{f.label}</label>
-      <Controller
-        name={f.name}
-        control={control}
-        rules={{ required: f.required ? `${f.label} is required` : false }}
-        render={({ field }) => {
-          if (f.type === 'date-ddmmyyyy') {
-            return (
-              <DateInput
-                value={field.value || ''}
-                onChange={field.onChange}
-                required={f.required}
-                disabled={f.disabled}
-              />
-            );
-          }
-          if (f.type === 'select') {
-            return (
-              <select {...field} className="minimal-select">
-                <option value="">{t('reports_form.select')}</option>
-                {f.options?.map(o => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-              </select>
-            );
-          }
-          if (f.type === 'textarea') {
-            return <textarea {...field} rows={3} className="minimal-input w-full" placeholder={t('reports_form.enterDetails')} />;
-          }
-          if (f.type === 'checkbox') {
+    <GuidanceTip key={f.name} tipKey={`templates.${templateId}.${f.name}`}>
+      <div>
+        <label className="minimal-label">{f.label}</label>
+        <Controller
+          name={f.name}
+          control={control}
+          rules={{ required: f.required ? `${f.label} is required` : false }}
+          render={({ field }) => {
+            if (f.type === 'date-ddmmyyyy') {
+              return (
+                <DateInput
+                  value={field.value || ''}
+                  onChange={field.onChange}
+                  required={f.required}
+                  disabled={f.disabled}
+                />
+              );
+            }
+            if (f.type === 'select') {
+              return (
+                <select {...field} className="minimal-select">
+                  <option value="">{t('reports_form.select')}</option>
+                  {f.options?.map(o => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              );
+            }
+            if (f.type === 'textarea') {
+              return <textarea {...field} rows={3} className="minimal-input w-full" placeholder={t('reports_form.enterDetails')} />;
+            }
+            if (f.type === 'checkbox') {
+              return (
+                <input
+                  type="checkbox"
+                  checked={!!field.value}
+                  onChange={e => field.onChange(e.target.checked)}
+                  className="mt-2 h-4 w-4 border-black text-black focus:ring-black accent-black cursor-pointer"
+                />
+              );
+            }
             return (
               <input
-                type="checkbox"
-                checked={!!field.value}
-                onChange={e => field.onChange(e.target.checked)}
-                className="mt-2 h-4 w-4 border-black text-black focus:ring-black accent-black cursor-pointer"
+                type={f.type}
+                {...field}
+                className="minimal-input"
+                disabled={f.disabled}
+                placeholder={f.disabled ? '(auto)' : t('reports_form.enterValue')}
               />
             );
-          }
-          return (
-            <input
-              type={f.type}
-              {...field}
-              className="minimal-input"
-              disabled={f.disabled}
-              placeholder={f.disabled ? '(auto)' : t('reports_form.enterValue')}
-            />
-          );
-        }}
-      />
-      {errors[f.name] && (
-        <span className="text-xs text-red-600 mt-1 block">{(errors[f.name] as any).message}</span>
-      )}
-    </div>
+          }}
+        />
+        {errors[f.name] && (
+          <span className="text-xs text-red-600 mt-1 block">{(errors[f.name] as any).message}</span>
+        )}
+      </div>
+    </GuidanceTip>
   );
 
   return (

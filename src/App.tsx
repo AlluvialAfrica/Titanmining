@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import { GuidanceProvider } from './contexts/GuidanceContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const Login = lazy(() => import('./pages/Login'));
@@ -36,9 +37,10 @@ export default function App() {
   return (
     <ErrorBoundary>
       <LanguageProvider>
-        <AuthProvider>
-          <AppContent />
-          <Toaster
+        <GuidanceProvider>
+          <AuthProvider>
+            <AppContent />
+            <Toaster
             position="top-right"
             toastOptions={{
               duration: 5000,
@@ -46,7 +48,8 @@ export default function App() {
               error: { duration: 7000 },
             }}
           />
-        </AuthProvider>
+          </AuthProvider>
+        </GuidanceProvider>
       </LanguageProvider>
     </ErrorBoundary>
   );

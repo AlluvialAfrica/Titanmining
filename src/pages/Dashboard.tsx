@@ -5,6 +5,8 @@ import { Role, ROLE_PERMISSIONS, hasAdminAccess } from '../types/roles';
 import { useLanguage } from '../contexts/LanguageContext';
 import { logger } from '../utils/logger';
 import LanguageToggle from '../components/LanguageToggle';
+import GuidanceToggle from '../components/GuidanceToggle';
+import GuidanceBadge from '../components/GuidanceBadge';
 import OfflineBanner from '../components/OfflineBanner';
 import HelpButton from '../components/HelpButton';
 import ReportExportMenu from '../components/ReportExportMenu';
@@ -104,7 +106,7 @@ export default function Dashboard() {
     }
   }, [creatableReports, selectedControllerForm, isFullAccessRole]);
 
-  const navButton = (tab: TabType, label: string, show: boolean = true) => {
+  const navButton = (tab: TabType, label: string, show: boolean = true, guidanceKey?: string) => {
     if (!show) return null;
     return (
       <button
@@ -116,6 +118,7 @@ export default function Dashboard() {
         }`}
       >
         {label}
+        {guidanceKey && <GuidanceBadge tipKey={guidanceKey} />}
       </button>
     );
   };
@@ -132,6 +135,7 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-8">
           <LanguageToggle />
+          <GuidanceToggle />
           <div className="text-right">
             <p className="text-xs font-semibold">{user.firstName} {user.lastName}</p>
             <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{t(`roles.${user.role}`)}</p>
@@ -154,21 +158,21 @@ export default function Dashboard() {
                 <HelpButton contextPage={activeTab} onOpenHelp={() => setActiveTab('help')} />
               </div>
 
-              {navButton('siteManagerDashboard', user.role === Role.ENTERPRISE_MANAGER ? t('nav.commercialOverview') : t('nav.siteManagerDashboard'), isFullAccessRole || user.role === Role.ENTERPRISE_MANAGER)}
-              {navButton('form', t('nav.dailyReporting'))}
-              {navButton('history', `${t('nav.reportHistory')} (${history.length})`)}
-              {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI)}
-              {navButton('kpiDashboard', t('nav.kpiDashboard'), permissions.canViewKPI)}
-              {navButton('teamDashboard', t('nav.teamDashboard'), permissions.canViewTeamKPI)}
-              {navButton('leaveApplication', t('nav.leaveApplication'), user.role === Role.HR_MANAGER)}
-              {navButton('payrollManagement', t('nav.payrollLeave'), user.role === Role.HR_MANAGER)}
-              {navButton('leaveSettings', t('nav.leaveSettings'), user.role === Role.HR_MANAGER)}
-              {navButton('financeManagement', t('nav.financeManagement'), user.role === Role.FINANCE_MANAGER)}
-              {navButton('profile', t('nav.roleProfile'))}
-              {navButton('users', t('nav.userManagement'), permissions.canManageUsers)}
-              {navButton('settings', t('nav.siteSettings'), permissions.canEditProfile)}
-              {navButton('admin', t('nav.adminDashboard'), isAdmin)}
-              {navButton('help', t('nav.help'))}
+              {navButton('siteManagerDashboard', user.role === Role.ENTERPRISE_MANAGER ? t('nav.commercialOverview') : t('nav.siteManagerDashboard'), isFullAccessRole || user.role === Role.ENTERPRISE_MANAGER, 'siteManagerDashboard')}
+              {navButton('form', t('nav.dailyReporting'), true, 'dailyReporting')}
+              {navButton('history', `${t('nav.reportHistory')} (${history.length})`, true, 'reportHistory')}
+              {navButton('kpiInput', t('nav.kpiInput'), permissions.canInputKPI, 'kpiInput')}
+              {navButton('kpiDashboard', t('nav.kpiDashboard'), permissions.canViewKPI, 'kpiDashboard')}
+              {navButton('teamDashboard', t('nav.teamDashboard'), permissions.canViewTeamKPI, 'teamDashboard')}
+              {navButton('leaveApplication', t('nav.leaveApplication'), user.role === Role.HR_MANAGER, 'leaveApplication')}
+              {navButton('payrollManagement', t('nav.payrollLeave'), user.role === Role.HR_MANAGER, 'payrollLeave')}
+              {navButton('leaveSettings', t('nav.leaveSettings'), user.role === Role.HR_MANAGER, 'leaveSettings')}
+              {navButton('financeManagement', t('nav.financeManagement'), user.role === Role.FINANCE_MANAGER, 'financeManagement')}
+              {navButton('profile', t('nav.roleProfile'), true, 'roleProfile')}
+              {navButton('users', t('nav.userManagement'), permissions.canManageUsers, 'userManagement')}
+              {navButton('settings', t('nav.siteSettings'), permissions.canEditProfile, 'siteSettings')}
+              {navButton('admin', t('nav.adminDashboard'), isAdmin, 'adminDashboard')}
+              {navButton('help', t('nav.help'), true, 'help')}
 
               <div className="mt-auto pt-6 md:pt-12 border-t border-zinc-100">
                 <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">{t('nav.orgContext')}</p>

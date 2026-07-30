@@ -83,7 +83,17 @@
     "demoFinanceManager": "财务经理",
     "demoFinanceManagerDesc": "日常采购、仓库发料与成本",
     "demoEnterpriseManager": "企业经理",
-    "demoEnterpriseManagerDesc": "企业商业概览"
+    "demoEnterpriseManagerDesc": "企业商业概览",
+    "demoProcessingLead": "加工与回收主管",
+    "demoProcessingLeadDesc": "离心机、摇床、溜槽与黄金回收",
+    "demoEngineMechanic": "发动机技师",
+    "demoEngineMechanicDesc": "重型设备维修、保养与焊接",
+    "demoElectricalMechanic": "电气技师",
+    "demoElectricalMechanicDesc": "电气维修、电机与线路",
+    "demoGreasingHelper": "润滑清洗助手",
+    "demoGreasingHelperDesc": "润滑、清洗与技师辅助任务",
+    "demoSystemAdmin": "系统管理员",
+    "demoSystemAdminDesc": "完整系统访问、用户管理与配置"
   },
   "admin": {
     "title": "企业管理",
@@ -941,5 +951,63 @@
     "emailSent": "报告已通过邮件成功发送。",
     "emailFailed": "邮件发送失败。",
     "emailRequired": "收件人邮箱为必填项。"
+  },
+  "guidance": {
+    "label": "指南",
+    "on": "开",
+    "off": "关",
+    "dismiss": "知道了",
+    "nav": {
+      "siteManagerDashboard": "所有每日现场运营和生产指标的综合概览。",
+      "dailyReporting": "为您的角色提交每日运营报告。从下拉菜单中选择相应模板。",
+      "reportHistory": "查看以前提交的报告，包含时间戳、状态和导出选项。",
+      "kpiInput": "输入您本班次的每日关键绩效指标。",
+      "kpiDashboard": "跟踪您个人的 KPI 绩效趋势和目标达成情况。",
+      "teamDashboard": "查看直属下级和团队成员的 KPI 汇总绩效。",
+      "leaveApplication": "提交和管理员工休假申请。",
+      "payrollLeave": "审查考勤、处理休假记录并编制月度薪资。",
+      "leaveSettings": "配置休假类型、权限和审批流程。",
+      "financeManagement": "管理财务运营、预支和财务核对。",
+      "roleProfile": "查看您的角色权限、汇报层级和分配的模板。",
+      "userManagement": "添加新员工、分配角色和管理用户账户。",
+      "siteSettings": "配置组织档案、现场位置和系统偏好设置。",
+      "adminDashboard": "企业管理，包含租户管理、收入和系统监控。",
+      "help": "访问指南、教程和故障排除资源。"
+    },
+    "siteSummary": {
+      "materialMinedM3": "今日从矿坑中挖掘的材料总立方米数。",
+      "materialProcessedM3": "通过洗选厂处理的材料总立方米数。",
+      "pitAreaWorked": "今日正在开采的活跃矿坑区域名称或标识。",
+      "centrifugeRecoveryG": "离心机操作回收的黄金（克）。",
+      "shakingTableRecoveryG": "摇床操作回收的黄金（克）。",
+      "sluiceCleanupG": "溜槽清理回收的黄金（克）。",
+      "fuelOpeningStockL": "当日开始时的实际燃油库存（升）。",
+      "fuelReceivedL": "今日交付到现场的燃油（升）。",
+      "fuelIssuedL": "今日发放给机械和车辆的燃油总量。",
+      "fuelClosingStockL": "当日结束时的实际燃油库存。必须通过量油尺读数验证。",
+      "machineWorkingHours": "今日所有机械的总工作时数。",
+      "machineDowntime": "所有设备的总停机时数。",
+      "machinesDown": "当前无法运行的机械数量。",
+      "downtimeReason": "说明机械停机的主要原因。",
+      "totalPresent": "今日在场员工总数。",
+      "totalAbsent": "今日缺勤员工总数。",
+      "visitors": "今日进入现场的访客数量。",
+      "casualsUsed": "今日雇用的临时工人数。",
+      "searchesDone": "在门岗进行的安全搜查总次数。",
+      "vehicleMovements": "记录的车辆进出次数。",
+      "cashUsed": "今日现金支出总额（美元）。",
+      "purchasesTotal": "今日采购总额（美元）。",
+      "pitToMine": "明日计划开采的矿坑区域。",
+      "plantTarget": "明日加工厂的生产目标。",
+      "repairPriority": "明日优先维修或维护项目。"
+    },
+    "fuelRecon": {
+      "machineName": "输入机械名称或标识（如 CAT 1、SANY 3）。",
+      "openingMeter": "班次开始时的工时表读数。如有可用数据，将自动填充前一天的数据。",
+      "closingMeter": "班次结束时的工时表读数。",
+      "fuelIssued": "发放给该机械的燃油量（升）。",
+      "openingStock": "当日开始时测量的实际燃油库存（量油尺读数）。",
+      "closingStock": "当日结束时测量的实际燃油库存。差异将自动计算。"
+    }
   }
 }

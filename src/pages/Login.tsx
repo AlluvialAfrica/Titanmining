@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
+import { DEMO_ACCOUNTS } from '../data/demoAccounts';
 import RegisterTenant from './RegisterTenant';
 import TermsOfService from './TermsOfService';
 import Disclaimer from './Disclaimer';
@@ -8,7 +9,7 @@ import Pricing from './Pricing';
 import LanguageToggle from '../components/LanguageToggle';
 
 export default function Login() {
-  const { login, forcePasswordChange, changePassword, otpPending, verifyOtp } = useAuth();
+  const { login, forcePasswordChange, changePassword, otpPending, verifyOtp, demoLogin } = useAuth();
   const { t } = useLanguage();
 
   const [email, setEmail] = useState('');
@@ -269,6 +270,30 @@ export default function Login() {
               </div>
             </div>
           </form>
+
+          {/* Demo Login Grid */}
+          <div className="mt-8 border-t border-zinc-200 pt-6">
+            <h3 className="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-4">
+              {t('login.demoHeader')}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {DEMO_ACCOUNTS.map((account) => (
+                <button
+                  key={account.role}
+                  type="button"
+                  onClick={() => demoLogin(account.role)}
+                  className="text-left border border-zinc-200 hover:border-black px-3 py-2 transition-all group"
+                >
+                  <span className="text-xs font-semibold group-hover:text-black text-zinc-700 block">
+                    {t(account.labelKey)}
+                  </span>
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider">
+                    {t(account.descriptionKey)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
 
         </div>
 

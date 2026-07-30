@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ROLE_KPI_PROFILES } from '../../types/kpiDefinitions';
 import { useKPI } from '../../hooks/useKPI';
+import GuidanceTip from '../../components/GuidanceTip';
 import type { Role } from '../../types/roles';
 
 export default function KPIInputForm() {
@@ -132,22 +133,24 @@ export default function KPIInputForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cat.fields.map((field) => (
-                <div key={field.key}>
-                  <label className="minimal-label">{t(field.labelKey)}</label>
-                  <input
-                    type="number"
-                    step="any"
-                    value={values[field.key] ?? 0}
-                    onChange={(e) => handleChange(field.key, e.target.value)}
-                    className="minimal-input"
-                    disabled={field.calculated}
-                    required={field.required}
-                  />
-                  <p className="text-[10px] text-zinc-400 uppercase tracking-wider mt-1">
-                    {t('kpi.input.target')}: {field.defaultTarget}
-                    {field.unit ? ` ${field.unit}` : ''}
-                  </p>
-                </div>
+                <GuidanceTip key={field.key} tipKey={`kpi.${cat.categoryKey}.${field.key}`}>
+                  <div>
+                    <label className="minimal-label">{t(field.labelKey)}</label>
+                    <input
+                      type="number"
+                      step="any"
+                      value={values[field.key] ?? 0}
+                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      className="minimal-input"
+                      disabled={field.calculated}
+                      required={field.required}
+                    />
+                    <p className="text-[10px] text-zinc-400 uppercase tracking-wider mt-1">
+                      {t('kpi.input.target')}: {field.defaultTarget}
+                      {field.unit ? ` ${field.unit}` : ''}
+                    </p>
+                  </div>
+                </GuidanceTip>
               ))}
             </div>
           </div>
